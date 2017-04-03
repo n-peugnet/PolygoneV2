@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="stylesheet" href="/styles/polygone.css" />
+		<link rel="icon" type="image/png" href="logo.png" />
+		<title>SocketIoChat</title>
+		<meta name="Title" content="SocketIoChat"/>
+		<meta name="Keywords" content="node.js, socket.io, chat"/>
+		<meta name="Description" content="Une application de chat en temps réel"/>
+	</head>
+	<body>
+		<div class="background">
+		<canvas data-processing-sources="/views/Polygone_1.pde"></canvas>
+		</div>
+		<nav id="nav">
+		</nav>
+		<section>
+		</section>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="/include/processing.min.js"></script>
+		<script type="text/javascript" src="/include/ejs_fulljslint.js"></script>
+		<script type="text/javascript" src="/include/ejs.js"></script>
+		<script type="text/javascript" src="/include/functions.js"></script>
+		<script type="text/javascript" src="/include/lieux.js"></script>
+		<script type="text/javascript" src="/include/user.js"></script>
+		<script type="text/javascript" src="/include/message.js"></script>
+		<script type="text/javascript">
+            var socket = io.connect('http://localhost:3000');
+			CrntUser = {
+				loggedIn: false,
+				prenom: "",
+				surnom: "",
+				couleur: "",
+				presence: 0,
+				ecoute: 0
+			}
+			
+			socket.on('init', function(data){
+				updateView('init');
+				for (i=4; i < data.nbLieux; i++) {
+					Lieux.addLieu();
+				}
+				Lieux.writeCoins();
+				data.infosClients.forEach( function(client){
+					Lieux.addUserIn(client.surnom, client.presence, client.couleur);
+				});
+			});
+			socket.on('loggedIn', function(couleur){
+				Lieux.addUser(CrntUser.surnom, couleur, true);
+				CrntUser.loggedIn = true;
+				CrntUser.couleur = couleur;
+				updateView('loggedIn');
+			});
+			socket.on('newLogIn', function(data){
+				Lieux.addUser(data.surnom, data.couleur);
+			});
+			socket.on('logOut', function(data){
+				Lieux.delUser(data.surnom, data.lieu);
+			});
+			socket.on('loggedOut', function(){
+				Lieux.delUser(CrntUser.surnom, CrntUser.presence);
+				writeLogIn();
+			});
+			socket.on('ecriture', function(data){
+				Lieux.selectUser(data.surnom, data.lieu).isWriting();
+			});
+			socket.on('arretEcriture', function(data){
+				Lieux.selectUser(data.surnom, data.lieu).notWriting();
+			});
+			socket.on('message', function(data){
+				Lieux.selectUser(data.surnom, data.lieu).addMessage(data.message);
+			});
+			socket.on('move', function(data){
+				Lieux.moveUser(data.surnom, data.presence, data.destination);
+			});
+			socket.on('listen', function(data){
+				Lieux.focusUser(data.surnom, data.presence, data.ecoute);
+			});
+			socket.on('goTo', function(destination){
+				Lieux.moveUser(CrntUser.surnom, CrntUser.presence, destination);
+				CrntUser.presence = destination;
+				CrntUser.ecoute = destination;
+				updateView('listenTo');
+			});
+			socket.on('listenTo', function(ecoute){
+				Lieux.focusUser(CrntUser.surnom, CrntUser.presence, ecoute)
+				CrntUser.ecoute = ecoute;
+				updateView('listenTo');
+			});
+			socket.on('addCoin', function(){
+				Lieux.addLieu();
+			});
+			socket.on('rmvCoin', function(){
+				Lieux.delLastLieu();
+			});
+			
+			writeLogIn();
+		</script>
+	</body>
+</html>

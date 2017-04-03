@@ -1,0 +1,10 @@
+<div class="colonne coin" id="coin<%= num %>">
+	<h3>Coin <%= num %></h3>
+	<ul>
+<%  for (var i = 0; i < taille; i++) {%>
+		<li class="empty">_</li>
+<%}%>
+	</ul>
+	<button class ="boutonMove" onclick="goTo(<%= num %>)" <%= !loggedIn ? "disabled" : ""%> ><%= presence == num ? "Y retourner" : "S'assoir" %></button>
+	<% if (presence != num) { %><button class ="boutonMove" onclick="listenTo(<%= num %>)" <%= !loggedIn ? "disabled" : "" %> >Ecouter</button><% } %>
+</div>

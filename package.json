@@ -1,0 +1,11 @@
+{
+	"name": "PolygoneV2",
+	"version": "0.1.0",
+	"dependencies": {
+		"express": "~4.14.1",
+		"socket.io": "~1.7.3",
+		"mysql": "~2.13.0"
+	},
+	"author": "Nicope <n.peugnet@free.fr>",
+	"description": "Une application de chat en temps réel visant à se rapprocher d'une conversation de vive voix"	
+}
