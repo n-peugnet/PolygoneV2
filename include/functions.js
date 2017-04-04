@@ -122,6 +122,11 @@ function writeMenuCoins()
 	$('#zoneCoins').append('<div class="colonne coin" id="ajouterCoin" onclick="addCoin()">+</div>');
 }
 
+function eraseMenuCoins()
+{
+	$('#ajouterCoin').remove();
+}
+
 function eraseCoin(num)
 {
 	$('#coin'+num).remove();
@@ -139,7 +144,10 @@ function updateView(action)
 			$('.boutonMove').prop('disabled', false);
 			writeMenuCoins();
 			break;
-		
+		case 'loggedOut':
+			writeLogIn();
+			eraseMenuCoins();
+			break;
 		case 'listenTo':
 			writeAccueil();
 			Lieux.writeCoins();

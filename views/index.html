@@ -62,7 +62,7 @@
 			});
 			socket.on('loggedOut', function(){
 				Lieux.delUser(CrntUser.surnom, CrntUser.presence);
-				writeLogIn();
+				updateView('loggedOut');
 			});
 			socket.on('ecriture', function(data){
 				Lieux.selectUser(data.surnom, data.lieu).isWriting();
