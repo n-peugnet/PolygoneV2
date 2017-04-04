@@ -32,11 +32,19 @@ var Lieux = {
 	addUserIn: function(surnom, lieu, couleur, current)
 	{
 		var current = surnom == CrntUser.surnom;
-		newUser = Object.create(User);
-		newUser.init(surnom, couleur, current);
-		var indexUser = this.lieux[lieu].push(newUser)-1;
-		newUser.writeIn(lieu);
-		
+		if (this.containsUser(surnom, lieu)){
+			this.lieux[lieu][this.indexOfUser(surnom, lieu)].reactivateIn(lieu, couleur);
+		} else {
+			newUser = Object.create(User);
+			newUser.init(surnom, couleur, current);
+			var indexUser = this.lieux[lieu].push(newUser)-1;
+			newUser.writeIn(lieu);
+		}
+	},
+	
+	containsUser: function(surnom, lieu)
+	{
+		return this.lieux[lieu].map(function(u) {return u.surnom; }).includes(surnom);
 	},
 	
 	indexOfUser: function(surnom, lieu)

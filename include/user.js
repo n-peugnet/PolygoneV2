@@ -96,6 +96,18 @@ var User = {
 		}
 	},
 	
+	reactivateIn: function(lieu, couleur)
+	{
+		this.actif = true;
+		this.couleur = couleur;
+		if (lieu == CrntUser.ecoute || lieu == 0){
+			this.eraseIn(lieu);
+			this.writeIn(lieu);
+		}else {
+			$('#' + this.surnom).removeClass('inactif');
+		}
+	},
+	
 	eraseIn: function(lieu) 
 	{
 		if (lieu == CrntUser.ecoute || lieu == 0){
