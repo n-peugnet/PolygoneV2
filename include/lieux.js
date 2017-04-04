@@ -68,7 +68,7 @@ var Lieux = {
 				self.lieux[lieu][index].eraseIn(lieu);
 				self.lieux[lieu].splice(index,1)
 			}
-		}, 10000);
+		}, 17000);
 	},
 
 	moveUser: function(surnom, lDepart, lArrivee)
