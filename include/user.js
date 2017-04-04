@@ -1,18 +1,15 @@
 var User = {
-	messages: [],
-	surnom: '',
-	couleur: '',
-	ecoute: 0,
-	current: false,
-	ecrit: false,
-	actif: true,
-	
 	
 	init: function (surnom, couleur, current)
 	{
+		this.messages = [];
 		this.surnom = surnom;
 		this.couleur = couleur;
 		this.current = current;
+		this.ecoute = 0;
+		this.ecrit = false;
+		this.actif = true;
+	
 	},
 	
 	isWriting: function()
