@@ -65,11 +65,16 @@ var User = {
 		return newId;
 	},
 	
+	genColonne: function()
+	{
+		return new EJS({url: dirViews + 'colonne.ejs'}).render(this);
+	},
+	
 	//inscrit un utilisateur dans la page
 	writeIn: function(lieu)
 	{
 		if (lieu == CrntUser.ecoute || lieu == 0){
-			var html = new EJS({url: dirViews + 'colonne.ejs'}).render(this);
+			var html = this.genColonne();
 			if (this.current) {
 				$('#lieu'+ lieu).prepend(html);
 				$('#lieu'+ lieu).contents().filter(function() { return this.nodeType === 3; }).remove(); //permet de supprimer les espaces HTML
@@ -89,8 +94,7 @@ var User = {
 		this.ecrit = false;
 		this.couleur = '#aaaaaa';
 		if (lieu == CrntUser.ecoute || lieu == 0){
-			this.eraseIn(lieu);
-			this.writeIn(lieu);
+			this.updateCol();
 		} else {
 			$('#' + this.surnom).addClass('inactif');
 		}
@@ -101,11 +105,17 @@ var User = {
 		this.actif = true;
 		this.couleur = couleur;
 		if (lieu == CrntUser.ecoute || lieu == 0){
-			this.eraseIn(lieu);
-			this.writeIn(lieu);
+			this.updateCol();
 		}else {
 			$('#' + this.surnom).removeClass('inactif');
 		}
+	},
+	
+	updateCol: function()
+	{
+		var html = this.genColonne();
+		$('#' + this.surnom).replaceWith(html);
+		this.writeMessages();
 	},
 	
 	eraseIn: function(lieu) 
