@@ -8,11 +8,9 @@ var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
   password : '',
-  database : 'polygone'
+  database : 'polygoneV2'
 });
 
-
-var dirViews = '/views/';
 var lieux = [0,0,0,0];
 
 
