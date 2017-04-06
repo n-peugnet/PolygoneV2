@@ -19,7 +19,7 @@ var lieux = [0,0,0,0];
 
 app.use(express.static(__dirname));
 app.get('/', function(req, res){
-	res.sendFile(path.join(__dirname + dirViews + 'index.html'));
+	res.render('index.ejs', {});
 });
 app.use(function(req, res, next){
     res.redirect('/');
