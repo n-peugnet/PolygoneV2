@@ -3,7 +3,6 @@ var app     = express();
 var server  = require('http').createServer(app);
 var io      = require('socket.io')(server);
 var mysql   = require('mysql');
-var path    = require('path');
 
 var connection = mysql.createConnection({
   host     : 'localhost',
