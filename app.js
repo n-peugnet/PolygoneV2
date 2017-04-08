@@ -31,13 +31,19 @@ io.on('connection', function(client){
 	client.ecoute = 0;
 	
 	var infosClients = infosAllClients();
-	client.emit('init',{nbLieux: lieux.length, infosClients});
+	client.emit('init', {nbLieux: lieux.length, infosClients});
 	
 	client.on('logIn', function(data){
 		lieux[0] ++;	
 		client.loggedIn = true;
 		client.surnom = data.surnom;
 		client.couleur = pickColor();
+		
+		/*var session  = {id: 1, title: 'Hello MySQL'};
+		var query = connection.query('INSERT INTO sessions SET ?', session, function (error, results, fields) {
+		  if (error) throw error;
+		  // Neat! 
+		});*/
 		
 		client.broadcast.emit('newLogIn', {surnom: data.surnom, couleur: client.couleur});
 		client.emit('loggedIn', client.couleur);
@@ -132,10 +138,10 @@ function allClients()
 	return clientsList;
 }
 
-function infosAllClients(surnom)
+function infosAllClients()
 {
 	var infoClients = [];
-	allClients(surnom).forEach(function(client){
+	allClients().forEach(function(client){
 		infoClients.push({surnom: client.surnom, presence: client.presence, couleur: client.couleur });
 	});
 	return infoClients;

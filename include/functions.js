@@ -137,7 +137,6 @@ function updateView(action)
 	switch(action)
 	{
 		case 'init':
-			writeAccueil();
 			break;
 		case 'loggedIn':
 			writeMenu();

@@ -17,6 +17,7 @@
 		<nav id="nav">
 		</nav>
 		<section>
+		<%- include("accueil.ejs", {ecoute: 0})%>
 		</section>
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script type="text/javascript" src="/socket.io/socket.io.js"></script>
@@ -39,7 +40,6 @@
 			}
 			
 			socket.on('init', function(data){
-				updateView('init');
 				for (i=4; i < data.nbLieux; i++) {
 					Lieux.addLieu();
 				}
