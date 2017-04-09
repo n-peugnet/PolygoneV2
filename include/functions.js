@@ -90,10 +90,9 @@ function writeAccueil()
 	$('section').empty().append(html);
 }
 
-function writeLogIn()
+function writeLogIn(etat)
 {
-	var etat = 0
-	var data = {etat: etat};
+	var data = {etat, prenom: CrntUser.prenom, surnom: CrntUser.surnom};
 	var html = new EJS({url: dirViews + 'login.ejs'}).render(data);
 	$('#nav').empty().append(html);
 	if (etat < 2) {
@@ -138,13 +137,19 @@ function updateView(action)
 	{
 		case 'init':
 			break;
+		case 'alreadyUsed':
+			writeLogIn(1);
+			break;
+		case 'wrongPrenom':
+			writeLogIn(2);
+			break;
 		case 'loggedIn':
 			writeMenu();
 			$('.boutonMove').prop('disabled', false);
 			writeMenuCoins();
 			break;
 		case 'loggedOut':
-			writeLogIn();
+			writeLogIn(0);
 			eraseMenuCoins();
 			break;
 		case 'listenTo':

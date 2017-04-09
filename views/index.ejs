@@ -48,6 +48,12 @@
 					Lieux.addUserIn(client.surnom, client.presence, client.couleur);
 				});
 			});
+			socket.on('alreadyUsed', function(){
+				updateView('alreadyUsed');
+			});
+			socket.on('wrongPrenom', function(){
+				updateView('wrongPrenom');
+			});
 			socket.on('loggedIn', function(couleur){
 				Lieux.addUser(CrntUser.surnom, couleur, true);
 				CrntUser.loggedIn = true;
