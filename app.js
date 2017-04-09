@@ -13,7 +13,6 @@ var connection = mysql.createConnection({
 
 var lieux = [0,0,0,0];
 
-
 app.use(express.static(__dirname));
 app.get('/', function(req, res){
 	res.render('index.ejs', {});
@@ -22,8 +21,27 @@ app.use(function(req, res, next){
     res.redirect('/');
 });
 
-
 io.on('connection', function(client){
+	client.logIn = function(prenom, surnom, couleur, action)
+	{
+		lieux[0] ++;	
+		this.loggedIn = true;
+		this.prenom = prenom;
+		this.surnom = surnom;
+		this.couleur = couleur;
+		
+		if (action == "ajouter"){
+			var session  = {prenom, surnom, couleur};
+			var query = connection.query('INSERT INTO sessions SET ?', session, function (error, results, fields) {
+				if (error) throw error;
+				// Neat! 
+			});
+		}
+		
+		this.broadcast.emit('newLogIn', {surnom: surnom, couleur: couleur});
+		this.emit('loggedIn', couleur);
+	}
+	
 	client.loggedIn = false;
 	client.prenom;
 	client.surnom;
@@ -34,19 +52,23 @@ io.on('connection', function(client){
 	client.emit('init', {nbLieux: lieux.length, infosClients});
 	
 	client.on('logIn', function(data){
-		lieux[0] ++;	
-		client.loggedIn = true;
-		client.surnom = data.surnom;
-		client.couleur = pickColor();
-		
-		/*var session  = {id: 1, title: 'Hello MySQL'};
-		var query = connection.query('INSERT INTO sessions SET ?', session, function (error, results, fields) {
-		  if (error) throw error;
-		  // Neat! 
-		});*/
-		
-		client.broadcast.emit('newLogIn', {surnom: data.surnom, couleur: client.couleur});
-		client.emit('loggedIn', client.couleur);
+		if (infosAllClients().map(function(c) {return c.surnom; }).includes(data.surnom)){
+			client.emit('alreadyUsed');
+		} else {
+			var query = connection.query('SELECT couleur, prenom FROM sessions WHERE surnom = ?', data.surnom, function (error, result, fields) {
+				if (error) throw error;
+				if (result.length == 1) {
+					if (result[0].prenom != data.prenom) {
+						client.emit('wrongPrenom');
+					} else {
+						client.logIn(data.prenom, data.surnom, result[0].couleur, "update");
+					}
+				} else {
+					client.logIn(data.prenom, data.surnom, pickColor(), "ajouter");
+				}
+				
+			});
+		}
 	});
 	client.on('logOut', function(){
 		client.broadcast.emit('logOut', {surnom: client.surnom, lieu: client.presence});	
@@ -163,11 +185,7 @@ function otherClients(surnom)
 
 function surnomOtherClients(surnom)
 {
-	var surnomClients = [];
-	otherClients(surnom).forEach(function(client){
-		surnomClients.push(client.surnom);
-	});
-	return surnomClients;
+	return otherClients(surnom).map(function(c) {return c.surnom; });
 }
 
 function infosOtherClients(surnom)

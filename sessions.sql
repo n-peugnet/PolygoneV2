@@ -32,7 +32,6 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   `prenom` varchar(30) NOT NULL,
   `surnom` varchar(30) NOT NULL,
   `couleur` set('#6289ff','#36d64a','#f59c16','#c95093','#06b4bd','#ec2424','#e1d000') NOT NULL DEFAULT '#6289ff',
-  `presence` int(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`session_id`),
   UNIQUE KEY `UNIQUE` (`surnom`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
