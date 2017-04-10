@@ -45,7 +45,6 @@ io.on('connection', function(client){
 	}
 	
 	var infosClients = infosOtherClients(client.surnom);
-	console.log(infosClients);
 	client.emit('init', {nbLieux: lieux.length, infosClients});
 	
 	client.on('logIn', function(data){
@@ -133,15 +132,9 @@ io.on('connection', function(client){
 	});
 });
 
-<<<<<<< HEAD
 server.listen(config.web.port);
 
 function loggedInClients()
-=======
-server.listen(3000);
-
-function allClients()
->>>>>>> 1b066dbcd95858fbe39675452d6e47a3f9001729
 {
 	var clientsList = [];
 	for(id in io.sockets.sockets)
