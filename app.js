@@ -3,13 +3,9 @@ var app     = express();
 var server  = require('http').createServer(app);
 var io      = require('socket.io')(server);
 var mysql   = require('mysql');
+var config  = require('./config');
 
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : '',
-  database : 'polygoneV2'
-});
+var connection = mysql.createConnection(config.mysql);
 
 var lieux = [0,0,0,0];
 
@@ -22,6 +18,12 @@ app.use(function(req, res, next){
 });
 
 io.on('connection', function(client){
+	client.loggedIn = false;
+	client.prenom;
+	client.surnom;
+	client.presence = 0;
+	client.ecoute = 0;
+	
 	client.logIn = function(prenom, surnom, couleur, action)
 	{
 		lieux[0] ++;	
@@ -42,17 +44,12 @@ io.on('connection', function(client){
 		this.emit('loggedIn', couleur);
 	}
 	
-	client.loggedIn = false;
-	client.prenom;
-	client.surnom;
-	client.presence = 0;
-	client.ecoute = 0;
-	
-	var infosClients = infosAllClients();
+	var infosClients = infosOtherClients(client.surnom);
+	console.log(infosClients);
 	client.emit('init', {nbLieux: lieux.length, infosClients});
 	
 	client.on('logIn', function(data){
-		if (infosAllClients().map(function(c) {return c.surnom; }).includes(data.surnom)){
+		if (loggedInClients().map(function(c) {return c.surnom; }).includes(data.surnom)){
 			client.emit('alreadyUsed');
 		} else {
 			var query = connection.query('SELECT couleur, prenom FROM sessions WHERE surnom = ?', data.surnom, function (error, result, fields) {
@@ -66,19 +63,20 @@ io.on('connection', function(client){
 				} else {
 					client.logIn(data.prenom, data.surnom, pickColor(), "ajouter");
 				}
-				
 			});
 		}
 	});
 	client.on('logOut', function(){
-		client.broadcast.emit('logOut', {surnom: client.surnom, lieu: client.presence});	
-		lieux[client.presence] --;
-		if(client.ecoute != client.presence){
-			lieux[client.ecoute] --;
-		}
 		client.loggedIn = false;
-		client.surnom = '';
+		client.broadcast.emit('logOut', {surnom: client.surnom, lieu: client.presence});
 		client.emit('loggedOut');
+		setTimeout(function(){
+			lieux[client.presence] --;
+			if(client.ecoute != client.presence){
+				lieux[client.ecoute] --;
+			}
+			client.surnom = '';
+		}, 17000);
 		
 		datedLog('nouvelle connexion au serveur');
 	});
@@ -135,9 +133,9 @@ io.on('connection', function(client){
 	});
 });
 
-server.listen(3000);
+server.listen(config.web.port);
 
-function allClients()
+function loggedInClients()
 {
 	var clientsList = [];
 	for(id in io.sockets.sockets)
@@ -149,15 +147,6 @@ function allClients()
 		}
 	}
 	return clientsList;
-}
-
-function infosAllClients()
-{
-	var infoClients = [];
-	allClients().forEach(function(client){
-		infoClients.push({surnom: client.surnom, presence: client.presence, couleur: client.couleur });
-	});
-	return infoClients;
 }
 
 function otherClients(surnom)
@@ -181,11 +170,7 @@ function surnomOtherClients(surnom)
 
 function infosOtherClients(surnom)
 {
-	var infoClients = [];
-	otherClients(surnom).forEach(function(client){
-		infoClients.push({surnom: client.surnom, presence: client.presence });
-	});
-	return infoClients;
+	return otherClients(surnom).map(function(c) {return {surnom: c.surnom, presence: c.presence, couleur: c.couleur}; });
 }
 
 function pickColor()
