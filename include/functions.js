@@ -11,7 +11,7 @@ function messageClavier(message, event) {
         (key > 64 && key < 91)   || // letter keys
         (key > 95 && key < 112)  || // numpad keys
         (key > 185 && key < 193) || // ;=,-./` (in order)
-        (key > 218 && key < 224);   // [\]' (in order)
+        (key > 218 && key < 224);   // [\]'! (in order)
 
 	if (key == 8 || key == 46){
 		if (longueur == 1){
@@ -29,6 +29,24 @@ function messageClavier(message, event) {
 	}
 }
 
+$(function(){
+	$('#surnom').keypress(function(e){
+		var key = e.keyCode;
+		var forbidden = [32, 34]
+        if (forbidden.includes(key))
+			e.preventDefault();
+	}).on('input', function() {
+		if (extSurnoms(Lieux.allUsers()).includes($(this).val())){
+			$(this).css('outline-color', 'red');
+		} else {
+			$(this).css('outline-color', '');
+		}
+	}).on('paste', function(e) {
+		var pasteData = e.originalEvent.clipboardData.getData('text');
+		console.log(pasteData);
+	});
+});
+
 function escapeHtml (string) {
 	var entityMap = {
 	  '&': '&amp;',
@@ -44,24 +62,18 @@ function escapeHtml (string) {
 	});
 }
 
-function activeLinks(texte)
+function activateLinks(texte)
 {
-	var tabMots = texte.split(" ");
-	var returnText = "";
-	tabMots.forEach(function(mot){
-		if (mot.substring(0, 4) == 'http'){
-			console.log(mot);
+	return texte.split(" ").map(function(mot){
+		if (mot.substring(0, 4) == 'http')
 			mot = '<a href="'+mot+'" target="_blank">'+mot+'</a>';
-			console.log(mot);
-		}
-		returnText += (" " + mot);
-	});
-	return returnText;
+		return mot;
+	}).join(" ");
 }
 
 function writeMessage(surnom, message, couleur, id)
 {
-	var data = {message: activeLinks(message), couleur:couleur, id: surnom+id};
+	var data = {message: activateLinks(message), couleur:couleur, id: surnom+id};
 	var html = new EJS({url: dirViews + 'message.ejs'}).render(data);
 	$('#dires_'+surnom).append(html);
 }
@@ -175,4 +187,9 @@ function listenTo(lieu)
 function addCoin()
 {
 	socket.emit('addCoin');
+}
+
+function extSurnoms(listeUsers)
+{
+	return listeUsers.map(function(u) {return u.surnom; });
 }

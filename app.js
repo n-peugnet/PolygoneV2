@@ -44,6 +44,8 @@ io.on('connection', function(client){
 		
 		this.broadcast.emit('newLogIn', {surnom: surnom, couleur: couleur});
 		this.emit('loggedIn', couleur);
+		
+		datedLog('log in - ' + surnom);
 	}
 
 	client.otherClients = function()
@@ -63,6 +65,7 @@ io.on('connection', function(client){
 //---------- initialisation -------------
 	var infosClients = extInfos(client.otherClients());
 	client.emit('init', {nbLieux: lieux.length, infosClients});
+	datedLog('new connection');
 	
 //-------------- events -----------------
 	client.on('logIn', function(data){
@@ -95,7 +98,7 @@ io.on('connection', function(client){
 			client.surnom = '';
 		}, 17000);
 		
-		datedLog('nouvelle connexion au serveur');
+		datedLog(' log out - ' + client.surnom);
 	});
 	client.on('ecriture', function(){
 		client.broadcast.emit('ecriture', {surnom: client.surnom, lieu: client.presence});

@@ -6,6 +6,15 @@ var Lieux = {
 		return this.lieux.slice(1);
 	},
 	
+	allUsers: function()
+	{
+		var listeUsers = [];
+		this.lieux.forEach(function(lieu) {
+			listeUsers = listeUsers.concat(lieu);
+		});
+		return listeUsers;
+	},
+	
 	addLieu: function()
 	{
 		i = this.lieux.push([])-1;
