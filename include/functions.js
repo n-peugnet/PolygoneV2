@@ -44,14 +44,13 @@ $(function(){
 	}).on('paste', function(e) {
 		e.preventDefault();
 		var pasteData = e.originalEvent.clipboardData.getData('text');
-		pasteData = pasteData.replace(/[ "]/g, "");
 		$(this).val( function( index, val ) {
-			return val + pasteData;
+			return val + escapeSurnom(pasteData);
 		});
 	});
 });
 
-function escapeHtml (string) {
+function escapeHtml(string) {
 	var entityMap = {
 	  '&': '&amp;',
 	  '<': '&lt;',
@@ -64,6 +63,10 @@ function escapeHtml (string) {
 	return String(string).replace(/[&<>"'`=]/g, function (s) {
 		return entityMap[s];
 	});
+}
+
+function escapeSurnom(string) {
+	return String(string).replace(/[ "]/g, "");
 }
 
 function activateLinks(texte)
@@ -89,9 +92,11 @@ function eraseMessage(surnom, id)
 
 function connexion(loginForm)
 {
-	CrntUser.prenom = $("#prenom").val();
-	CrntUser.surnom = $("#surnom").val();
-	socket.emit('logIn', {prenom: CrntUser.prenom, surnom: CrntUser.surnom});
+	var prenom = $("#prenom").val();
+	var surnom = escapeSurnom($("#surnom").val());
+	CrntUser.prenom = prenom;
+	CrntUser.surnom = surnom;
+	socket.emit('logIn', {prenom, surnom});
 }
 
 function deconnexion()
