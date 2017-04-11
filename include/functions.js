@@ -32,7 +32,7 @@ function messageClavier(message, event) {
 $(function(){
 	$('#surnom').keypress(function(e){
 		var key = e.keyCode;
-		var forbidden = [32, 34]
+		var forbidden = [32, 34];
         if (forbidden.includes(key))
 			e.preventDefault();
 	}).on('input', function() {
@@ -42,8 +42,12 @@ $(function(){
 			$(this).css('outline-color', '');
 		}
 	}).on('paste', function(e) {
+		e.preventDefault();
 		var pasteData = e.originalEvent.clipboardData.getData('text');
-		console.log(pasteData);
+		pasteData = pasteData.replace(/[ "]/g, "");
+		$(this).val( function( index, val ) {
+			return val + pasteData;
+		});
 	});
 });
 
