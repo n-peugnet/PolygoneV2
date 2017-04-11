@@ -1,9 +1,10 @@
-var express = require('express');
-var app     = express();
-var server  = require('http').createServer(app);
-var io      = require('socket.io')(server);
-var mysql   = require('mysql');
-var config  = require('./config');
+var express  = require('express');
+var app      = express();
+var server   = require('http').createServer(app);
+var io       = require('socket.io')(server);
+var mysql    = require('mysql');
+var schedule = require('node-schedule');
+var config   = require('./config');
 
 var connection = mysql.createConnection(config.mysql);
 
@@ -30,16 +31,22 @@ io.on('connection', function(client){
 	{
 		lieux[0] ++;	
 		this.loggedIn = true;
-		this.prenom = prenom;
-		this.surnom = surnom;
-		this.couleur = couleur;
+		this.prenom   = prenom;
+		this.surnom   = surnom;
+		this.couleur  = couleur;
 		
-		if (action == "ajouter"){
-			var session  = {prenom, surnom, couleur};
-			var query = connection.query('INSERT INTO sessions SET ?', session, function (error, results, fields) {
-				if (error) throw error;
-				// Neat! 
-			});
+		switch(action) {
+			case "ajouter":
+				var session  = {prenom, surnom, couleur};
+				var query = connection.query('INSERT INTO sessions SET ?', session, function (error, results, fields) {
+					if (error) throw error;
+				});
+				break;
+			case "update":
+				var query = connection.query('UPDATE sessions SET date_activite = NOW() WHERE surnom = ?', surnom, function (error, results, fields) {
+					if (error) throw error;
+				});
+				break;
 		}
 		
 		this.broadcast.emit('newLogIn', {surnom: surnom, couleur: couleur});
@@ -154,6 +161,13 @@ io.on('connection', function(client){
 });
 
 server.listen(config.web.port);
+
+var j = schedule.scheduleJob('0 0 2 * *', function(){
+	var query = connection.query('DELETE FROM sessions WHERE DATE_ADD(date_activite, INTERVAL 20 DAY) <= NOW()', function (error, results, fields) {
+		if (error) throw error;
+		console.log('deleted ' + results.affectedRows + ' rows');
+	});
+});
 
 function loggedInClients()
 {

@@ -5,7 +5,8 @@
 		"express": "~4.14.1",
 		"ejs": "~2.5.6",
 		"socket.io": "~1.7.3",
-		"mysql": "~2.13.0"
+		"mysql": "~2.13.0",
+		"node-schedule": "~1.2.1"
 	},
 	"author": "Nicope <n.peugnet@free.fr>",
 	"description": "Une application de chat en temps réel visant à se rapprocher d'une conversation de vive voix"	
