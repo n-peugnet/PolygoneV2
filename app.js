@@ -18,12 +18,14 @@ app.use(function(req, res, next){
 });
 
 io.on('connection', function(client){
+//------------ properties ---------------
 	client.loggedIn = false;
 	client.prenom;
 	client.surnom;
 	client.presence = 0;
 	client.ecoute = 0;
 	
+//------------- functions ---------------
 	client.logIn = function(prenom, surnom, couleur, action)
 	{
 		lieux[0] ++;	
@@ -43,12 +45,28 @@ io.on('connection', function(client){
 		this.broadcast.emit('newLogIn', {surnom: surnom, couleur: couleur});
 		this.emit('loggedIn', couleur);
 	}
+
+	client.otherClients = function()
+	{
+		var clientsList = [];
+		for(id in io.sockets.sockets)
+		{
+			c = io.sockets.connected[id];
+			if (c.surnom != this.surnom)
+			{
+				clientsList.push(c);
+			}
+		}
+		return clientsList;
+	}
 	
-	var infosClients = infosOtherClients(client.surnom);
+//---------- initialisation -------------
+	var infosClients = extInfos(client.otherClients());
 	client.emit('init', {nbLieux: lieux.length, infosClients});
 	
+//-------------- events -----------------
 	client.on('logIn', function(data){
-		if (loggedInClients().map(function(c) {return c.surnom; }).includes(data.surnom)){
+		if (extSurnoms(loggedInClients()).includes(data.surnom)){
 			client.emit('alreadyUsed');
 		} else {
 			var query = connection.query('SELECT couleur, prenom FROM sessions WHERE surnom = ?', data.surnom, function (error, result, fields) {
@@ -148,28 +166,14 @@ function loggedInClients()
 	return clientsList;
 }
 
-function otherClients(surnom)
+function extSurnoms(listeClients)
 {
-	var clientsList = [];
-	for(id in io.sockets.sockets)
-	{
-		client = io.sockets.connected[id];
-		if (client.surnom != surnom)
-		{
-			clientsList.push(client);
-		}
-	}
-	return clientsList;
+	return listeClients.map(function(c) {return c.surnom; });
 }
 
-function surnomOtherClients(surnom)
+function extInfos(listeClients)
 {
-	return otherClients(surnom).map(function(c) {return c.surnom; });
-}
-
-function infosOtherClients(surnom)
-{
-	return otherClients(surnom).map(function(c) {return {surnom: c.surnom, presence: c.presence, couleur: c.couleur}; });
+	return listeClients.map(function(c) {return {surnom: c.surnom, presence: c.presence, couleur: c.couleur}; });
 }
 
 function pickColor()
