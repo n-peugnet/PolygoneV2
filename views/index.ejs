@@ -15,6 +15,7 @@
 		<canvas data-processing-sources="/views/Polygone_1.pde"></canvas>
 		</div>
 		<nav id="nav">
+		<%- include("login.ejs", {etat: 0}) %>
 		</nav>
 		<section>
 		<%- include("accueil.ejs", {ecoute: 0})%>
@@ -61,6 +62,7 @@
 				updateView('loggedIn');
 			});
 			socket.on('setMemory', function(memory){
+				writeMemoire();
 				memory.forEach(function(m){
 					writeMemory(m.pers_cite, m.citation);
 				});
@@ -107,8 +109,6 @@
 			socket.on('rmvCoin', function(){
 				Lieux.delLastLieu();
 			});
-			
-			writeLogIn();
 		</script>
 	</body>
 </html>

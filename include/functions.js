@@ -30,23 +30,13 @@ function messageClavier(message, event) {
 }
 
 $(function(){
-	$('#surnom').keypress(function(e){
-		var key = e.keyCode;
-		var forbidden = [32, 34];
-        if (forbidden.includes(key))
-			e.preventDefault();
-	}).on('input', function() {
+	$('#surnom').on('input', function() {
+		$(this).val(escapeSurnom($(this).val()));
 		if (extSurnoms(Lieux.allUsers()).includes($(this).val())){
 			$(this).css('outline-color', 'red');
 		} else {
 			$(this).css('outline-color', '');
 		}
-	}).on('paste', function(e) {
-		e.preventDefault();
-		var pasteData = e.originalEvent.clipboardData.getData('text');
-		$(this).val( function( index, val ) {
-			return val + escapeSurnom(pasteData);
-		});
 	});
 });
 
@@ -131,7 +121,13 @@ function writeMenu()
 {
 	var data = {surnom: CrntUser.surnom, presence: CrntUser.presence};
 	var html = new EJS({url: dirViews + 'menu.ejs'}).render(data);
-	$('#nav').empty().append(html);
+	$('#menu').replaceWith(html);
+}
+
+function writeMemoire()
+{
+	var html = new EJS({url: dirViews + 'memoire.ejs'}).render();
+	$('#nav').append(html);
 }
 
 function writeCoin(num, taille)
@@ -212,7 +208,7 @@ function writeMemory(pers_cite, citation)
 {
 	var data = {pers_cite, citation: activateLinks(citation)};
 	var html = new EJS({url: dirViews + 'memory.ejs'}).render(data);
-	$('#memory').prepend(html);
+	$('#memoire').prepend(html);
 }
 
 function citation(pers_cite, citation)

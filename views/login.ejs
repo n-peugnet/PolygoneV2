@@ -1,20 +1,22 @@
-<% if( etat == 1){ %>
-<p class="banInfo">Quelqu'un est déjà connecté avec ce surnom, il faut en trouver un autre</p>
-<% } else if( etat == 2){ %>
-<p class="banInfo">Pour réutiliser ce surnom il faut garder le même prénom. Sinon il faut en trouver un autre surnom.</p>
-<% } %>
-<h2>Bienvenue</h2>
-<form action="javascript:;" onsubmit="connexion(this)" id="formLogin">
-	<label for="prenom">Prénom</label><br>
-	<input type="text" name="prenom" id="prenom" maxlength="20" value="<%= etat == 1 ? prenom : ""%>" required autofocus /><br>
-	<label for="surnom">Surnom</label><br>
-	<input type="text" name="surnom" id="surnom" maxlength="20" value="<%= etat == 2 ? surnom : ""%>" required />
-</form>
-<button type="submit" form="formLogin" value="Submit">Entrer</button>
-<br>
-<p class="description">
-	Le Polygone est un lieu de discussion libre sur le net, s'approchant d'un lieu réel dans lequel les paroles s'envolent.<br><br>
-	Aucune discussion n'est réellement privée et si tout le monde parle en même temps il est difficile de tout suivre.<br>
-	On peut avoir mal entendu, il faudra alors demander de répèter, si on ne nous écoute pas il faut attirer l'attention.<br><br>
-	Enfin il peut s'y dire des chose pendant que vous n'y êtes pas et que vous ne saurez jamais.
-</p>
+<div id="menu">
+	<% if( etat == 1){ %>
+	<p class="banInfo">Quelqu'un est déjà connecté avec ce surnom, il faut en trouver un autre</p>
+	<% } else if( etat == 2){ %>
+	<p class="banInfo">Pour réutiliser ce surnom il faut garder le même prénom. Sinon il faut en trouver un autre surnom.</p>
+	<% } %>
+	<h2>Bienvenue</h2>
+	<form action="javascript:;" onsubmit="connexion(this)" id="formLogin">
+		<label for="prenom">Prénom</label><br>
+		<input type="text" name="prenom" id="prenom" maxlength="20" value="<%= etat == 1 ? prenom : ""%>" required autofocus /><br>
+		<label for="surnom">Surnom</label><br>
+		<input type="text" name="surnom" id="surnom" maxlength="20" value="<%= etat == 2 ? surnom : ""%>" required />
+	</form>
+	<button type="submit" form="formLogin" value="Submit">Entrer</button>
+	<br>
+	<p class="description">
+		Le Polygone est un lieu de discussion libre sur le net, s'approchant d'un lieu réel dans lequel les paroles s'envolent.<br><br>
+		Aucune discussion n'est réellement privée et si tout le monde parle en même temps il est difficile de tout suivre.<br>
+		On peut avoir mal entendu, il faudra alors demander de répèter, si on ne nous écoute pas il faut attirer l'attention.<br><br>
+		Enfin il peut s'y dire des chose pendant que vous n'y êtes pas et que vous ne saurez jamais.
+	</p>
+</div>
