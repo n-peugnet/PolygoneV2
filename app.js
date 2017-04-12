@@ -48,9 +48,12 @@ io.on('connection', function(client){
 				});
 				break;
 		}
-		
 		this.broadcast.emit('newLogIn', {surnom: surnom, couleur: couleur});
 		this.emit('loggedIn', couleur);
+		var self = this;
+		this.getMemory(function(memory){
+			self.emit('setMemory', memory);
+		});
 		
 		datedLog('log in - ' + surnom);
 	}
@@ -67,6 +70,14 @@ io.on('connection', function(client){
 			}
 		}
 		return clientsList;
+	}
+	
+	client.getMemory = function(callback)
+	{
+		var query = connection.query('SELECT pers_cite, citation FROM memoire WHERE surnom = ?', this.surnom, function (error, result, fields) {
+			if (error) throw error;
+			callback(result);
+		});
 	}
 	
 //---------- initialisation -------------

@@ -60,6 +60,11 @@
 				CrntUser.couleur = couleur;
 				updateView('loggedIn');
 			});
+			socket.on('setMemory', function(memory){
+				memory.forEach(function(m){
+					writeMemory(m.pers_cite, m.citation);
+				});
+			});
 			socket.on('newLogIn', function(data){
 				Lieux.addUser(data.surnom, data.couleur);
 			});
