@@ -1,7 +1,11 @@
 <div class="message<%= id == "ecrit" ? " ecrit" : "" %>" id="<%= surnom + id %>">
 	<div class="bulleBackground pointe" style="border-bottom: 7px solid <%= couleur %>;"></div>
 	<div class="bulleBackground bulle" style="background-color:<%= couleur %>">
+		<% if (type == "citation") { %>
+		<div class="bulle citation">
+		<% } %>
 		<p><%= message %></p>
+		<%= type == "citation" ? "</div>" : "" %>
 	</div>
 	<button type="button" title="Mémoriser" class="plus" onclick="addMemory('<%= surnom %>', '<%= message %>')" >+</button>
 </div>

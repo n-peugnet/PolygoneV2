@@ -32,14 +32,14 @@ var User = {
 		eraseMessage(this.surnom, 'ecrit');
 	},
 	
-	addMessage: function (texte)
+	addMessage: function (texte, type)
 	{
 		this.notWriting();
 		var id = this.messageIdGen();
 		newMessage = Object.create(Message);
-		newMessage.init(id, texte);
+		newMessage.init(id, texte, type);
 		this.messages.push(newMessage);
-		writeMessage(this.surnom, texte, this.couleur, id);
+		writeMessage(this.surnom, texte, this.couleur, id, type);
 		setTimeout($.proxy(function(){
 			this.delMessage(id);
 		}, this), (texte.length + 22) * 1000);
@@ -134,7 +134,7 @@ var User = {
 	{
 		var self = this;
 		this.messages.forEach(function(m){
-			writeMessage(self.surnom, m.texte, self.couleur, m.id);
+			writeMessage(self.surnom, m.texte, self.couleur, m.id, m.type);
 		});
 		if (this.ecrit){
 			this.writeWriting();

@@ -126,9 +126,9 @@ io.on('connection', function(client){
 	client.on('arretEcriture', function(){
 		client.broadcast.emit('arretEcriture', {surnom: client.surnom, lieu: client.presence});
 	});	
-	client.on('message', function(texte){
-		client.broadcast.emit('message',{surnom: client.surnom, lieu: client.presence, message: texte });
-		client.emit('message',{surnom: client.surnom, lieu: client.presence, message: texte });
+	client.on('message', function(data){
+		client.broadcast.emit('message',{surnom: client.surnom, lieu: client.presence, message: data.texte, type: data.type });
+		client.emit('message',{surnom: client.surnom, lieu: client.presence, message: data.texte, type: data.type});
 	});
 	client.on('move', function(destination){
 		client.broadcast.emit('move', {surnom: client.surnom, presence: client.presence, destination });

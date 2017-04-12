@@ -19,7 +19,7 @@ function messageClavier(message, event) {
 		}
 	} else if(key == 13) {
 		if (longueur > 0) {
-			socket.emit('message', escapeHtml(message));
+			socket.emit('message', {texte: escapeHtml(message), type: "texte"});
 			$("#message").val('');
 		}
 	} else if(isPrintable) {
@@ -66,7 +66,7 @@ function escapeHtml(string) {
 }
 
 function escapeSurnom(string) {
-	return String(string).replace(/[ "]/g, "");
+	return String(string).replace(/[ "(]/g, "");
 }
 
 function activateLinks(texte)
@@ -78,9 +78,9 @@ function activateLinks(texte)
 	}).join(" ");
 }
 
-function writeMessage(surnom, message, couleur, id)
+function writeMessage(surnom, message, couleur, id, type)
 {
-	var data = {surnom, message: activateLinks(message), couleur, id: id};
+	var data = {surnom, message: activateLinks(message), couleur, id, type};
 	var html = new EJS({url: dirViews + 'message.ejs'}).render(data);
 	$(html).prependTo('#dires_'+surnom).css('margin-top', '-'+$('#'+surnom+id).height()+'px').animate({ marginTop: '0px'});
 }
@@ -213,6 +213,11 @@ function writeMemory(pers_cite, citation)
 	var data = {pers_cite, citation: activateLinks(citation)};
 	var html = new EJS({url: dirViews + 'memory.ejs'}).render(data);
 	$('#memory').prepend(html);
+}
+
+function citation(pers_cite, citation)
+{
+	socket.emit('message', {texte: escapeHtml(pers_cite + " : " + citation), type: "citation"});
 }
 
 function extSurnoms(listeUsers)

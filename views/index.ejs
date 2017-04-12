@@ -82,7 +82,7 @@
 				Lieux.selectUser(data.surnom, data.lieu).notWriting();
 			});
 			socket.on('message', function(data){
-				Lieux.selectUser(data.surnom, data.lieu).addMessage(data.message);
+				Lieux.selectUser(data.surnom, data.lieu).addMessage(data.message, data.type);
 			});
 			socket.on('move', function(data){
 				Lieux.moveUser(data.surnom, data.presence, data.destination);
