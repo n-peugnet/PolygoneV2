@@ -105,7 +105,7 @@ io.on('connection', function(client){
 			client.surnom = '';
 		}, 17000);
 		
-		datedLog(' log out - ' + client.surnom);
+		datedLog('log out - ' + client.surnom);
 	});
 	client.on('ecriture', function(){
 		client.broadcast.emit('ecriture', {surnom: client.surnom, lieu: client.presence});
@@ -148,6 +148,12 @@ io.on('connection', function(client){
 			}
 		},60000);
 	});
+	client.on('addMemory', function(data){
+		var memory = {surnom: client.surnom, pers_cite: data.surnom, citation: data.message};
+		var query = connection.query('INSERT INTO memoire SET ?', memory, function (error, results, fields) {
+			if (error) throw error;
+		});
+	});
 	client.on('disconnect', function(){
 		if (client.loggedIn)
 		{	
@@ -157,6 +163,8 @@ io.on('connection', function(client){
 			}
 			client.broadcast.emit('logOut', {surnom: client.surnom, lieu: client.presence});
 		}
+		
+		datedLog('disconnection - ' + client.surnom);
 	});
 });
 

@@ -80,14 +80,14 @@ function activateLinks(texte)
 
 function writeMessage(surnom, message, couleur, id)
 {
-	var data = {message: activateLinks(message), couleur:couleur, id: surnom+id};
+	var data = {surnom, message: activateLinks(message), couleur:couleur, id: surnom+id};
 	var html = new EJS({url: dirViews + 'message.ejs'}).render(data);
-	$('#dires_'+surnom).append(html);
+	$(html).prependTo('#dires_'+surnom).css('margin-top', '-'+$('#'+surnom+id).height()+'px').animate({ marginTop: '0px'});
 }
 
 function eraseMessage(surnom, id)
 {
-	$('#'+surnom+id).remove();
+	$('#'+surnom+id).animate({ opacity: 0}, 500).animate({ height: '0px'}, function() { $(this).remove(); });
 }
 
 function connexion(loginForm)
@@ -196,6 +196,19 @@ function listenTo(lieu)
 function addCoin()
 {
 	socket.emit('addCoin');
+}
+
+function addMemory(surnom, message)
+{
+	socket.emit('addMemory', {surnom, message});
+	writeMemory(surnom, message);
+}
+
+function writeMemory(pers_cite, citation)
+{
+	var data = {pers_cite, citation: activateLinks(citation)};
+	var html = new EJS({url: dirViews + 'memory.ejs'}).render(data);
+	$('#memory').prepend(html);
 }
 
 function extSurnoms(listeUsers)
