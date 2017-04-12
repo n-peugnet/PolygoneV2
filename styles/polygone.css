@@ -254,6 +254,15 @@ button:hover:enabled {
 	display: inline-block;
 }
 
+.message{
+	position: relative;
+	z-index: 2;
+}
+
+.ecrit{
+	z-index: 1;
+}
+
 .inline {
 	display: inline-block;
 }

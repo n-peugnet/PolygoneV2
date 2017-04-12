@@ -80,7 +80,7 @@ function activateLinks(texte)
 
 function writeMessage(surnom, message, couleur, id)
 {
-	var data = {surnom, message: activateLinks(message), couleur:couleur, id: surnom+id};
+	var data = {surnom, message: activateLinks(message), couleur, id: id};
 	var html = new EJS({url: dirViews + 'message.ejs'}).render(data);
 	$(html).prependTo('#dires_'+surnom).css('margin-top', '-'+$('#'+surnom+id).height()+'px').animate({ marginTop: '0px'});
 }
@@ -88,7 +88,7 @@ function writeMessage(surnom, message, couleur, id)
 function eraseMessage(surnom, id)
 {
 	if (id == 'ecrit'){
-		$('#'+surnom+id).css('opacity', 0).animate({ height: '0px'}, function() { $(this).remove(); });
+		$('#'+surnom+id).animate({ opacity: 0, marginTop: '-'+$('#'+surnom+id).height()+'px'}, function() { $(this).remove(); });
 	} else {
 		$('#'+surnom+id).animate({ opacity: 0}, 500).animate({ height: '0px'}, function() { $(this).remove(); });
 	}
