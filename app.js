@@ -98,11 +98,13 @@ io.on('connection', function(client){
 		client.broadcast.emit('logOut', {surnom: client.surnom, lieu: client.presence});
 		client.emit('loggedOut');
 		setTimeout(function(){
-			lieux[client.presence] --;
-			if(client.ecoute != client.presence){
-				lieux[client.ecoute] --;
+			if (!client.loggedIn){
+				lieux[client.presence] --;
+				if(client.ecoute != client.presence){
+					lieux[client.ecoute] --;
+				}
+				client.surnom = '';
 			}
-			client.surnom = '';
 		}, 17000);
 		
 		datedLog('log out - ' + client.surnom);
