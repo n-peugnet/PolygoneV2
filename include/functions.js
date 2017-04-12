@@ -87,7 +87,11 @@ function writeMessage(surnom, message, couleur, id)
 
 function eraseMessage(surnom, id)
 {
-	$('#'+surnom+id).animate({ opacity: 0}, 500).animate({ height: '0px'}, function() { $(this).remove(); });
+	if (id == 'ecrit'){
+		$('#'+surnom+id).css('opacity', 0).animate({ height: '0px'}, function() { $(this).remove(); });
+	} else {
+		$('#'+surnom+id).animate({ opacity: 0}, 500).animate({ height: '0px'}, function() { $(this).remove(); });
+	}
 }
 
 function connexion(loginForm)
