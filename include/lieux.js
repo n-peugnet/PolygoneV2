@@ -15,6 +15,20 @@ var Lieux = {
 		return listeUsers;
 	},
 	
+	usersListeningTo(lieu)
+	{
+		var listeUsers = [];
+		this.lieux.forEach(function(l, numLieu) {
+			if (numLieu != lieu){
+				l.forEach(function(u){
+					if (u.ecoute == lieu)
+						listeUsers.push(this)
+				});
+			}
+		});
+		return listeUsers;
+	},
+	
 	addLieu: function()
 	{
 		i = this.lieux.push([])-1;
@@ -83,9 +97,9 @@ var Lieux = {
 	moveUser: function(surnom, lDepart, lArrivee)
 	{
 		var iDepart = this.indexOfUser(surnom, lDepart);
-		this.lieux[lDepart][iDepart].ecoute = lArrivee;
-		var user = this.lieux[lDepart][iDepart];
-		var iArrivee = this.lieux[lArrivee].push(this.lieux[lDepart].splice(iDepart,1)[0])-1;
+		var user = this.lieux[lDepart].splice(iDepart,1)[0];
+		user.ecoute = lArrivee;
+		var iArrivee = this.lieux[lArrivee].push(user)-1;
 		if (surnom != CrntUser.surnom)
 		{
 			user.eraseIn(lDepart);

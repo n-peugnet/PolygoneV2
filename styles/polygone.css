@@ -299,3 +299,22 @@ nav {
 	width: 220px;
 	overflow-y: auto;
 }
+
+.details, h2, .details li {
+    display: inline-block;
+}
+
+.num {
+    font-weight: bold;
+}
+
+.details {
+    margin-left: 10px;
+}
+
+.details li {
+    margin-left: 5px;
+    border: solid 1px rgba(0, 0, 0, 0.15);
+    padding: 2px 5px;
+    border-radius: 2px;
+}

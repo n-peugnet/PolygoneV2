@@ -12,7 +12,7 @@ var lieux = [0,0,0,0];
 
 app.use(express.static(__dirname));
 app.get('/', function(req, res){
-	res.render('index.ejs', {});
+	res.render('index.ejs', {nbEcoutes: clientsListeningTo(0).length});
 });
 app.use(function(req, res, next){
     res.redirect('/');
@@ -202,6 +202,20 @@ function loggedInClients()
 		}
 	}
 	return clientsList;
+}
+
+function clientsListeningTo(lieu)
+{
+	var clientsList = [];
+	for(id in io.sockets.sockets)
+	{
+		client = io.sockets.connected[id];
+		if (client.ecoute == lieu)
+		{
+			clientsList.push(client);
+		}
+	}
+	return clientsList;	
 }
 
 function extSurnoms(listeClients)

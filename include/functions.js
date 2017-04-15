@@ -68,11 +68,14 @@ function activateLinks(texte)
 	}).join(" ");
 }
 
-function writeMessage(surnom, message, couleur, id, type)
+function writeMessage(surnom, message, couleur, id, type, animation)
 {
 	var data = {surnom, message: activateLinks(message), couleur, id, type};
 	var html = new EJS({url: dirViews + 'message.ejs'}).render(data);
-	$(html).prependTo('#dires_'+surnom).css('margin-top', '-'+$('#'+surnom+id).height()+'px').animate({ marginTop: '0px'});
+	if (animation)
+		$(html).prependTo('#dires_'+surnom).css('margin-top', '-'+$('#'+surnom+id).height()+'px').animate({ marginTop: '0px'});
+	else
+		$(html).prependTo('#dires_'+surnom);
 }
 
 function eraseMessage(surnom, id)
@@ -100,7 +103,7 @@ function deconnexion()
 
 function writeAccueil()
 {
-	var data = {ecoute: CrntUser.ecoute};
+	var data = {ecoute: CrntUser.ecoute, nbEcoutes: Lieux.usersListeningTo(CrntUser.ecoute).length};
 	var html = new EJS({url: dirViews + 'accueil.ejs'}).render(data);
 	$('section').empty().append(html);
 }
@@ -130,6 +133,13 @@ function writeMemoire()
 	$('#nav').append(html);
 }
 
+function writeMemory(pers_cite, citation)
+{
+	var data = {pers_cite, citation: activateLinks(citation)};
+	var html = new EJS({url: dirViews + 'memory.ejs'}).render(data);
+	$('#memoire').prepend(html);
+}
+
 function writeCoin(num, taille)
 {
 	var data = {num, taille, presence: CrntUser.presence, loggedIn: CrntUser.loggedIn};
@@ -150,6 +160,11 @@ function eraseMenuCoins()
 function eraseCoin(num)
 {
 	$('#coin'+num).remove();
+}
+
+function writeEcoutes(lieu)
+{
+	
 }
 
 function updateView(action)
@@ -202,13 +217,6 @@ function addMemory(surnom, message)
 {
 	socket.emit('addMemory', {surnom, message});
 	writeMemory(surnom, message);
-}
-
-function writeMemory(pers_cite, citation)
-{
-	var data = {pers_cite, citation: activateLinks(citation)};
-	var html = new EJS({url: dirViews + 'memory.ejs'}).render(data);
-	$('#memoire').prepend(html);
 }
 
 function citation(pers_cite, citation)
