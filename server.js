@@ -12,7 +12,7 @@ var lieux = [0,0,0,0];
 
 app.use(express.static(__dirname));
 app.get('/', function(req, res){
-	res.render('index.ejs', {nbEcoutes: clientsListeningTo(0).length});
+	res.render('index.ejs');
 });
 app.use(function(req, res, next){
     res.redirect('/');
@@ -82,7 +82,7 @@ io.on('connection', function(client){
 	
 //---------- initialisation -------------
 	var infosClients = extInfos(client.otherClients());
-	client.emit('init', {nbLieux: lieux.length, infosClients});
+	client.emit('init', {nbLieux: lieux.length, infosClients, nbAnonymes: getNbAnonymes()});
 	datedLog('new connection');
 	
 //-------------- events -----------------
@@ -114,7 +114,7 @@ io.on('connection', function(client){
 				if(client.ecoute != client.presence){
 					lieux[client.ecoute] --;
 				}
-				client.surnom = '';
+				client.surnom = null;
 			}
 		}, 17000);
 		
@@ -204,18 +204,16 @@ function loggedInClients()
 	return clientsList;
 }
 
-function clientsListeningTo(lieu)
+function getNbAnonymes()
 {
-	var clientsList = [];
+	var nb = 0;
 	for(id in io.sockets.sockets)
 	{
 		client = io.sockets.connected[id];
-		if (client.ecoute == lieu)
-		{
-			clientsList.push(client);
-		}
+		if (client.surnom == null)
+			nb++;
 	}
-	return clientsList;	
+	return nb;	
 }
 
 function extSurnoms(listeClients)

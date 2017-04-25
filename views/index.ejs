@@ -18,7 +18,7 @@
 		<%- include("login.ejs", {etat: 0}) %>
 		</nav>
 		<section>
-		<%- include("accueil.ejs", {ecoute: 0, nbEcoutes})%>
+		<%- include("accueil.ejs", {ecoute: 0})%>
 		</section>
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script type="text/javascript" src="/socket.io/socket.io.js"></script>
@@ -40,6 +40,7 @@
 				data.infosClients.forEach( function(client){
 					App.addUserIn(client.surnom, client.presence, client.couleur);
 				});
+				App.initAnonymes(data.nbAnonymes);
 			});
 			socket.on('alreadyUsed', function(){
 				updateView('alreadyUsed');

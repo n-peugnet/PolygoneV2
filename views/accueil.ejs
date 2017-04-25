@@ -1,17 +1,23 @@
 <h1>Le Polygone</h1>
-<h2><%= ecoute == 0 ? "Centre" : "Coin "+ecoute %></h2>
+<% if (ecoute != 0) { %>
+<h2>Coin <%= ecoute %></h2>
 <div class="details">
 	<ul>
-		<li><span class="num" id="nbEcoutes"><%= nbEcoutes %></span> <%= ecoute != 0 ? "Ecoutes" : "Anonymes" %></li>
+		<li><span class="num" id="nbEcoutes">0</span> Ecoutes</li>
 	</ul>
 </div>
 <div id="lieu<%= ecoute %>" class="discussions"></div>
-<% if (ecoute != 0) { %>
+<% } %>
 <h2>Centre</h2>
-<div class="details"></div>
+<div class="details">
+	<ul>
+		<li><span class="num" id="nbAnonymes">0</span> Anonymes</li>
+	</ul>
+</div>
+<% if (ecoute != 0) { %>
 <button class ="boutonMove" onclick="goTo(0)" >Y retourner</button>
 <button id="centreButton" onclick="Affichage('discucentre', 'centreButton');return false;">Afficher</button>
-<div id="lieu0" class="discussions"></div>
 <% } %>
+<div id="lieu0" class="discussions"></div>
 <h2>Coins</h2>
 <div id="zoneCoins"><div id="coins"></div></div>

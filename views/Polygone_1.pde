@@ -143,7 +143,7 @@ class Point
   
   void drawLine(Point pt, int opacite)
   {
-    stroke(0, opacite);
+    stroke(100, opacite);
     line(x, y, pt.getX(), pt.getY());
   }
 

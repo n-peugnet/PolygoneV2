@@ -1,7 +1,7 @@
 var App = {
 	lieux: [[],[],[],[]],
-	// current user informations
-	cu : {
+	nbAnonymes: 0,
+	cu : {                // current user informations
 		loggedIn: false,
 		prenom: "",
 		surnom: "",
@@ -62,21 +62,40 @@ var App = {
 		this.cu.loggedIn = true;
 		this.cu.couleur = couleur;
 	},
+	
+	initAnonymes: function(nb)
+	{
+		this.nbAnonymes = nb;
+		this.writeAnonymes();
+	},
+	
+	addAnonyme: function()
+	{
+		this.nbAnonymes ++;
+		this.writeAnonymes();
+	},
+	
+	rmvAnonyme: function()
+	{
+		this.nbAnonymes --;
+		this.writeAnonymes();
+	},
 
 	addUser: function(surnom, couleur)
 	{
 		this.addUserIn(surnom, 0, couleur);
+		this.rmvAnonyme();
 	},
 	
 	addUserIn: function(surnom, lieu, couleur)
 	{
-		var current = surnom == this.cu.surnom;
 		if (this.containsUser(surnom, lieu)){
 			this.lieux[lieu][this.indexOfUser(surnom, lieu)].reactivateIn(lieu, couleur);
 		} else {
+			var current = surnom == this.cu.surnom;
 			newUser = Object.create(User);
 			newUser.init(surnom, couleur, current);
-			var indexUser = this.lieux[lieu].push(newUser)-1;
+			this.lieux[lieu].push(newUser)-1;
 			newUser.writeIn(lieu);
 		}
 	},
@@ -134,6 +153,11 @@ var App = {
 			writeEcoutes();
 		}
 	}, 
+
+	writeAnonymes: function()
+	{
+		$('#nbAnonymes').empty().append(this.nbAnonymes);
+	},
 	
 	writeUsers: function()
 	{
