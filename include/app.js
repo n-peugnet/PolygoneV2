@@ -121,6 +121,7 @@ var App = {
 		var self = this;
 		var index = this.indexOfUser(surnom, lieu);
 		this.lieux[lieu][index].disableIn(lieu);
+		this.addAnonyme();
 		setTimeout(function(){
 			if(!self.lieux[lieu][index].actif){
 				self.lieux[lieu][index].eraseIn(lieu);

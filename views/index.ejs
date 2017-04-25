@@ -42,6 +42,9 @@
 				});
 				App.initAnonymes(data.nbAnonymes);
 			});
+			socket.on('connection', function(){
+				App.addAnonyme();
+			});
 			socket.on('alreadyUsed', function(){
 				updateView('alreadyUsed');
 			});
@@ -99,6 +102,9 @@
 			});
 			socket.on('rmvCoin', function(){
 				App.delLastLieu();
+			});
+			socket.on('disconnection', function(){
+				App.rmvAnonyme();
 			});
 		</script>
 	</body>

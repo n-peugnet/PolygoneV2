@@ -83,6 +83,7 @@ io.on('connection', function(client){
 //---------- initialisation -------------
 	var infosClients = extInfos(client.otherClients());
 	client.emit('init', {nbLieux: lieux.length, infosClients, nbAnonymes: getNbAnonymes()});
+	client.broadcast.emit('connection');
 	datedLog('new connection');
 	
 //-------------- events -----------------
@@ -176,6 +177,7 @@ io.on('connection', function(client){
 			}
 			client.broadcast.emit('logOut', {surnom: client.surnom, lieu: client.presence});
 		}
+		client.broadcast.emit('disconnection');
 		
 		datedLog('disconnection - ' + client.surnom);
 	});
