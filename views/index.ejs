@@ -26,27 +26,19 @@
 		<script type="text/javascript" src="/include/ejs_fulljslint.js"></script>
 		<script type="text/javascript" src="/include/ejs.js"></script>
 		<script type="text/javascript" src="/include/functions.js"></script>
-		<script type="text/javascript" src="/include/lieux.js"></script>
+		<script type="text/javascript" src="/include/app.js"></script>
 		<script type="text/javascript" src="/include/user.js"></script>
 		<script type="text/javascript" src="/include/message.js"></script>
 		<script type="text/javascript">
             var socket = io.connect('http://localhost:3000');
-			CrntUser = {
-				loggedIn: false,
-				prenom: "",
-				surnom: "",
-				couleur: "",
-				presence: 0,
-				ecoute: 0
-			}
 			
 			socket.on('init', function(data){
 				for (i=4; i < data.nbLieux; i++) {
-					Lieux.addLieu();
+					App.addLieu();
 				}
-				Lieux.writeCoins();
+				App.writeCoins();
 				data.infosClients.forEach( function(client){
-					Lieux.addUserIn(client.surnom, client.presence, client.couleur);
+					App.addUserIn(client.surnom, client.presence, client.couleur);
 				});
 			});
 			socket.on('alreadyUsed', function(){
@@ -56,9 +48,7 @@
 				updateView('wrongPrenom');
 			});
 			socket.on('loggedIn', function(couleur){
-				Lieux.addUser(CrntUser.surnom, couleur, true);
-				CrntUser.loggedIn = true;
-				CrntUser.couleur = couleur;
+				App.logInCUser(couleur);
 				updateView('loggedIn');
 			});
 			socket.on('setMemory', function(memory){
@@ -68,46 +58,46 @@
 				});
 			});
 			socket.on('newLogIn', function(data){
-				Lieux.addUser(data.surnom, data.couleur);
+				App.addUser(data.surnom, data.couleur);
 			});
 			socket.on('logOut', function(data){
-				Lieux.delUser(data.surnom, data.lieu);
+				App.delUser(data.surnom, data.lieu);
 			});
 			socket.on('loggedOut', function(){
-				Lieux.delUser(CrntUser.surnom, CrntUser.presence);
+				App.delUser(App.cu.surnom, App.cu.presence);
 				updateView('loggedOut');
 			});
 			socket.on('ecriture', function(data){
-				Lieux.selectUser(data.surnom, data.lieu).isWriting();
+				App.selectUser(data.surnom, data.lieu).isWriting();
 			});
 			socket.on('arretEcriture', function(data){
-				Lieux.selectUser(data.surnom, data.lieu).notWriting();
+				App.selectUser(data.surnom, data.lieu).notWriting();
 			});
 			socket.on('message', function(data){
-				Lieux.selectUser(data.surnom, data.lieu).addMessage(data.message, data.type);
+				App.selectUser(data.surnom, data.lieu).addMessage(data.message, data.type);
 			});
 			socket.on('move', function(data){
-				Lieux.moveUser(data.surnom, data.presence, data.destination);
+				App.moveUser(data.surnom, data.presence, data.destination);
 			});
 			socket.on('listen', function(data){
-				Lieux.focusUser(data.surnom, data.presence, data.ecoute);
+				App.focusUser(data.surnom, data.presence, data.ecoute);
 			});
 			socket.on('goTo', function(destination){
-				Lieux.moveUser(CrntUser.surnom, CrntUser.presence, destination);
-				CrntUser.presence = destination;
-				CrntUser.ecoute = destination;
+				App.moveUser(App.cu.surnom, App.cu.presence, destination);
+				App.cu.presence = destination;
+				App.cu.ecoute = destination;
 				updateView('listenTo');
 			});
 			socket.on('listenTo', function(ecoute){
-				Lieux.focusUser(CrntUser.surnom, CrntUser.presence, ecoute)
-				CrntUser.ecoute = ecoute;
+				App.focusUser(App.cu.surnom, App.cu.presence, ecoute)
+				App.cu.ecoute = ecoute;
 				updateView('listenTo');
 			});
 			socket.on('addCoin', function(){
-				Lieux.addLieu();
+				App.addLieu();
 			});
 			socket.on('rmvCoin', function(){
-				Lieux.delLastLieu();
+				App.delLastLieu();
 			});
 		</script>
 	</body>

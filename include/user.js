@@ -73,7 +73,7 @@ var User = {
 	//inscrit un utilisateur dans la page
 	writeIn: function(lieu)
 	{
-		if (lieu == CrntUser.ecoute || lieu == 0){
+		if (lieu == App.cu.ecoute || lieu == 0){
 			var html = this.genColonne();
 			if (this.current) {
 				$('#lieu'+ lieu).prepend(html);
@@ -93,7 +93,7 @@ var User = {
 		this.actif = false;
 		this.ecrit = false;
 		this.couleur = '#aaaaaa';
-		if (lieu == CrntUser.ecoute || lieu == 0){
+		if (lieu == App.cu.ecoute || lieu == 0){
 			this.updateCol();
 		} else {
 			$('#' + this.surnom).addClass('inactif');
@@ -104,7 +104,7 @@ var User = {
 	{
 		this.actif = true;
 		this.couleur = couleur;
-		if (lieu == CrntUser.ecoute || lieu == 0){
+		if (lieu == App.cu.ecoute || lieu == 0){
 			this.updateCol();
 		}else {
 			$('#' + this.surnom).removeClass('inactif');
@@ -120,7 +120,7 @@ var User = {
 	
 	eraseIn: function(lieu) 
 	{
-		if (lieu == CrntUser.ecoute || lieu == 0){
+		if (lieu == App.cu.ecoute || lieu == 0){
 			$('#' + this.surnom).remove();
 		} else {
 			$('#' + this.surnom).removeClass('inactif')

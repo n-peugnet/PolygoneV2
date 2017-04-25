@@ -2,7 +2,7 @@
 <h2><%= ecoute == 0 ? "Centre" : "Coin "+ecoute %></h2>
 <div class="details">
 	<ul>
-		<li><span class="num"><%= nbEcoutes %></span> <%= ecoute != 0 ? "Ecoutes" : "Anonymes" %></li>
+		<li><span class="num" id="nbEcoutes"><%= nbEcoutes %></span> <%= ecoute != 0 ? "Ecoutes" : "Anonymes" %></li>
 	</ul>
 </div>
 <div id="lieu<%= ecoute %>" class="discussions"></div>

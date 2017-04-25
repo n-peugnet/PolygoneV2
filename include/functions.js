@@ -32,7 +32,7 @@ function messageClavier(message, event) {
 $(function(){
 	$('#surnom').on('input', function() {
 		$(this).val(escapeSurnom($(this).val()));
-		if (extSurnoms(Lieux.allUsers()).includes($(this).val())){
+		if (extSurnoms(App.allUsers()).includes($(this).val())){
 			$(this).css('outline-color', 'red');
 		} else {
 			$(this).css('outline-color', '');
@@ -91,8 +91,8 @@ function connexion(loginForm)
 {
 	var prenom = $("#prenom").val();
 	var surnom = escapeSurnom($("#surnom").val());
-	CrntUser.prenom = prenom;
-	CrntUser.surnom = surnom;
+	App.cu.prenom = prenom;
+	App.cu.surnom = surnom;
 	socket.emit('logIn', {prenom, surnom});
 }
 
@@ -103,14 +103,14 @@ function deconnexion()
 
 function writeAccueil()
 {
-	var data = {ecoute: CrntUser.ecoute, nbEcoutes: Lieux.usersListeningTo(CrntUser.ecoute).length};
+	var data = {ecoute: App.cu.ecoute, nbEcoutes: App.usersListeningTo(App.cu.ecoute).length};
 	var html = new EJS({url: dirViews + 'accueil.ejs'}).render(data);
 	$('section').empty().append(html);
 }
 
 function writeLogIn(etat)
 {
-	var data = {etat, prenom: CrntUser.prenom, surnom: CrntUser.surnom};
+	var data = {etat, prenom: App.cu.prenom, surnom: App.cu.surnom};
 	var html = new EJS({url: dirViews + 'login.ejs'}).render(data);
 	$('#nav').empty().append(html);
 	if (etat < 2) {
@@ -122,7 +122,7 @@ function writeLogIn(etat)
 
 function writeMenu()
 {
-	var data = {surnom: CrntUser.surnom, presence: CrntUser.presence};
+	var data = {surnom: App.cu.surnom, presence: App.cu.presence};
 	var html = new EJS({url: dirViews + 'menu.ejs'}).render(data);
 	$('#menu').replaceWith(html);
 }
@@ -142,7 +142,7 @@ function writeMemory(pers_cite, citation)
 
 function writeCoin(num, taille)
 {
-	var data = {num, taille, presence: CrntUser.presence, loggedIn: CrntUser.loggedIn};
+	var data = {num, taille, presence: App.cu.presence, loggedIn: App.cu.loggedIn};
 	var html = new EJS({url: dirViews + 'coin.ejs'}).render(data);
 	$('#coins').append(html);
 }
@@ -162,9 +162,10 @@ function eraseCoin(num)
 	$('#coin'+num).remove();
 }
 
-function writeEcoutes(lieu)
+function writeEcoutes()
 {
-	
+	var liste = App.usersListeningTo(App.cu.ecoute)
+	$('#nbEcoutes').empty().append(liste.length)
 }
 
 function updateView(action)
@@ -190,8 +191,8 @@ function updateView(action)
 			break;
 		case 'listenTo':
 			writeAccueil();
-			Lieux.writeCoins();
-			Lieux.writeUsers();
+			App.writeCoins();
+			App.writeUsers();
 			writeMenuCoins();
 			writeMenu();
 			break;

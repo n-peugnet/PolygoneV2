@@ -1,5 +1,14 @@
-var Lieux = {
+var App = {
 	lieux: [[],[],[],[]],
+	// current user informations
+	cu : {
+		loggedIn: false,
+		prenom: "",
+		surnom: "",
+		couleur: "",
+		presence: 0,
+		ecoute: 0
+	},
 	
 	coins: function()
 	{
@@ -46,15 +55,22 @@ var Lieux = {
 		this.lieux.splice(lieu, 1);
 		eraseCoin(lieu);
 	},
-
-	addUser: function(surnom, couleur, current)
+	
+	logInCUser: function(couleur)
 	{
-		this.addUserIn(surnom, 0, couleur, current);
+		this.addUser(this.cu.surnom, couleur)
+		this.cu.loggedIn = true;
+		this.cu.couleur = couleur;
+	},
+
+	addUser: function(surnom, couleur)
+	{
+		this.addUserIn(surnom, 0, couleur);
 	},
 	
-	addUserIn: function(surnom, lieu, couleur, current)
+	addUserIn: function(surnom, lieu, couleur)
 	{
-		var current = surnom == CrntUser.surnom;
+		var current = surnom == this.cu.surnom;
 		if (this.containsUser(surnom, lieu)){
 			this.lieux[lieu][this.indexOfUser(surnom, lieu)].reactivateIn(lieu, couleur);
 		} else {
@@ -100,7 +116,7 @@ var Lieux = {
 		var user = this.lieux[lDepart].splice(iDepart,1)[0];
 		user.ecoute = lArrivee;
 		var iArrivee = this.lieux[lArrivee].push(user)-1;
-		if (surnom != CrntUser.surnom)
+		if (!user.current)
 		{
 			user.eraseIn(lDepart);
 			user.writeIn(lArrivee)
@@ -109,6 +125,10 @@ var Lieux = {
 	
 	focusUser: function(surnom, pres, ecoute)
 	{
+		var ecoutePre = this.selectUser(surnom, pres).ecoute
+		if (ecoute == this.cu.ecoute || this.selectUser(surnom, pres).ecoute == this.cu.ecoute) {
+			writeEcoutes();
+		}
 		this.selectUser(surnom, pres).ecoute = ecoute
 	}, 
 	
@@ -126,7 +146,7 @@ var Lieux = {
 	{
 		$('#coins').empty();
 		for (i=1; i < this.lieux.length; i++) {
-			if (i != CrntUser.ecoute){
+			if (i != this.cu.ecoute){
 				writeCoin(i, 6);
 			}
 		}
