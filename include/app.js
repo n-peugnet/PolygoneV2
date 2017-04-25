@@ -112,10 +112,13 @@ var App = {
 
 	moveUser: function(surnom, lDepart, lArrivee)
 	{
-		var iDepart = this.indexOfUser(surnom, lDepart);
-		var user = this.lieux[lDepart].splice(iDepart,1)[0];
+		var index = this.indexOfUser(surnom, lDepart);
+		var user = this.lieux[lDepart].splice(index,1)[0];
+		var ecoutePre = user.ecoute
 		user.ecoute = lArrivee;
-		var iArrivee = this.lieux[lArrivee].push(user)-1;
+		if ( ecoutePre == this.cu.ecoute)
+			writeEcoutes();
+		this.lieux[lArrivee].push(user);
 		if (!user.current)
 		{
 			user.eraseIn(lDepart);
@@ -126,10 +129,10 @@ var App = {
 	focusUser: function(surnom, pres, ecoute)
 	{
 		var ecoutePre = this.selectUser(surnom, pres).ecoute
-		if (ecoute == this.cu.ecoute || this.selectUser(surnom, pres).ecoute == this.cu.ecoute) {
+		this.selectUser(surnom, pres).ecoute = ecoute
+		if (ecoute == this.cu.ecoute || ecoutePre == this.cu.ecoute) {
 			writeEcoutes();
 		}
-		this.selectUser(surnom, pres).ecoute = ecoute
 	}, 
 	
 	writeUsers: function()

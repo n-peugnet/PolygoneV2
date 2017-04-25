@@ -164,8 +164,8 @@ function eraseCoin(num)
 
 function writeEcoutes()
 {
-	var liste = App.usersListeningTo(App.cu.ecoute)
-	$('#nbEcoutes').empty().append(liste.length)
+	var liste = App.usersListeningTo(App.cu.ecoute);
+	$('#nbEcoutes').empty().append(liste.length);
 }
 
 function updateView(action)
