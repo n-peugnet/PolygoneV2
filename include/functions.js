@@ -18,9 +18,10 @@ function messageClavier(message, event) {
 			socket.emit('arretEcriture');
 		}
 	} else if(key == 13) {
-		if (longueur > 0) {
+		if (event.shiftKey)
+			crier();
+		else
 			sendMessage(message, "texte")
-		}
 	} else if(isPrintable) {
 		if (longueur == 0){
 			socket.emit('ecriture');
@@ -69,8 +70,10 @@ function activateLinks(texte)
 
 function sendMessage(texte, type)
 {
-	socket.emit('message', {texte: escapeHtml(texte), type});
-	$("#message").val('');	
+	if (texte.length > 0) {
+		socket.emit('message', {texte: escapeHtml(texte), type});
+	}
+	$("#message").val('').focus();
 }
 
 function writeMessage(surnom, message, couleur, id, type, animation)
