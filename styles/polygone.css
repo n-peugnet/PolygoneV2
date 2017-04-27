@@ -239,16 +239,16 @@ ul {
 	color: white;
 }
 
+.bulle a{
+	color: white;
+}
+
 .bulle.cri p{
     font-size: 25px;
     font-weight: bold;
 }
 
-.bulle a{
-	color: white;
-}
-
-.citation {
+.bulle.citation .bulle {
 	margin: 0;
 }
 
