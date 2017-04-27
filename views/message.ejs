@@ -1,6 +1,6 @@
 <div class="message<%= id == "ecrit" ? " ecrit" : "" %>" id="<%= surnom + id %>">
 	<div class="bulleBackground pointe" style="border-bottom: 7px solid <%= couleur %>;"></div>
-	<div class="bulleBackground bulle" style="background-color:<%= couleur %>">
+	<div class="bulleBackground bulle <%= type %>" style="background-color:<%= couleur %>">
 		<% if (type == "citation") { %>
 		<div class="bulle citation">
 		<% } %>

@@ -101,7 +101,7 @@ div.inactif .bulleBackground {
 }
 
 .personnels {
-	height: 325px;
+	height: 293px;
 	
 }
 
@@ -171,21 +171,36 @@ ul {
 	display: inline-block;
 }
 
-#formMessage {
-	margin:0;
-}
-#message {
-	margin: 0;
-	padding: 2px 1px;
-	border: solid;
-	border-width: 1px;
-	border-color: #dddddd;
-	width: 206px;
+#interface {
+	background-color: white;
+	border: solid 1px #dddddd;
+	padding: 5px;
 }
 
-#message:focus {
+#message {
+	margin: 0;
+    padding: 0 0 5px;
+    border: none;
+    width: 100%;
+    display: block;
+}
+
+
+#message:focus  {
     outline: none;
-	border-color: #aaaaaa;
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #dddddd;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: #dddddd;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: #dddddd;
+}
+:-moz-placeholder { /* Firefox 18- */
+  color: #dddddd;
 }
 
 .masque {
@@ -222,6 +237,11 @@ ul {
 .bulle p{
 	margin: 0;
 	color: white;
+}
+
+.bulle.cri p{
+    font-size: 25px;
+    font-weight: bold;
 }
 
 .bulle a{

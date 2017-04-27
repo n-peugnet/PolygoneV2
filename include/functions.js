@@ -19,8 +19,7 @@ function messageClavier(message, event) {
 		}
 	} else if(key == 13) {
 		if (longueur > 0) {
-			socket.emit('message', {texte: escapeHtml(message), type: "texte"});
-			$("#message").val('');
+			sendMessage(message, "texte")
 		}
 	} else if(isPrintable) {
 		if (longueur == 0){
@@ -68,6 +67,12 @@ function activateLinks(texte)
 	}).join(" ");
 }
 
+function sendMessage(texte, type)
+{
+	socket.emit('message', {texte: escapeHtml(texte), type});
+	$("#message").val('');	
+}
+
 function writeMessage(surnom, message, couleur, id, type, animation)
 {
 	var data = {surnom, message: activateLinks(message), couleur, id, type};
@@ -80,10 +85,11 @@ function writeMessage(surnom, message, couleur, id, type, animation)
 
 function eraseMessage(surnom, id)
 {
+	var idHtml = '#'+surnom+id;
 	if (id == 'ecrit'){
-		$('#'+surnom+id).animate({ opacity: 0, marginTop: '-'+$('#'+surnom+id).height()+'px'}, function() { $(this).remove(); });
+		$(idHtml).animate({ opacity: 0, marginTop: '-' + $(idHtml).height() +'px'}, function() { $(this).remove(); });
 	} else {
-		$('#'+surnom+id).animate({ opacity: 0}, 500).animate({ height: '0px'}, function() { $(this).remove(); });
+		$(idHtml).animate({ opacity: 0}, 500).animate({ height: '0px'}, function() { $(this).remove(); });
 	}
 }
 
@@ -222,7 +228,12 @@ function addMemory(surnom, message)
 
 function citation(pers_cite, citation)
 {
-	socket.emit('message', {texte: escapeHtml(pers_cite + " : " + citation), type: "citation"});
+	sendMessage( pers_cite + " : " + citation, "citation");
+}
+
+function crier()
+{
+	sendMessage( $("#message").val(), "cri");
 }
 
 function extSurnoms(listeUsers)
