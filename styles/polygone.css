@@ -101,16 +101,8 @@ div.inactif .bulleBackground {
 }
 
 .personnels {
-	height: 293px;
+	height: 290px;
 	
-}
-
-/*.reduit {
-	width:15px;
-}*/
-
-.interface {
-	margin-bottom: 0;
 }
 
 form {
@@ -179,12 +171,11 @@ ul {
 
 #message {
 	margin: 0;
-    padding: 0 0 5px;
+    padding: 0 0 3px;
     border: none;
     width: 100%;
     display: block;
 }
-
 
 #message:focus  {
     outline: none;
@@ -201,6 +192,13 @@ ul {
 }
 :-moz-placeholder { /* Firefox 18- */
   color: #dddddd;
+}
+
+.zoneBoutons button{
+    background-size: cover;
+    padding: 12px;
+	height: 0;
+	width: 0;
 }
 
 .masque {

@@ -1,12 +1,14 @@
 <div class="colonne" id="<%= surnom %>">
 	<div class="entete" style="background-color: <%= couleur %>;">
 		<h3 class="nom"><%= surnom %></h3>
+		<% if (!current && actif) { %>
+		<% } %>
 	</div>
 	<% if (current && actif) { %>
 	<div id="interface">
 		<input type="text" name="message" id="message" autocomplete="off" placeholder="Dire un truc..." onkeydown="messageClavier(this.value, event)" autofocus />
 		<div class="zoneBoutons">
-			<button onclick="crier()">Crier</button>
+			<button style="background: url(img/crier.svg)" onclick="crier()" title="crier" />
 		</div>
 	</div>
 	<% } %>
