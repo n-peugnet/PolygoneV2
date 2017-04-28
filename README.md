@@ -12,14 +12,14 @@ You will need to have these softwares installed :
 - [MySQL server](https://dev.mysql.com/downloads/mysql/)
 - [Node.js](https://nodejs.org/en/download/)
 
-### Installing
+### Installation
 
-1. Download or Clone the repositery
+1. Download or Clone the repository
 2. Open command terminal and navigate to the project folder then install the dependencies by running :
 	```
 	npm install
 	```
-3. Rename `sampleconfig.js` into `config.js` and change credentials
+3. Rename `sampleconfig.js` to `config.js` and change credentials
 4. Start the Node.js server by running :
 	```
 	node server.js
