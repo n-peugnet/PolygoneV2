@@ -9,7 +9,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 You will need to have these softwares installed :
-- [MySQL server](https://dev.mysql.com/downloads/mysql/)
+- MySQL server (for example [XAMPP](https://www.apachefriends.org/fr/download.html))
 - [Node.js](https://nodejs.org/en/download/)
 
 ### Installation
@@ -19,13 +19,14 @@ You will need to have these softwares installed :
 	```
 	npm install
 	```
-3. Rename `sampleconfig.js` to `config.js` and change credentials
+3. Rename `./sampleconfig.js` to `./config.js` and change credentials
 4. Start the Node.js server by running :
 	```
 	node server.js
 	```
 5. Start MySQL server
-6. Access [http://localhost:3000](http://localhost:3000) in your browser
+6. Create a MySQL database called 'polygonev2' and import inside it the two tables `./sessions.sql`,`./memory.sql`
+7. Access [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Authors
 
