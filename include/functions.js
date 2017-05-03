@@ -84,6 +84,7 @@ function writeMessage(surnom, message, couleur, id, type, animation)
 		$(html).prependTo('#dires_'+surnom).css('margin-top', '-'+$('#'+surnom+id).height()+'px').animate({ marginTop: '0px'});
 	else
 		$(html).prependTo('#dires_'+surnom);
+	$("#container_dires_"+surnom).perfectScrollbar('update');
 }
 
 function eraseMessage(surnom, id)
@@ -94,6 +95,7 @@ function eraseMessage(surnom, id)
 	} else {
 		$(idHtml).animate({ opacity: 0}, 500).animate({ height: '0px'}, function() { $(this).remove(); });
 	}
+	$("#container_dires_"+surnom).perfectScrollbar('update');
 }
 
 function connexion(loginForm)

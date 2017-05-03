@@ -82,6 +82,7 @@ var User = {
 			} else {
 				$('#lieu'+ lieu).append(html);
 			}
+			$("#container_dires_"+this.surnom).perfectScrollbar();
 			this.writeMessages();
 		} else {
 			$('#coin' + lieu + ' .empty:first').removeClass('empty').attr('id', this.surnom).text(this.surnom);

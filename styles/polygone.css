@@ -108,11 +108,10 @@ div.inactif .bulleBackground {
 form {
 	margin-bottom: 5px;
 }
-/*#boutonReduire {
-	position: absolute;
-	bottom: 0;
-	right: 0;
-}*/
+
+#zoneCoins {
+	overflow: auto;
+}
 
 .coin {
 	height: auto;
@@ -286,6 +285,7 @@ button:hover:enabled {
 }
 
 section {
+	position: relative;
 	margin-left: 205px;
 	transform: translateX(none);
 	transition-property: transform;
