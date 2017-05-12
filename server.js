@@ -185,7 +185,7 @@ io.on('connection', function(client){
 
 server.listen(config.web.port);
 
-var j = schedule.scheduleJob('0 0 2 * *', function(){
+var j = schedule.scheduleJob('0 2 * * *', function(){
 	var query = connection.query('DELETE FROM sessions WHERE DATE_ADD(date_activite, INTERVAL 20 DAY) <= NOW()', function (error, results, fields) {
 		if (error) throw error;
 		console.log('deleted ' + results.affectedRows + ' rows');
