@@ -1,6 +1,7 @@
 var express  = require('express');
 var app      = express();
 var server   = require('http').createServer(app);
+var path     = require('path');
 var io       = require('socket.io')(server);
 var mysql    = require('mysql');
 var schedule = require('node-schedule');
@@ -10,7 +11,8 @@ var connection = mysql.createConnection(config.mysql);
 
 var lieux = [0,0,0,0];
 
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, '/public')));
+app.set('views', path.join(__dirname, '/public/views'));
 app.get('/', function(req, res){
 	res.render('index.ejs');
 });
