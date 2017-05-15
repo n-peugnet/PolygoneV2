@@ -31,8 +31,10 @@
 		<script type="text/javascript" src="/include/message.js"></script>
 		<script type="text/javascript">
             var socket = io.connect('http://localhost:3000');
+			<% if (prenom != "" && surnom != "") { %> App.storeId('<%= prenom %>', '<%= surnom %>'); <% } %>
 			
 			socket.on('init', function(data){
+				App.reconnect();
 				for (i=4; i < data.nbLieux; i++) {
 					App.addLieu();
 				}

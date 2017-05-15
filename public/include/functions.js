@@ -100,8 +100,7 @@ function connexion(loginForm)
 {
 	var prenom = $("#prenom").val();
 	var surnom = escapeSurnom($("#surnom").val());
-	App.cu.prenom = prenom;
-	App.cu.surnom = surnom;
+	App.storeId(prenom, surnom);
 	socket.emit('logIn', {prenom, surnom});
 }
 

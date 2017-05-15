@@ -56,11 +56,25 @@ var App = {
 		eraseCoin(lieu);
 	},
 	
+	storeId: function(prenom, surnom)
+	{
+		this.cu.prenom = prenom;
+		this.cu.surnom = surnom;
+	},
+	
+	reconnect: function()
+	{
+		var prenom = this.cu.prenom;
+		var surnom = this.cu.surnom;
+		if (prenom != '' && surnom != '')
+			socket.emit('logIn', {prenom, surnom});
+	},
+	
 	logInCUser: function(couleur)
 	{
-		this.addUser(this.cu.surnom, couleur)
 		this.cu.loggedIn = true;
 		this.cu.couleur = couleur;
+		this.addUser(this.cu.surnom, couleur)
 	},
 	
 	initAnonymes: function(nb)
