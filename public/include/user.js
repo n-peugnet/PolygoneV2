@@ -100,10 +100,11 @@ var User = {
 		}
 	},
 	
-	reactivateIn: function(lieu, couleur)
+	reactivateIn: function(lieu, couleur, current)
 	{
 		this.actif = true;
 		this.couleur = couleur;
+		this.current = current;
 		if (lieu == App.cu.ecoute || lieu == 0){
 			this.updateCol();
 		}else {
