@@ -1,5 +1,6 @@
 var dirViews = '/views/';
 
+$(setLoginInputEvent);
 
 function messageClavier(message, event) {
 	var longueur = message.length;
@@ -29,7 +30,7 @@ function messageClavier(message, event) {
 	}
 }
 
-$(function(){
+function setLoginInputEvent(){
 	$('#surnom').on('input', function() {
 		$(this).val(escapeSurnom($(this).val()));
 		if (extSurnoms(App.allUsers()).includes($(this).val())){
@@ -38,7 +39,7 @@ $(function(){
 			$(this).css('outline-color', '');
 		}
 	});
-});
+}
 
 function escapeHtml(string) {
 	var entityMap = {
@@ -126,6 +127,7 @@ function writeLogIn(etat)
 	} else {
 		$('#surnom').focus();
 	}
+	setLoginInputEvent();
 }
 
 function writeMenu()
