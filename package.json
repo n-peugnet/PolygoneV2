@@ -1,12 +1,14 @@
 {
 	"name": "PolygoneV2",
-	"version": "0.1.0",
+	"version": "0.1.2",
 	"dependencies": {
 		"express": "~4.14.1",
 		"ejs": "~2.5.6",
 		"socket.io": "~1.7.3",
 		"mysql": "~2.13.0",
-		"node-schedule": "~1.2.1"
+		"node-schedule": "~1.2.1",
+		"express-session": "~1.15.2",
+		"express-socket.io-session": "~1.3.2"
 	},
 	"author": "Nicope <n.peugnet@free.fr>",
 	"description": "Une application de chat en temps réel visant à se rapprocher d'une conversation de vive voix"	
