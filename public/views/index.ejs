@@ -70,7 +70,7 @@
 				App.delUser(data.surnom, data.lieu);
 			});
 			socket.on('loggedOut', function(){
-				App.delUser(App.cu.surnom, App.cu.presence);
+				App.logOutCUser();
 				updateView('loggedOut');
 			});
 			socket.on('ecriture', function(data){

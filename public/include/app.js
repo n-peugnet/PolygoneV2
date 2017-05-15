@@ -77,6 +77,12 @@ var App = {
 		this.addUser(this.cu.surnom, couleur)
 	},
 	
+	logOutCUser: function()
+	{
+		this.cu.loggedIn = false;
+		this.delUser(App.cu.surnom, App.cu.presence);
+	},
+	
 	initAnonymes: function(nb)
 	{
 		this.nbAnonymes = nb;
@@ -103,10 +109,10 @@ var App = {
 	
 	addUserIn: function(surnom, lieu, couleur)
 	{
+		var current = surnom == this.cu.surnom && this.cu.loggedIn; //determine si l'utilisateur est bien l'utilisateur courant
 		if (this.containsUser(surnom, lieu)){
-			this.lieux[lieu][this.indexOfUser(surnom, lieu)].reactivateIn(lieu, couleur);
+			this.lieux[lieu][this.indexOfUser(surnom, lieu)].reactivateIn(lieu, couleur, current);
 		} else {
-			var current = surnom == this.cu.surnom;
 			newUser = Object.create(User);
 			newUser.init(surnom, couleur, current);
 			this.lieux[lieu].push(newUser)-1;
