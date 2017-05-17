@@ -1,5 +1,4 @@
-var dirViews = '/views/';
-
+$(setLoginInputEvent);
 
 function messageClavier(message, event) {
 	var longueur = message.length;
@@ -29,7 +28,7 @@ function messageClavier(message, event) {
 	}
 }
 
-$(function(){
+function setLoginInputEvent(){
 	$('#surnom').on('input', function() {
 		$(this).val(escapeSurnom($(this).val()));
 		if (extSurnoms(App.allUsers()).includes($(this).val())){
@@ -38,7 +37,7 @@ $(function(){
 			$(this).css('outline-color', '');
 		}
 	});
-});
+}
 
 function escapeHtml(string) {
 	var entityMap = {
@@ -100,8 +99,7 @@ function connexion(loginForm)
 {
 	var prenom = $("#prenom").val();
 	var surnom = escapeSurnom($("#surnom").val());
-	App.cu.prenom = prenom;
-	App.cu.surnom = surnom;
+	App.storeId(prenom, surnom);
 	socket.emit('logIn', {prenom, surnom});
 }
 
@@ -127,6 +125,7 @@ function writeLogIn(etat)
 	} else {
 		$('#surnom').focus();
 	}
+	setLoginInputEvent();
 }
 
 function writeMenu()
@@ -140,13 +139,6 @@ function writeMemoire()
 {
 	var html = new EJS({url: dirViews + 'memoire.ejs'}).render();
 	$('#nav').append(html);
-}
-
-function writeMemory(pers_cite, citation)
-{
-	var data = {pers_cite, citation: activateLinks(citation)};
-	var html = new EJS({url: dirViews + 'memory.ejs'}).render(data);
-	$('#memoire').prepend(html);
 }
 
 function writeCoin(num, taille)
@@ -223,15 +215,16 @@ function addCoin()
 	socket.emit('addCoin');
 }
 
-function addMemory(surnom, message)
+function addMemory(surnom, id)
 {
+	var message = App.getUser(surnom).getMessage(id).texte;
 	socket.emit('addMemory', {surnom, message});
-	writeMemory(surnom, message);
+	App.addMemory(surnom, message);
 }
 
-function citation(pers_cite, citation)
+function citation(id)
 {
-	sendMessage( pers_cite + " : " + citation, "citation");
+	App.getMemory(id).send();
 }
 
 function crier()
@@ -242,4 +235,12 @@ function crier()
 function extSurnoms(listeUsers)
 {
 	return listeUsers.map(function(u) {return u.surnom; });
+}
+
+Array.prototype.idGen = function()
+{
+	if (this.length == 0)
+		return 0;
+	else
+		return this[this.length - 1].id + 1;
 }

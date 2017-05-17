@@ -4,11 +4,11 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="stylesheet" href="/styles/polygone.css" />
-		<link rel="icon" type="image/png" href="logo.png" />
-		<title>SocketIoChat</title>
-		<meta name="Title" content="SocketIoChat"/>
+	<link rel="icon" type="image/png" href="/img/favicon.png" />
+		<title>Le Polygone</title>
+		<meta name="Title" content="Le Polygone"/>
 		<meta name="Keywords" content="node.js, socket.io, chat"/>
-		<meta name="Description" content="Une application de chat en temps réel"/>
+		<meta name="Description" content="Une application de chat en temps réel visant à se rapprocher d'une conversation de vive voix"/>
 	</head>
 	<body>
 		<div class="background">
@@ -31,8 +31,11 @@
 		<script type="text/javascript" src="/include/message.js"></script>
 		<script type="text/javascript">
             var socket = io.connect('http://localhost:3000');
+			var dirViews = '/views/';
+			<% if (prenom != "" && surnom != "") { %> App.storeId('<%= prenom %>', '<%= surnom %>'); <% } %>
 			
 			socket.on('init', function(data){
+				App.reconnect();
 				for (i=4; i < data.nbLieux; i++) {
 					App.addLieu();
 				}
@@ -58,7 +61,7 @@
 			socket.on('setMemory', function(memory){
 				writeMemoire();
 				memory.forEach(function(m){
-					writeMemory(m.pers_cite, m.citation);
+					App.addMemory(m.pers_cite, m.citation);
 				});
 			});
 			socket.on('newLogIn', function(data){
@@ -68,17 +71,17 @@
 				App.delUser(data.surnom, data.lieu);
 			});
 			socket.on('loggedOut', function(){
-				App.delUser(App.cu.surnom, App.cu.presence);
+				App.logOutCUser();
 				updateView('loggedOut');
 			});
 			socket.on('ecriture', function(data){
-				App.selectUser(data.surnom, data.lieu).isWriting();
+				App.getUserIn(data.surnom, data.lieu).isWriting();
 			});
 			socket.on('arretEcriture', function(data){
-				App.selectUser(data.surnom, data.lieu).notWriting();
+				App.getUserIn(data.surnom, data.lieu).notWriting();
 			});
 			socket.on('message', function(data){
-				App.selectUser(data.surnom, data.lieu).addMessage(data.message, data.type);
+				App.getUserIn(data.surnom, data.lieu).addMessage(data.message, data.type);
 			});
 			socket.on('move', function(data){
 				App.moveUser(data.surnom, data.presence, data.destination);

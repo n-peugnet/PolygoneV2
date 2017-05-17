@@ -2,6 +2,7 @@ var App = {
 	lieux: [[],[],[],[]],
 	nbAnonymes: 0,
 	cu : {                // current user informations
+		memoire: [],
 		loggedIn: false,
 		prenom: "",
 		surnom: "",
@@ -56,11 +57,44 @@ var App = {
 		eraseCoin(lieu);
 	},
 	
+	addMemory: function(persCite, citation)
+	{
+		newCitation = Object.create(Citation);
+		newCitation.initCitation(this.cu.memoire.idGen(), persCite, citation);
+		this.cu.memoire.push(newCitation);
+		newCitation.write();
+	},
+	
+	getMemory: function(id)
+	{
+		return this.cu.memoire.find(function(m){ return m.id == id; });
+	},
+	
+	storeId: function(prenom, surnom)
+	{
+		this.cu.prenom = prenom;
+		this.cu.surnom = surnom;
+	},
+	
+	reconnect: function()
+	{
+		var prenom = this.cu.prenom;
+		var surnom = this.cu.surnom;
+		if (prenom != '' && surnom != '')
+			socket.emit('logIn', {prenom, surnom});
+	},
+	
 	logInCUser: function(couleur)
 	{
-		this.addUser(this.cu.surnom, couleur)
 		this.cu.loggedIn = true;
 		this.cu.couleur = couleur;
+		this.addUser(this.cu.surnom, couleur)
+	},
+	
+	logOutCUser: function()
+	{
+		this.cu.loggedIn = false;
+		this.delUser(App.cu.surnom, App.cu.presence);
 	},
 	
 	initAnonymes: function(nb)
@@ -89,10 +123,10 @@ var App = {
 	
 	addUserIn: function(surnom, lieu, couleur)
 	{
+		var current = surnom == this.cu.surnom && this.cu.loggedIn; //determine si l'utilisateur est bien l'utilisateur courant
 		if (this.containsUser(surnom, lieu)){
-			this.lieux[lieu][this.indexOfUser(surnom, lieu)].reactivateIn(lieu, couleur);
+			this.lieux[lieu][this.indexOfUser(surnom, lieu)].reactivateIn(lieu, couleur, current);
 		} else {
-			var current = surnom == this.cu.surnom;
 			newUser = Object.create(User);
 			newUser.init(surnom, couleur, current);
 			this.lieux[lieu].push(newUser)-1;
@@ -107,13 +141,18 @@ var App = {
 	
 	indexOfUser: function(surnom, lieu)
 	{
-		return this.lieux[lieu].map(function(u) {return u.surnom; }).indexOf(surnom);
+		return this.lieux[lieu].findIndex(function(u) {return u.surnom == surnom; });
 	},
 	
-	selectUser: function(surnom, lieu)
+	getUserIn: function(surnom, lieu)
 	{
 		index  = this.indexOfUser(surnom, lieu);
 		return this.lieux[lieu][index];
+	},
+	
+	getUser: function(surnom)
+	{
+		return this.allUsers().find(function(u) {return u.surnom == surnom; });
 	},
 	
 	delUser: function(surnom, lieu)
@@ -148,8 +187,8 @@ var App = {
 	
 	focusUser: function(surnom, pres, ecoute)
 	{
-		var ecoutePre = this.selectUser(surnom, pres).ecoute
-		this.selectUser(surnom, pres).ecoute = ecoute
+		var ecoutePre = this.getUserIn(surnom, pres).ecoute
+		this.getUserIn(surnom, pres).ecoute = ecoute
 		if (ecoute == this.cu.ecoute || ecoutePre == this.cu.ecoute) {
 			writeEcoutes();
 		}

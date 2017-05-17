@@ -35,7 +35,7 @@ var User = {
 	addMessage: function (texte, type)
 	{
 		this.notWriting();
-		var id = this.messageIdGen();
+		var id = this.messages.idGen();
 		newMessage = Object.create(Message);
 		newMessage.init(id, texte, type);
 		this.messages.push(newMessage);
@@ -50,19 +50,6 @@ var User = {
 		index = this.messages.map(function(m) { return m.id; }).indexOf(id); //trouve l'index du message dont l'id est égal à id
 		this.messages.splice(index, 1);
 		eraseMessage(this.surnom, id);
-	},
-	
-	messageIdGen: function()
-	{
-		var newId = 0;
-		this.messages.forEach(function(message)
-		{
-			if (message.id >= newId)
-			{
-				newId = message.id +1;
-			}
-		});
-		return newId;
 	},
 	
 	genColonne: function()
@@ -100,10 +87,11 @@ var User = {
 		}
 	},
 	
-	reactivateIn: function(lieu, couleur)
+	reactivateIn: function(lieu, couleur, current)
 	{
 		this.actif = true;
 		this.couleur = couleur;
+		this.current = current;
 		if (lieu == App.cu.ecoute || lieu == 0){
 			this.updateCol();
 		}else {
@@ -139,5 +127,10 @@ var User = {
 		if (this.ecrit){
 			this.writeWriting();
 		}
+	},
+	
+	getMessage: function(id)
+	{
+		return this.messages.find(function(m){ return m.id == id; });
 	}
 }

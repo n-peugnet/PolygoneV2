@@ -5,21 +5,41 @@ var path     = require('path');
 var io       = require('socket.io')(server);
 var mysql    = require('mysql');
 var schedule = require('node-schedule');
+var exsess   = require('express-session');
+var iosess   = require("express-socket.io-session");
 var config   = require('./config');
 
 var connection = mysql.createConnection(config.mysql);
+var session = exsess({
+    secret: "my-secret",
+    resave: false,
+    saveUninitialized: true
+});
 
 var lieux = [0,0,0,0];
 
+// Use express-session middleware for express
+app.use(session);
 app.use(express.static(path.join(__dirname, '/public')));
 app.set('views', path.join(__dirname, '/public/views'));
 app.get('/', function(req, res){
-	res.render('index.ejs');
+	var sess = req.session;
+	if(!sess.prenom && !sess.surnom) {
+		sess.prenom = '';
+		sess.surnom = '';
+	}
+	res.render('index.ejs', {prenom: sess.prenom, surnom: sess.surnom});
 });
 app.use(function(req, res, next){
     res.redirect('/');
 });
 
+
+// Use shared session middleware for socket.io
+// setting autoSave:true
+io.use(iosess(session, {
+    autoSave:true
+})); 
 io.on('connection', function(client){
 //------------ properties ---------------
 	client.loggedIn = false;
@@ -50,12 +70,17 @@ io.on('connection', function(client){
 				});
 				break;
 		}
-		this.broadcast.emit('newLogIn', {surnom: surnom, couleur: couleur});
+		this.broadcast.emit('newLogIn', {surnom, couleur});
 		this.emit('loggedIn', couleur);
 		var self = this;
 		this.getMemory(function(memory){
 			self.emit('setMemory', memory);
 		});
+		
+		//write login informations in the session
+		client.handshake.session.prenom = prenom;
+		client.handshake.session.surnom = surnom;
+		client.handshake.session.save();
 		
 		datedLog('log in - ' + surnom);
 	}
@@ -109,6 +134,12 @@ io.on('connection', function(client){
 	});
 	client.on('logOut', function(){
 		client.loggedIn = false;
+		
+		//erase login informations from the session
+		client.handshake.session.prenom = '';
+		client.handshake.session.surnom = '';
+		client.handshake.session.save();
+		
 		client.broadcast.emit('logOut', {surnom: client.surnom, lieu: client.presence});
 		client.emit('loggedOut');
 		setTimeout(function(){
