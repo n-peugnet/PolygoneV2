@@ -2,6 +2,7 @@ var App = {
 	lieux: [[],[],[],[]],
 	nbAnonymes: 0,
 	cu : {                // current user informations
+		memoire: [],
 		loggedIn: false,
 		prenom: "",
 		surnom: "",
@@ -54,6 +55,19 @@ var App = {
 	{
 		this.lieux.splice(lieu, 1);
 		eraseCoin(lieu);
+	},
+	
+	addMemory: function(persCite, citation)
+	{
+		newCitation = Object.create(Citation);
+		newCitation.initCitation(this.cu.memoire.idGen(), persCite, citation);
+		this.cu.memoire.push(newCitation);
+		newCitation.write();
+	},
+	
+	getMemory: function(id)
+	{
+		return this.cu.memoire.find(function(m){ return m.id == id; });
 	},
 	
 	storeId: function(prenom, surnom)
@@ -127,13 +141,18 @@ var App = {
 	
 	indexOfUser: function(surnom, lieu)
 	{
-		return this.lieux[lieu].map(function(u) {return u.surnom; }).indexOf(surnom);
+		return this.lieux[lieu].findIndex(function(u) {return u.surnom == surnom; });
 	},
 	
-	selectUser: function(surnom, lieu)
+	getUserIn: function(surnom, lieu)
 	{
 		index  = this.indexOfUser(surnom, lieu);
 		return this.lieux[lieu][index];
+	},
+	
+	getUser: function(surnom)
+	{
+		return this.allUsers().find(function(u) {return u.surnom == surnom; });
 	},
 	
 	delUser: function(surnom, lieu)
@@ -168,8 +187,8 @@ var App = {
 	
 	focusUser: function(surnom, pres, ecoute)
 	{
-		var ecoutePre = this.selectUser(surnom, pres).ecoute
-		this.selectUser(surnom, pres).ecoute = ecoute
+		var ecoutePre = this.getUserIn(surnom, pres).ecoute
+		this.getUserIn(surnom, pres).ecoute = ecoute
 		if (ecoute == this.cu.ecoute || ecoutePre == this.cu.ecoute) {
 			writeEcoutes();
 		}

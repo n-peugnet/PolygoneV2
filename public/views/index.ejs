@@ -31,6 +31,7 @@
 		<script type="text/javascript" src="/include/message.js"></script>
 		<script type="text/javascript">
             var socket = io.connect('http://localhost:3000');
+			var dirViews = '/views/';
 			<% if (prenom != "" && surnom != "") { %> App.storeId('<%= prenom %>', '<%= surnom %>'); <% } %>
 			
 			socket.on('init', function(data){
@@ -60,7 +61,7 @@
 			socket.on('setMemory', function(memory){
 				writeMemoire();
 				memory.forEach(function(m){
-					writeMemory(m.pers_cite, m.citation);
+					App.addMemory(m.pers_cite, m.citation);
 				});
 			});
 			socket.on('newLogIn', function(data){
@@ -74,13 +75,13 @@
 				updateView('loggedOut');
 			});
 			socket.on('ecriture', function(data){
-				App.selectUser(data.surnom, data.lieu).isWriting();
+				App.getUserIn(data.surnom, data.lieu).isWriting();
 			});
 			socket.on('arretEcriture', function(data){
-				App.selectUser(data.surnom, data.lieu).notWriting();
+				App.getUserIn(data.surnom, data.lieu).notWriting();
 			});
 			socket.on('message', function(data){
-				App.selectUser(data.surnom, data.lieu).addMessage(data.message, data.type);
+				App.getUserIn(data.surnom, data.lieu).addMessage(data.message, data.type);
 			});
 			socket.on('move', function(data){
 				App.moveUser(data.surnom, data.presence, data.destination);
