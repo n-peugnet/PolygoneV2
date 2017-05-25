@@ -111,7 +111,6 @@ function deconnexion()
 function writeAccueil()
 {
 	var data = {ecoute: App.cu.ecoute};
-	console.log(data);
 	var html = new EJS({url: dirViews + 'accueil.ejs'}).render(data);
 	$('section').empty().append(html);
 	writeEcoutes();
@@ -169,6 +168,7 @@ function eraseCoin(num)
 function writeEcoutes()
 {
 	var liste = App.usersListeningTo(App.cu.ecoute);
+	console.log(liste);
 	$('#nbEcoutes').empty().append(liste.length);
 }
 

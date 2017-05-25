@@ -138,7 +138,14 @@ io.on('connection', function(client){
 		
 		client.loggedIn = false;
 		client.surnom = null;
-		client.presence = 0;
+		if (client.presence != 0)
+		{
+			if(client.ecoute != client.presence){
+				lieux[client.ecoute] --;
+			}
+			move(client.presence, 0);
+			client.presence = 0;
+		}
 		
 		//erase login informations from the session
 		client.handshake.session.prenom = '';
@@ -146,12 +153,8 @@ io.on('connection', function(client){
 		client.handshake.session.save();
 		
 		setTimeout(function(){
-			if (!client.loggedIn){
+			if (!client.loggedIn)
 				lieux[client.presence] --;
-				if(client.ecoute != client.presence){
-					lieux[client.ecoute] --;
-				}
-			}
 		}, 17000);
 		
 		datedLog('log out - ' + client.surnom);
@@ -260,7 +263,7 @@ function extSurnoms(listeClients)
 
 function extInfos(listeClients)
 {
-	return listeClients.map(function(c) {return {surnom: c.surnom, presence: c.presence, couleur: c.couleur}; });
+	return listeClients.map(function(c) {return {surnom: c.surnom, presence: c.presence, ecoute: c.ecoute, couleur: c.couleur}; });
 }
 
 function pickColor()

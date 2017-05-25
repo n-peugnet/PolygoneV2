@@ -32,7 +32,7 @@ var App = {
 			if (numLieu != lieu){
 				l.forEach(function(u){
 					if (u.ecoute == lieu)
-						listeUsers.push(this)
+						listeUsers.push(u);
 				});
 			}
 		});
@@ -131,20 +131,21 @@ var App = {
 
 	addUser: function(surnom, couleur)
 	{
-		this.addUserIn(surnom, 0, couleur);
+		this.addUserIn(surnom, 0, 0, couleur);
 		this.rmvAnonyme();
 	},
 	
-	addUserIn: function(surnom, lieu, couleur)
+	addUserIn: function(surnom, pres, ecoute, couleur)
 	{
+		console.log(surnom, pres, ecoute, couleur);
 		var current = surnom == this.cu.surnom && this.cu.loggedIn; //determine si l'utilisateur est bien l'utilisateur courant
-		if (this.containsUser(surnom, lieu)){
-			this.lieux[lieu][this.indexOfUser(surnom, lieu)].reactivateIn(lieu, couleur, current);
+		if (this.containsUser(surnom, pres)){
+			this.lieux[pres][this.indexOfUser(surnom, pres)].reactivateIn(pres, couleur, current);
 		} else {
 			newUser = Object.create(User);
-			newUser.init(surnom, couleur, current);
-			this.lieux[lieu].push(newUser)-1;
-			newUser.writeIn(lieu);
+			newUser.init(surnom, ecoute, couleur, current);
+			this.lieux[pres].push(newUser)-1;
+			newUser.writeIn(pres);
 		}
 	},
 	
@@ -183,8 +184,7 @@ var App = {
 	delUser: function(surnom, lieu)
 	{
 		var self = this;
-		if (lieu != 0)
-			this.moveUser(surnom, lieu, 0);
+		this.moveUser(surnom, lieu, 0);
 		var index = this.indexOfUser(surnom, 0);
 		this.lieux[0][index].disableIn(0);
 		this.addAnonyme();

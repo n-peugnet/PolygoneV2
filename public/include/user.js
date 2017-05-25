@@ -1,12 +1,12 @@
 var User = {
 	
-	init: function (surnom, couleur, current)
+	init: function (surnom, ecoute, couleur, current)
 	{
 		this.messages = [];
 		this.surnom = surnom;
 		this.couleur = couleur;
 		this.current = current;
-		this.ecoute = 0;
+		this.ecoute = ecoute;
 		this.ecrit = false;
 		this.actif = true;
 	
