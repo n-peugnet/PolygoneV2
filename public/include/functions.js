@@ -31,7 +31,7 @@ function messageClavier(message, event) {
 function setLoginInputEvent(){
 	$('#surnom').on('input', function() {
 		$(this).val(escapeSurnom($(this).val()));
-		if (extSurnoms(App.allUsers()).includes($(this).val())){
+		if (App.isUserLoggedIn($(this).val())){
 			$(this).css('outline-color', 'red');
 		} else {
 			$(this).css('outline-color', '');
@@ -55,7 +55,7 @@ function escapeHtml(string) {
 }
 
 function escapeSurnom(string) {
-	return String(string).replace(/[ "(]/g, "");
+	return String(string).replace(/[ "()']/g, "");
 }
 
 function activateLinks(texte)
@@ -110,9 +110,12 @@ function deconnexion()
 
 function writeAccueil()
 {
-	var data = {ecoute: App.cu.ecoute, nbEcoutes: App.usersListeningTo(App.cu.ecoute).length};
+	var data = {ecoute: App.cu.ecoute};
+	console.log(data);
 	var html = new EJS({url: dirViews + 'accueil.ejs'}).render(data);
 	$('section').empty().append(html);
+	writeEcoutes();
+	App.writeAnonymes();
 }
 
 function writeLogIn(etat)
@@ -187,6 +190,7 @@ function updateView(action)
 			writeMenuCoins();
 			break;
 		case 'loggedOut':
+			updateView('listenTo');
 			writeLogIn(0);
 			eraseMenuCoins();
 			break;

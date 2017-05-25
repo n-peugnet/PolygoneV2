@@ -90,14 +90,11 @@
 				App.focusUser(data.surnom, data.presence, data.ecoute);
 			});
 			socket.on('goTo', function(destination){
-				App.moveUser(App.cu.surnom, App.cu.presence, destination);
-				App.cu.presence = destination;
-				App.cu.ecoute = destination;
+				App.goTo(destination);
 				updateView('listenTo');
 			});
 			socket.on('listenTo', function(ecoute){
-				App.focusUser(App.cu.surnom, App.cu.presence, ecoute)
-				App.cu.ecoute = ecoute;
+				App.listenTo(ecoute);
 				updateView('listenTo');
 			});
 			socket.on('addCoin', function(){

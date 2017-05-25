@@ -25,7 +25,7 @@ var App = {
 		return listeUsers;
 	},
 	
-	usersListeningTo(lieu)
+	usersListeningTo: function(lieu)
 	{
 		var listeUsers = [];
 		this.lieux.forEach(function(l, numLieu) {
@@ -94,7 +94,21 @@ var App = {
 	logOutCUser: function()
 	{
 		this.cu.loggedIn = false;
-		this.delUser(App.cu.surnom, App.cu.presence);
+		this.goTo(0);
+		this.delUser(this.cu.surnom, this.cu.presence);
+	},
+	
+	goTo: function(dest)
+	{
+		this.moveUser(this.cu.surnom, this.cu.presence, dest);
+		this.cu.presence = dest;
+		this.cu.ecoute = dest;		
+	},
+	
+	listenTo: function(lieu)
+	{
+		this.focusUser(this.cu.surnom, this.cu.presence, lieu);
+		this.cu.ecoute = lieu;		
 	},
 	
 	initAnonymes: function(nb)
@@ -139,6 +153,17 @@ var App = {
 		return this.lieux[lieu].map(function(u) {return u.surnom; }).includes(surnom);
 	},
 	
+	isUserLoggedIn: function(surnom)
+	{
+		var user = this.getUser(surnom);
+		if (user !== undefined)
+		{
+			if (user.actif)
+				return true;
+		}
+		return false;
+	},
+	
 	indexOfUser: function(surnom, lieu)
 	{
 		return this.lieux[lieu].findIndex(function(u) {return u.surnom == surnom; });
@@ -158,13 +183,15 @@ var App = {
 	delUser: function(surnom, lieu)
 	{
 		var self = this;
-		var index = this.indexOfUser(surnom, lieu);
-		this.lieux[lieu][index].disableIn(lieu);
+		if (lieu != 0)
+			this.moveUser(surnom, lieu, 0);
+		var index = this.indexOfUser(surnom, 0);
+		this.lieux[0][index].disableIn(0);
 		this.addAnonyme();
 		setTimeout(function(){
-			if(!self.lieux[lieu][index].actif){
-				self.lieux[lieu][index].eraseIn(lieu);
-				self.lieux[lieu].splice(index,1)
+			if(!self.lieux[0][index].actif){
+				self.lieux[0][index].eraseIn(0);
+				self.lieux[0].splice(index,1);
 			}
 		}, 17000);
 	},
@@ -173,7 +200,7 @@ var App = {
 	{
 		var index = this.indexOfUser(surnom, lDepart);
 		var user = this.lieux[lDepart].splice(index,1)[0];
-		var ecoutePre = user.ecoute
+		var ecoutePre = user.ecoute;
 		user.ecoute = lArrivee;
 		if ( ecoutePre == this.cu.ecoute)
 			writeEcoutes();
@@ -181,7 +208,7 @@ var App = {
 		if (!user.current)
 		{
 			user.eraseIn(lDepart);
-			user.writeIn(lArrivee)
+			user.writeIn(lArrivee);
 		}
 	},
 	
