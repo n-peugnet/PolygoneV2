@@ -143,9 +143,9 @@ var App = {
 			this.lieux[pres][this.indexOfUser(surnom, pres)].reactivateIn(pres, couleur, current);
 		} else {
 			newUser = Object.create(User);
-			newUser.init(surnom, ecoute, couleur, current);
+			newUser.init(surnom, ecoute, couleur, current)
+				   .writeIn(pres);
 			this.lieux[pres].push(newUser)-1;
-			newUser.writeIn(pres);
 		}
 	},
 	

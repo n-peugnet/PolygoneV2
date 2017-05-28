@@ -9,6 +9,7 @@ var User = {
 		this.ecoute = ecoute;
 		this.ecrit = false;
 		this.actif = true;
+		return this;
 	
 	},
 	
@@ -23,13 +24,13 @@ var User = {
 	
 	writeWriting: function()
 	{
-		writeMessage(this.surnom, '. . .', '#cccccc', 'ecrit', 'texte', true);
+		Object.create(Ecrit).initEcrit().writeEcrit(this.surnom);
 	},
 	
 	notWriting: function()
 	{
 		this.ecrit = false;
-		eraseMessage(this.surnom, 'ecrit');
+		Object.create(Ecrit).initEcrit().erase(this.surnom);
 	},
 	
 	addMessage: function (texte, type)
@@ -37,9 +38,9 @@ var User = {
 		this.notWriting();
 		var id = this.messages.idGen();
 		newMessage = Object.create(Message);
-		newMessage.init(id, texte, type);
+		newMessage.init(id, texte, type)
+			      .write(this.surnom, this.couleur, true);
 		this.messages.push(newMessage);
-		writeMessage(this.surnom, texte, this.couleur, id, type, true);
 		setTimeout($.proxy(function(){
 			this.delMessage(id);
 		}, this), (texte.length + 22) * 1000);
@@ -122,7 +123,7 @@ var User = {
 	{
 		var self = this;
 		this.messages.forEach(function(m){
-			writeMessage(self.surnom, m.texte, self.couleur, m.id, m.type, false);
+			m.write(self.surnom, self.couleur, false);
 		});
 		if (this.ecrit){
 			this.writeWriting();

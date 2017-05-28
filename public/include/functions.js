@@ -75,26 +75,6 @@ function sendMessage(texte, type)
 	$("#message").val('').focus();
 }
 
-function writeMessage(surnom, message, couleur, id, type, animation)
-{
-	var data = {surnom, message: activateLinks(message), couleur, id, type};
-	var html = new EJS({url: dirViews + 'message.ejs'}).render(data);
-	if (animation)
-		$(html).prependTo('#dires_'+surnom).css('margin-top', '-'+$('#'+surnom+id).height()+'px').animate({ marginTop: '0px'});
-	else
-		$(html).prependTo('#dires_'+surnom);
-}
-
-function eraseMessage(surnom, id)
-{
-	var idHtml = '#'+surnom+id;
-	if (id == 'ecrit'){
-		$(idHtml).animate({ opacity: 0, marginTop: '-' + $(idHtml).height() +'px'}, function() { $(this).remove(); });
-	} else {
-		$(idHtml).animate({ opacity: 0}, 500).animate({ height: '0px'}, function() { $(this).remove(); });
-	}
-}
-
 function connexion(loginForm)
 {
 	var prenom = $("#prenom").val();
