@@ -2,7 +2,10 @@
 	<h3>Coin <%= num %></h3>
 	<ul>
 <%  for (var i = 0; i < taille; i++) {%>
-		<li class="empty">_</li>
+		<li class="empty">
+			<span class="puce"></span>
+			<span class="surnom"></span>
+		</li>
 <%}%>
 	</ul>
 	<button class ="boutonMove" onclick="goTo(<%= num %>)" <%= !loggedIn ? "disabled" : ""%> ><%= presence == num ? "Y retourner" : "S'assoir" %></button>

@@ -1,6 +1,11 @@
 var App = {
-	lieux: [[],[],[],[]],
+	lieux: [[]],
 	nbAnonymes: 0,
+	sons : {
+		user     : new Audio('/sounds/user.wav'),
+		message  : new Audio('/sounds/message.flac'),
+		appel    : new Audio('/sounds/appel.wav')
+	},
 	cu : {                // current user informations
 		memoire: [],
 		loggedIn: false,
@@ -88,7 +93,7 @@ var App = {
 	{
 		this.cu.loggedIn = true;
 		this.cu.couleur = couleur;
-		this.addUser(this.cu.surnom, couleur)
+		this.addUser(this.cu.surnom, couleur);
 	},
 	
 	logOutCUser: function()
@@ -133,6 +138,8 @@ var App = {
 	{
 		this.addUserIn(surnom, 0, 0, couleur);
 		this.rmvAnonyme();
+		if (surnom != this.cu.surnom && this.cu.presence == 0)
+			this.sons.user.play();
 	},
 	
 	addUserIn: function(surnom, pres, ecoute, couleur)
@@ -143,10 +150,16 @@ var App = {
 			this.lieux[pres][this.indexOfUser(surnom, pres)].reactivateIn(pres, couleur, current);
 		} else {
 			newUser = Object.create(User);
-			newUser.init(surnom, ecoute, couleur, current)
-				   .writeIn(pres);
-			this.lieux[pres].push(newUser)-1;
+			newUser.init(surnom, ecoute, couleur, current).writeIn(pres);
+			this.lieux[pres].push(newUser);
 		}
+	},
+	
+	addMessageTo(surnom, lieu, texte, type)
+	{
+		if (surnom != this.cu.surnom && lieu == this.cu.ecoute)
+			this.sons.message.play();
+		this.getUserIn(surnom, lieu).addMessage(texte, type);
 	},
 	
 	containsUser: function(surnom, lieu)
@@ -209,6 +222,8 @@ var App = {
 		{
 			user.eraseIn(lDepart);
 			user.writeIn(lArrivee);
+			if (lArrivee == this.cu.presence)
+				this.sons.user.play();
 		}
 	},
 	

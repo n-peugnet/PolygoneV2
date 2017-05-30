@@ -36,7 +36,7 @@
 			
 			socket.on('init', function(data){
 				App.reconnect();
-				for (i=4; i < data.nbLieux; i++) {
+				for (i=1; i < data.nbLieux; i++) {
 					App.addLieu();
 				}
 				App.writeCoins();
@@ -81,7 +81,7 @@
 				App.getUserIn(data.surnom, data.lieu).notWriting();
 			});
 			socket.on('message', function(data){
-				App.getUserIn(data.surnom, data.lieu).addMessage(data.message, data.type);
+				App.addMessageTo(data.surnom, data.lieu, data.message, data.type);
 			});
 			socket.on('move', function(data){
 				App.moveUser(data.surnom, data.presence, data.destination);

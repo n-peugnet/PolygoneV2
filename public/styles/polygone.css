@@ -163,6 +163,15 @@ ul {
 	display: inline-block;
 }
 
+span.puce {
+	display: inline-block;
+	background-color: #dddddd;
+	width: 12px;
+	height: 12px;
+	border-radius: 6px;
+	vertical-align: middle;
+}
+
 #interface {
 	background-color: white;
 	border: solid 1px #dddddd;
