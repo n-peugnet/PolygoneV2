@@ -133,23 +133,28 @@ io.on('connection', function(client){
 		}
 	});
 	client.on('logOut', function(){
+		client.broadcast.emit('logOut', {surnom: client.surnom, lieu: client.presence});
+		client.emit('loggedOut');
+		
 		client.loggedIn = false;
+		client.surnom = null;
+		if (client.presence != 0)
+		{
+			if(client.ecoute != client.presence){
+				lieux[client.ecoute] --;
+			}
+			move(client.presence, 0);
+			client.presence = 0;
+		}
 		
 		//erase login informations from the session
 		client.handshake.session.prenom = '';
 		client.handshake.session.surnom = '';
 		client.handshake.session.save();
 		
-		client.broadcast.emit('logOut', {surnom: client.surnom, lieu: client.presence});
-		client.emit('loggedOut');
 		setTimeout(function(){
-			if (!client.loggedIn){
+			if (!client.loggedIn)
 				lieux[client.presence] --;
-				if(client.ecoute != client.presence){
-					lieux[client.ecoute] --;
-				}
-				client.surnom = null;
-			}
 		}, 17000);
 		
 		datedLog('log out - ' + client.surnom);
@@ -216,7 +221,7 @@ io.on('connection', function(client){
 	});
 });
 
-server.listen(config.web.port);
+server.listen(config.web.port, datedLog("Listening on port " + config.web.port));
 
 var j = schedule.scheduleJob('0 2 * * *', function(){
 	var query = connection.query('DELETE FROM sessions WHERE DATE_ADD(date_activite, INTERVAL 20 DAY) <= NOW()', function (error, results, fields) {
@@ -258,7 +263,7 @@ function extSurnoms(listeClients)
 
 function extInfos(listeClients)
 {
-	return listeClients.map(function(c) {return {surnom: c.surnom, presence: c.presence, couleur: c.couleur}; });
+	return listeClients.map(function(c) {return {surnom: c.surnom, presence: c.presence, ecoute: c.ecoute, couleur: c.couleur}; });
 }
 
 function pickColor()

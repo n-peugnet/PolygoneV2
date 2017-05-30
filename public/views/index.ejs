@@ -36,12 +36,12 @@
 			
 			socket.on('init', function(data){
 				App.reconnect();
-				for (i=4; i < data.nbLieux; i++) {
+				for (i=1; i < data.nbLieux; i++) {
 					App.addLieu();
 				}
 				App.writeCoins();
 				data.infosClients.forEach( function(client){
-					App.addUserIn(client.surnom, client.presence, client.couleur);
+					App.addUserIn(client.surnom, client.presence, client.ecoute, client.couleur);
 				});
 				App.initAnonymes(data.nbAnonymes);
 			});
@@ -81,7 +81,7 @@
 				App.getUserIn(data.surnom, data.lieu).notWriting();
 			});
 			socket.on('message', function(data){
-				App.getUserIn(data.surnom, data.lieu).addMessage(data.message, data.type);
+				App.addMessageTo(data.surnom, data.lieu, data.message, data.type);
 			});
 			socket.on('move', function(data){
 				App.moveUser(data.surnom, data.presence, data.destination);
@@ -90,14 +90,11 @@
 				App.focusUser(data.surnom, data.presence, data.ecoute);
 			});
 			socket.on('goTo', function(destination){
-				App.moveUser(App.cu.surnom, App.cu.presence, destination);
-				App.cu.presence = destination;
-				App.cu.ecoute = destination;
+				App.goTo(destination);
 				updateView('listenTo');
 			});
 			socket.on('listenTo', function(ecoute){
-				App.focusUser(App.cu.surnom, App.cu.presence, ecoute)
-				App.cu.ecoute = ecoute;
+				App.listenTo(ecoute);
 				updateView('listenTo');
 			});
 			socket.on('addCoin', function(){

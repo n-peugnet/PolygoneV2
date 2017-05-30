@@ -1,6 +1,11 @@
 var App = {
-	lieux: [[],[],[],[]],
+	lieux: [[]],
 	nbAnonymes: 0,
+	sons : {
+		user     : new Audio('/sounds/user.wav'),
+		message  : new Audio('/sounds/message.flac'),
+		appel    : new Audio('/sounds/appel.wav')
+	},
 	cu : {                // current user informations
 		memoire: [],
 		loggedIn: false,
@@ -25,14 +30,14 @@ var App = {
 		return listeUsers;
 	},
 	
-	usersListeningTo(lieu)
+	usersListeningTo: function(lieu)
 	{
 		var listeUsers = [];
 		this.lieux.forEach(function(l, numLieu) {
 			if (numLieu != lieu){
 				l.forEach(function(u){
 					if (u.ecoute == lieu)
-						listeUsers.push(this)
+						listeUsers.push(u);
 				});
 			}
 		});
@@ -88,13 +93,27 @@ var App = {
 	{
 		this.cu.loggedIn = true;
 		this.cu.couleur = couleur;
-		this.addUser(this.cu.surnom, couleur)
+		this.addUser(this.cu.surnom, couleur);
 	},
 	
 	logOutCUser: function()
 	{
 		this.cu.loggedIn = false;
-		this.delUser(App.cu.surnom, App.cu.presence);
+		this.goTo(0);
+		this.delUser(this.cu.surnom, this.cu.presence);
+	},
+	
+	goTo: function(dest)
+	{
+		this.moveUser(this.cu.surnom, this.cu.presence, dest);
+		this.cu.presence = dest;
+		this.cu.ecoute = dest;		
+	},
+	
+	listenTo: function(lieu)
+	{
+		this.focusUser(this.cu.surnom, this.cu.presence, lieu);
+		this.cu.ecoute = lieu;		
 	},
 	
 	initAnonymes: function(nb)
@@ -117,26 +136,46 @@ var App = {
 
 	addUser: function(surnom, couleur)
 	{
-		this.addUserIn(surnom, 0, couleur);
+		this.addUserIn(surnom, 0, 0, couleur);
 		this.rmvAnonyme();
+		if (surnom != this.cu.surnom && this.cu.presence == 0)
+			this.sons.user.play();
 	},
 	
-	addUserIn: function(surnom, lieu, couleur)
+	addUserIn: function(surnom, pres, ecoute, couleur)
 	{
+		console.log(surnom, pres, ecoute, couleur);
 		var current = surnom == this.cu.surnom && this.cu.loggedIn; //determine si l'utilisateur est bien l'utilisateur courant
-		if (this.containsUser(surnom, lieu)){
-			this.lieux[lieu][this.indexOfUser(surnom, lieu)].reactivateIn(lieu, couleur, current);
+		if (this.containsUser(surnom, pres)){
+			this.lieux[pres][this.indexOfUser(surnom, pres)].reactivateIn(pres, couleur, current);
 		} else {
 			newUser = Object.create(User);
-			newUser.init(surnom, couleur, current);
-			this.lieux[lieu].push(newUser)-1;
-			newUser.writeIn(lieu);
+			newUser.init(surnom, ecoute, couleur, current).writeIn(pres);
+			this.lieux[pres].push(newUser);
 		}
+	},
+	
+	addMessageTo(surnom, lieu, texte, type)
+	{
+		if (surnom != this.cu.surnom && lieu == this.cu.ecoute)
+			this.sons.message.play();
+		this.getUserIn(surnom, lieu).addMessage(texte, type);
 	},
 	
 	containsUser: function(surnom, lieu)
 	{
 		return this.lieux[lieu].map(function(u) {return u.surnom; }).includes(surnom);
+	},
+	
+	isUserLoggedIn: function(surnom)
+	{
+		var user = this.getUser(surnom);
+		if (user !== undefined)
+		{
+			if (user.actif)
+				return true;
+		}
+		return false;
 	},
 	
 	indexOfUser: function(surnom, lieu)
@@ -158,13 +197,14 @@ var App = {
 	delUser: function(surnom, lieu)
 	{
 		var self = this;
-		var index = this.indexOfUser(surnom, lieu);
-		this.lieux[lieu][index].disableIn(lieu);
+		this.moveUser(surnom, lieu, 0);
+		var index = this.indexOfUser(surnom, 0);
+		this.lieux[0][index].disableIn(0);
 		this.addAnonyme();
 		setTimeout(function(){
-			if(!self.lieux[lieu][index].actif){
-				self.lieux[lieu][index].eraseIn(lieu);
-				self.lieux[lieu].splice(index,1)
+			if(!self.lieux[0][index].actif){
+				self.lieux[0][index].eraseIn(0);
+				self.lieux[0].splice(index,1);
 			}
 		}, 17000);
 	},
@@ -173,7 +213,7 @@ var App = {
 	{
 		var index = this.indexOfUser(surnom, lDepart);
 		var user = this.lieux[lDepart].splice(index,1)[0];
-		var ecoutePre = user.ecoute
+		var ecoutePre = user.ecoute;
 		user.ecoute = lArrivee;
 		if ( ecoutePre == this.cu.ecoute)
 			writeEcoutes();
@@ -181,7 +221,9 @@ var App = {
 		if (!user.current)
 		{
 			user.eraseIn(lDepart);
-			user.writeIn(lArrivee)
+			user.writeIn(lArrivee);
+			if (lArrivee == this.cu.presence)
+				this.sons.user.play();
 		}
 	},
 	
