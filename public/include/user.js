@@ -1,6 +1,6 @@
-var User = {
+class User {
 	
-	init: function (surnom, ecoute, couleur, current)
+	constructor(surnom, ecoute, couleur, current)
 	{
 		this.messages = [];
 		this.surnom = surnom;
@@ -10,54 +10,53 @@ var User = {
 		this.ecrit = false;
 		this.actif = true;
 		return this;
+	}
 	
-	},
-	
-	isWriting: function()
+	isWriting()
 	{
 		if (!this.ecrit)
 		{
 			this.ecrit = true;
 			this.writeWriting();
 		}
-	},
+	}
 	
-	writeWriting: function()
+	writeWriting()
 	{
-		Object.create(Ecrit).initEcrit().writeEcrit(this.surnom);
-	},
+		new Ecrit().write(this.surnom);
+	}
 	
-	notWriting: function()
+	notWriting()
 	{
 		this.ecrit = false;
-		Object.create(Ecrit).initEcrit().erase(this.surnom);
-	},
+		new Ecrit().erase(this.surnom);
+	}
 	
-	addMessage: function (texte, type)
+	addMessage(texte, type)
 	{
 		this.notWriting();
 		var id = this.messages.idGen();
-		newMessage = Object.create(Message);
-		newMessage.init(id, texte, type).write(this.surnom, this.couleur, true);
+		var newMessage = new Message(id, texte, type).write(this.surnom, this.couleur, true);
 		this.messages.push(newMessage);
+		console.log(this.messages);
 		setTimeout($.proxy(function(){
 			this.delMessage(id);
 		}, this), (texte.length + 22) * 1000);
-	},
+	}
 	
-	delMessage: function (id)
+	delMessage(id)
 	{
 		index = this.messages.map(function(m) { return m.id; }).indexOf(id); //trouve l'index du message dont l'id est égal à id
 		this.messages.splice(index, 1)[0].erase(this.surnom, id);
-	},
+	}
 	
-	genColonne: function()
+	genColonne()
 	{
 		return new EJS({url: dirViews + 'colonne.ejs'}).render(this);
-	},
+	}
 	
 	//inscrit un utilisateur dans la page
-	writeIn: function(lieu)
+	writeIn(lieu)
 	{
 		if (lieu == App.cu.ecoute || lieu == 0){
 			var html = this.genColonne();
@@ -75,9 +74,10 @@ var User = {
 			ligne.children('span.puce').css('backgroundColor', this.couleur);
 			ligne.children('span.surnom').text(this.surnom);
 		}
-	}, 
+		return this;
+	} 
 	
-	disableIn: function(lieu)
+	disableIn(lieu)
 	{
 		this.actif = false;
 		this.ecrit = false;
@@ -87,9 +87,9 @@ var User = {
 		} else {
 			$('#' + this.surnom).addClass('inactif');
 		}
-	},
+	}
 	
-	reactivateIn: function(lieu, couleur, current)
+	reactivateIn(lieu, couleur, current)
 	{
 		this.actif = true;
 		this.couleur = couleur;
@@ -99,16 +99,16 @@ var User = {
 		}else {
 			$('#' + this.surnom).removeClass('inactif');
 		}
-	},
+	}
 	
-	updateCol: function()
+	updateCol()
 	{
 		var html = this.genColonne();
 		$('#' + this.surnom).replaceWith(html);
 		this.writeMessages();
-	},
+	}
 	
-	eraseIn: function(lieu) 
+	eraseIn(lieu) 
 	{
 		if (lieu == App.cu.ecoute || lieu == 0){
 			$('#' + this.surnom).remove();
@@ -118,9 +118,9 @@ var User = {
 			ligne.children('span.puce').css('backgroundColor', '#dddddd');
 			ligne.children('span.surnom').text('');
 		}
-	},
+	}
 	
-	writeMessages: function()
+	writeMessages()
 	{
 		var self = this;
 		this.messages.forEach(function(m){
@@ -129,9 +129,9 @@ var User = {
 		if (this.ecrit){
 			this.writeWriting();
 		}
-	},
+	}
 	
-	getMessage: function(id)
+	getMessage(id)
 	{
 		return this.messages.find(function(m){ return m.id == id; });
 	}

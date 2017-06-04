@@ -16,12 +16,12 @@ var App = {
 		ecoute: 0
 	},
 	
-	coins: function()
+	coins()
 	{
 		return this.lieux.slice(1);
 	},
 	
-	allUsers: function()
+	allUsers()
 	{
 		var listeUsers = [];
 		this.lieux.forEach(function(lieu) {
@@ -30,7 +30,7 @@ var App = {
 		return listeUsers;
 	},
 	
-	usersListeningTo: function(lieu)
+	usersListeningTo(lieu)
 	{
 		var listeUsers = [];
 		this.lieux.forEach(function(l, numLieu) {
@@ -44,44 +44,42 @@ var App = {
 		return listeUsers;
 	},
 	
-	addLieu: function()
+	addLieu()
 	{
 		i = this.lieux.push([])-1;
 		writeCoin(i, 6);
 	},
 	
-	delLastLieu: function()
+	delLastLieu()
 	{
 		console.log('del Lieu')
 		this.delLieu(this.lieux.length - 1);
 	},
 	
-	delLieu: function(lieu)
+	delLieu(lieu)
 	{
 		this.lieux.splice(lieu, 1);
 		eraseCoin(lieu);
 	},
 	
-	addMemory: function(persCite, citation)
+	addMemory(persCite, citation)
 	{
-		newCitation = Object.create(Citation);
-		newCitation.initCitation(this.cu.memoire.idGen(), persCite, citation);
+		var newCitation = new Citation(this.cu.memoire.idGen(), persCite, citation).write();
 		this.cu.memoire.push(newCitation);
-		newCitation.write();
 	},
 	
-	getMemory: function(id)
+	getMemory(id)
 	{
 		return this.cu.memoire.find(function(m){ return m.id == id; });
 	},
 	
-	storeId: function(prenom, surnom)
+	storeId(prenom, surnom)
 	{
 		this.cu.prenom = prenom;
 		this.cu.surnom = surnom;
 	},
 	
-	reconnect: function()
+	reconnect()
 	{
 		var prenom = this.cu.prenom;
 		var surnom = this.cu.surnom;
@@ -89,52 +87,52 @@ var App = {
 			socket.emit('logIn', {prenom, surnom});
 	},
 	
-	logInCUser: function(couleur)
+	logInCUser(couleur)
 	{
 		this.cu.loggedIn = true;
 		this.cu.couleur = couleur;
 		this.addUser(this.cu.surnom, couleur);
 	},
 	
-	logOutCUser: function()
+	logOutCUser()
 	{
 		this.cu.loggedIn = false;
 		this.goTo(0);
 		this.delUser(this.cu.surnom, this.cu.presence);
 	},
 	
-	goTo: function(dest)
+	goTo(dest)
 	{
 		this.moveUser(this.cu.surnom, this.cu.presence, dest);
 		this.cu.presence = dest;
 		this.cu.ecoute = dest;		
 	},
 	
-	listenTo: function(lieu)
+	listenTo(lieu)
 	{
 		this.focusUser(this.cu.surnom, this.cu.presence, lieu);
 		this.cu.ecoute = lieu;		
 	},
 	
-	initAnonymes: function(nb)
+	initAnonymes(nb)
 	{
 		this.nbAnonymes = nb;
 		this.writeAnonymes();
 	},
 	
-	addAnonyme: function()
+	addAnonyme()
 	{
 		this.nbAnonymes ++;
 		this.writeAnonymes();
 	},
 	
-	rmvAnonyme: function()
+	rmvAnonyme()
 	{
 		this.nbAnonymes --;
 		this.writeAnonymes();
 	},
 
-	addUser: function(surnom, couleur)
+	addUser(surnom, couleur)
 	{
 		this.addUserIn(surnom, 0, 0, couleur);
 		this.rmvAnonyme();
@@ -142,15 +140,14 @@ var App = {
 			this.sons.user.play();
 	},
 	
-	addUserIn: function(surnom, pres, ecoute, couleur)
+	addUserIn(surnom, pres, ecoute, couleur)
 	{
 		console.log(surnom, pres, ecoute, couleur);
 		var current = surnom == this.cu.surnom && this.cu.loggedIn; //determine si l'utilisateur est bien l'utilisateur courant
 		if (this.containsUser(surnom, pres)){
 			this.lieux[pres][this.indexOfUser(surnom, pres)].reactivateIn(pres, couleur, current);
 		} else {
-			newUser = Object.create(User);
-			newUser.init(surnom, ecoute, couleur, current).writeIn(pres);
+			var newUser = new User (surnom, ecoute, couleur, current).writeIn(pres);
 			this.lieux[pres].push(newUser);
 		}
 	},
@@ -162,12 +159,12 @@ var App = {
 		this.getUserIn(surnom, lieu).addMessage(texte, type);
 	},
 	
-	containsUser: function(surnom, lieu)
+	containsUser(surnom, lieu)
 	{
 		return this.lieux[lieu].map(function(u) {return u.surnom; }).includes(surnom);
 	},
 	
-	isUserLoggedIn: function(surnom)
+	isUserLoggedIn(surnom)
 	{
 		var user = this.getUser(surnom);
 		if (user !== undefined)
@@ -178,23 +175,23 @@ var App = {
 		return false;
 	},
 	
-	indexOfUser: function(surnom, lieu)
+	indexOfUser(surnom, lieu)
 	{
 		return this.lieux[lieu].findIndex(function(u) {return u.surnom == surnom; });
 	},
 	
-	getUserIn: function(surnom, lieu)
+	getUserIn(surnom, lieu)
 	{
 		index  = this.indexOfUser(surnom, lieu);
 		return this.lieux[lieu][index];
 	},
 	
-	getUser: function(surnom)
+	getUser(surnom)
 	{
 		return this.allUsers().find(function(u) {return u.surnom == surnom; });
 	},
 	
-	delUser: function(surnom, lieu)
+	delUser(surnom, lieu)
 	{
 		var self = this;
 		this.moveUser(surnom, lieu, 0);
@@ -209,7 +206,7 @@ var App = {
 		}, 17000);
 	},
 
-	moveUser: function(surnom, lDepart, lArrivee)
+	moveUser(surnom, lDepart, lArrivee)
 	{
 		var index = this.indexOfUser(surnom, lDepart);
 		var user = this.lieux[lDepart].splice(index,1)[0];
@@ -227,7 +224,7 @@ var App = {
 		}
 	},
 	
-	focusUser: function(surnom, pres, ecoute)
+	focusUser(surnom, pres, ecoute)
 	{
 		var ecoutePre = this.getUserIn(surnom, pres).ecoute
 		this.getUserIn(surnom, pres).ecoute = ecoute
@@ -236,12 +233,12 @@ var App = {
 		}
 	}, 
 
-	writeAnonymes: function()
+	writeAnonymes()
 	{
 		$('#nbAnonymes').empty().append(this.nbAnonymes);
 	},
 	
-	writeUsers: function()
+	writeUsers()
 	{
 		for (i=0; i < this.lieux.length; i++) {
 			$('#lieu'+i).empty();
@@ -251,7 +248,7 @@ var App = {
 		}
 	},
 		
-	writeCoins: function()
+	writeCoins()
 	{
 		$('#coins').empty();
 		for (i=1; i < this.lieux.length; i++) {

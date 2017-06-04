@@ -4,13 +4,13 @@ function messageClavier(message, event) {
 	var longueur = message.length;
 	var key = event.keyCode;
 
-    var isPrintable = 
-        (key > 47 && key < 58)   || // number keys
-        key == 32                || // spacebar
-        (key > 64 && key < 91)   || // letter keys
-        (key > 95 && key < 112)  || // numpad keys
-        (key > 185 && key < 193) || // ;=,-./` (in order)
-        (key > 218 && key < 224);   // [\]'! (in order)
+	var isPrintable = 
+		(key > 47 && key < 58)   || // number keys
+		key == 32                || // spacebar
+		(key > 64 && key < 91)   || // letter keys
+		(key > 95 && key < 112)  || // numpad keys
+		(key > 185 && key < 193) || // ;=,-./` (in order)
+		(key > 218 && key < 224);   // [\]'! (in order)
 
 	if (key == 8 || key == 46){
 		if (longueur == 1){
@@ -39,21 +39,6 @@ function setLoginInputEvent(){
 	});
 }
 
-function escapeHtml(string) {
-	var entityMap = {
-	  '&': '&amp;',
-	  '<': '&lt;',
-	  '>': '&gt;',
-	  '"': '&quot;',
-	  "'": '&#39;',
-	  '`': '&#x60;',
-	  '=': '&#x3D;'
-	};
-	return String(string).replace(/[&<>"'`=]/g, function (s) {
-		return entityMap[s];
-	});
-}
-
 function escapeSurnom(string) {
 	return String(string).replace(/[ "()']/g, "");
 }
@@ -70,7 +55,8 @@ function activateLinks(texte)
 function sendMessage(texte, type)
 {
 	if (texte.length > 0) {
-		socket.emit('message', {texte: escapeHtml(texte), type});
+		texte = texte.escapeHtml().cleanSpaces();
+		socket.emit('message', {texte, type});
 	}
 	$("#message").val('').focus();
 }
@@ -219,6 +205,26 @@ function crier()
 function extSurnoms(listeUsers)
 {
 	return listeUsers.map(function(u) {return u.surnom; });
+}
+
+String.prototype.escapeHtml = function() {
+	var entityMap = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#39;',
+		'`': '&#x60;',
+		'=': '&#x3D;'
+	};
+	return this.replace(/[&<>"'`=]/g, function (s) {
+		return entityMap[s];
+	});
+}
+
+String.prototype.cleanSpaces = function()
+{
+	return this.replace(/ {2,}/g, ' ');
 }
 
 Array.prototype.idGen = function()
