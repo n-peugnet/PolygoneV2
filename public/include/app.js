@@ -1,9 +1,11 @@
+/** @namespace */
 var App = {
-	lieux: [[]],
+	lieux: [[]],  // List of the different places lists.
 	nbAnonymes: 0,
 	sons : {
 		user     : new Audio('/sounds/user.wav'),
 		message  : new Audio('/sounds/message.flac'),
+		cri      : new Audio('/sounds/message.flac'),
 		appel    : new Audio('/sounds/appel.wav')
 	},
 	cu : {                // current user informations
@@ -52,7 +54,6 @@ var App = {
 	
 	delLastLieu()
 	{
-		console.log('del Lieu')
 		this.delLieu(this.lieux.length - 1);
 	},
 	
@@ -64,7 +65,7 @@ var App = {
 	
 	addMemory(persCite, citation)
 	{
-		var newCitation = new Citation(this.cu.memoire.idGen(), persCite, citation).write();
+		var newCitation = new Citation(idGen(this.cu.memoire), persCite, citation).write();
 		this.cu.memoire.push(newCitation);
 	},
 	
@@ -142,7 +143,6 @@ var App = {
 	
 	addUserIn(surnom, pres, ecoute, couleur)
 	{
-		console.log(surnom, pres, ecoute, couleur);
 		var current = surnom == this.cu.surnom && this.cu.loggedIn; //determine si l'utilisateur est bien l'utilisateur courant
 		if (this.containsUser(surnom, pres)){
 			this.lieux[pres][this.indexOfUser(surnom, pres)].reactivateIn(pres, couleur, current);
@@ -155,7 +155,16 @@ var App = {
 	addMessageTo(surnom, lieu, texte, type)
 	{
 		if (surnom != this.cu.surnom && lieu == this.cu.ecoute)
-			this.sons.message.play();
+		{
+			switch(type){
+				case "cri":
+					this.sons.cri.play();
+					break;
+				case "texte":
+				default:
+					this.sons.message.play();
+			}
+		}
 		this.getUserIn(surnom, lieu).addMessage(texte, type);
 	},
 	
@@ -175,6 +184,12 @@ var App = {
 		return false;
 	},
 	
+	/**
+	 * Get a user's index in the place he is, based on it's nickname.
+	 * @param {string} surnom - The user's nickname.
+	 * @param {number} lieu - The user's place.
+	 * @return {number} The user's index.
+	 */
 	indexOfUser(surnom, lieu)
 	{
 		return this.lieux[lieu].findIndex(function(u) {return u.surnom == surnom; });
@@ -182,7 +197,7 @@ var App = {
 	
 	getUserIn(surnom, lieu)
 	{
-		index  = this.indexOfUser(surnom, lieu);
+		index = this.indexOfUser(surnom, lieu);
 		return this.lieux[lieu][index];
 	},
 	
@@ -194,9 +209,9 @@ var App = {
 	delUser(surnom, lieu)
 	{
 		var self = this;
-		this.moveUser(surnom, lieu, 0);
-		var index = this.indexOfUser(surnom, 0);
-		this.lieux[0][index].disableIn(0);
+		var index = this.indexOfUser(surnom, lieu);
+		this.lieux[lieu][index].disableIn(lieu);
+		index = this.moveUser(surnom, lieu, 0);
 		this.addAnonyme();
 		setTimeout(function(){
 			if(!self.lieux[0][index].actif){
@@ -206,6 +221,13 @@ var App = {
 		}, 17000);
 	},
 
+	/**
+	 * Move a user from one place to another.
+	 * @param {string} surnom - The user's nickname.
+	 * @param {number} lDepart - The departure number.
+	 * @param {number} lArrivee - The destination number.
+	 * @return {number} The user's new index in destination.
+	 */
 	moveUser(surnom, lDepart, lArrivee)
 	{
 		var index = this.indexOfUser(surnom, lDepart);
@@ -214,14 +236,15 @@ var App = {
 		user.ecoute = lArrivee;
 		if ( ecoutePre == this.cu.ecoute)
 			writeEcoutes();
-		this.lieux[lArrivee].push(user);
+		index = this.lieux[lArrivee].push(user) - 1;
 		if (!user.current)
 		{
 			user.eraseIn(lDepart);
 			user.writeIn(lArrivee);
-			if (lArrivee == this.cu.presence)
+			if (lArrivee == this.cu.presence && user.actif)
 				this.sons.user.play();
 		}
+		return index;
 	},
 	
 	focusUser(surnom, pres, ecoute)
@@ -231,7 +254,7 @@ var App = {
 		if (ecoute == this.cu.ecoute || ecoutePre == this.cu.ecoute) {
 			writeEcoutes();
 		}
-	}, 
+	},
 
 	writeAnonymes()
 	{

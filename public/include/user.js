@@ -1,5 +1,13 @@
+/** Class representing a User */
 class User {
 	
+	/**
+	 * Create a User.
+	 * @param {string} surnom - The new User's nickname.
+	 * @param {number} ecoute - The place's number where the new User is listening.
+	 * @param {string} couleur - The new User's color.
+	 * @param {boolean} current - True is the new User is the current User
+	 */
 	constructor(surnom, ecoute, couleur, current)
 	{
 		this.messages = [];
@@ -35,10 +43,9 @@ class User {
 	addMessage(texte, type)
 	{
 		this.notWriting();
-		var id = this.messages.idGen();
+		var id = idGen(this.messages);
 		var newMessage = new Message(id, texte, type).write(this.surnom, this.couleur, true);
 		this.messages.push(newMessage);
-		console.log(this.messages);
 		setTimeout($.proxy(function(){
 			this.delMessage(id);
 		}, this), (texte.length + 22) * 1000);

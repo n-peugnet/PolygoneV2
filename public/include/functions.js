@@ -39,8 +39,27 @@ function setLoginInputEvent(){
 	});
 }
 
+function escapeHtml(string) {
+	var entityMap = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#39;',
+		'`': '&#x60;',
+		'=': '&#x3D;'
+	};
+	return string.replace(/[&<>"'`=]/g, function (s) {
+		return entityMap[s];
+	});
+}
+
 function escapeSurnom(string) {
 	return String(string).replace(/[ "()']/g, "");
+}
+
+function cleanSpaces(string) {
+	return string.replace(/ {2,}/g, ' ');
 }
 
 function activateLinks(texte)
@@ -55,7 +74,7 @@ function activateLinks(texte)
 function sendMessage(texte, type)
 {
 	if (texte.length > 0) {
-		texte = texte.escapeHtml().cleanSpaces();
+		texte = cleanSpaces(escapeHtml(texte));
 		socket.emit('message', {texte, type});
 	}
 	$("#message").val('').focus();
@@ -207,30 +226,9 @@ function extSurnoms(listeUsers)
 	return listeUsers.map(function(u) {return u.surnom; });
 }
 
-String.prototype.escapeHtml = function() {
-	var entityMap = {
-		'&': '&amp;',
-		'<': '&lt;',
-		'>': '&gt;',
-		'"': '&quot;',
-		"'": '&#39;',
-		'`': '&#x60;',
-		'=': '&#x3D;'
-	};
-	return this.replace(/[&<>"'`=]/g, function (s) {
-		return entityMap[s];
-	});
-}
-
-String.prototype.cleanSpaces = function()
-{
-	return this.replace(/ {2,}/g, ' ');
-}
-
-Array.prototype.idGen = function()
-{
-	if (this.length == 0)
+function idGen(array){
+	if (array.length == 0)
 		return 0;
 	else
-		return this[this.length - 1].id + 1;
+		return array[array.length - 1].id + 1;
 }
