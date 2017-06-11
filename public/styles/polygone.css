@@ -19,6 +19,7 @@ a, p, h3, li, label, input, textarea {
 }
 
 h1, h2 {
+	margin: 10px 0;
 	font-family: segoeuil, Arial, sans-serif;
 	font-weight: 600;
 	font-stretch: condensed;
@@ -27,6 +28,15 @@ h1, h2 {
 h3 {
 	margin-top: 5px;
 	margin-bottom: 5px;
+}
+
+li {
+	list-style-type: none;
+}
+
+ul {
+	margin: 2px 2px;
+	padding: 0;
 }
 
 .background {
@@ -55,12 +65,12 @@ h3 {
 }
 
 .colonne {
+	position: relative;
 	display: inline-block;
 	width: 210px;
 	height: 380px;
 	margin-right: 5px;
 	border-radius: 3px;
-	
 }
 
 li.inactif {
@@ -81,10 +91,37 @@ div.inactif .bulleBackground {
 	
 }
 
-.nom {
+h3.nom {
 	color: white;
 	margin: 0;
-	
+	display: inline;
+}
+
+span.menuBouton {
+	color: white;
+	float: right;
+	cursor: pointer;
+}
+
+div.menu {
+	position: absolute;
+	display: none;
+	background-color: #eeeeee;
+	border: solid 1px lightgray;
+	min-width: 140px;
+	top: 24px;
+	right: 5px;
+	z-index: 1;
+}
+
+div.menu ul>li {
+	padding: 2px 17px;
+	font-size: 13px;
+	cursor: pointer;
+}
+
+div.menu ul>li:hover {
+	background-color: #bbbbbb;
 }
 
 .dires {
@@ -123,6 +160,10 @@ form {
 	margin-bottom: 5px;
 }
 
+.coin>ul {
+	margin-bottom: 10px;
+}
+
 #ajouterCoin {
     width: 40px;
     height: 40px;
@@ -134,14 +175,6 @@ form {
 #ajouterCoin:hover {
 	background-color: rgba(204,204,204,0.7);
 	
-}
-
-li {
-	list-style-type: none;
-}
-
-ul {
-	padding-left: 5px;
 }
 
 #discussions {

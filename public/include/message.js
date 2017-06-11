@@ -1,3 +1,4 @@
+/** Class representing a message */
 class Message {
 	constructor(id, texte, type)
 	{

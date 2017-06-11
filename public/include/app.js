@@ -1,6 +1,6 @@
 /** @namespace */
 var App = {
-	lieux: [[]],  // List of the different places lists.
+	lieux: [new Lieu("centre")],  // List of the different places.
 	nbAnonymes: 0,
 	sons : {
 		user     : new Audio('/sounds/user.wav'),
@@ -48,8 +48,9 @@ var App = {
 	
 	addLieu()
 	{
-		i = this.lieux.push([])-1;
-		writeCoin(i, 6);
+		var newLieu = new Lieu();
+		i = this.lieux.push(newLieu)-1;
+		newLieu.writeCoin(i);
 	},
 	
 	delLastLieu()
@@ -270,13 +271,21 @@ var App = {
 			});
 		}
 	},
+
+	writeUsersMenu()
+	{
+		this.lieux[this.cu.presence].forEach(function(u){
+			if (!u.current)
+				u.writeMenu();
+		});
+	},
 		
 	writeCoins()
 	{
 		$('#coins').empty();
 		for (i=1; i < this.lieux.length; i++) {
 			if (i != this.cu.ecoute){
-				writeCoin(i, 6);
+				this.lieux[i].writeCoin(i);
 			}
 		}
 	}

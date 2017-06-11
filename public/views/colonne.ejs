@@ -1,8 +1,6 @@
-<div class="colonne" id="<%= surnom %>">
+<div class="colonne" id="user_<%= surnom %>">
 	<div class="entete" style="background-color: <%= couleur %>;">
 		<h3 class="nom"><%= surnom %></h3>
-		<% if (!current && actif) { %>
-		<% } %>
 	</div>
 	<% if (current && actif) { %>
 	<div id="interface">

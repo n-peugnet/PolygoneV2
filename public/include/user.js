@@ -61,6 +61,12 @@ class User {
 	{
 		return new EJS({url: dirViews + 'colonne.ejs'}).render(this);
 	}
+
+	writeMenu()
+	{
+		var html = new EJS({url: dirViews + 'userMenu.ejs'}).render({surnom: this.surnom});
+		$('#user_' + this.surnom +' div:first-child').append(html);
+	}
 	
 	//inscrit un utilisateur dans la page
 	writeIn(lieu)
@@ -74,10 +80,12 @@ class User {
 			} else {
 				$('#lieu'+ lieu).append(html);
 			}
+			if (!this.current && this.actif && App.cu.loggedIn && App.cu.presence == lieu)
+				this.writeMenu();
 			this.writeMessages();
 		} else {
 			var ligne = $('#coin' + lieu + ' li.empty:first');
-			ligne.removeClass('empty').attr('id', this.surnom);
+			ligne.removeClass('empty').attr('id', 'user_'+ this.surnom);
 			ligne.children('span.puce').css('backgroundColor', this.couleur);
 			ligne.children('span.surnom').text(this.surnom);
 		}
@@ -91,8 +99,10 @@ class User {
 		this.couleur = '#aaaaaa';
 		if (lieu == App.cu.ecoute || lieu == 0){
 			this.updateCol();
+			if (!this.current && this.actif && App.cu.loggedIn && App.cu.presence == lieu)
+				this.writeMenu();
 		} else {
-			$('#' + this.surnom).addClass('inactif');
+			$('#user_'+ this.surnom).addClass('inactif');
 		}
 	}
 	
@@ -103,24 +113,26 @@ class User {
 		this.current = current;
 		if (lieu == App.cu.ecoute || lieu == 0){
 			this.updateCol();
-		}else {
-			$('#' + this.surnom).removeClass('inactif');
+			if (!this.current && this.actif && App.cu.loggedIn && App.cu.presence == lieu)
+				this.writeMenu();
+		} else {
+			$('#user_' + this.surnom).removeClass('inactif');
 		}
 	}
 	
 	updateCol()
 	{
 		var html = this.genColonne();
-		$('#' + this.surnom).replaceWith(html);
+		$('#user_' + this.surnom).replaceWith(html);
 		this.writeMessages();
 	}
 	
 	eraseIn(lieu) 
 	{
 		if (lieu == App.cu.ecoute || lieu == 0){
-			$('#' + this.surnom).remove();
+			$('#user_' + this.surnom).remove();
 		} else {
-			var ligne = $('#' + this.surnom);
+			var ligne = $('#user_' + this.surnom);
 			ligne.removeClass('inactif').addClass('empty').attr('id', '');
 			ligne.children('span.puce').css('backgroundColor', '#dddddd');
 			ligne.children('span.surnom').text('');

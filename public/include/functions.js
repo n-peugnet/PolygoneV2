@@ -1,4 +1,4 @@
-$(setLoginInputEvent);
+$(setEvents);
 
 function messageClavier(message, event) {
 	var longueur = message.length;
@@ -28,13 +28,20 @@ function messageClavier(message, event) {
 	}
 }
 
-function setLoginInputEvent(){
+function setEvents(){
 	$('#surnom').on('input', function() {
 		$(this).val(escapeSurnom($(this).val()));
 		if (App.isUserLoggedIn($(this).val())){
 			$(this).css('outline-color', 'red');
 		} else {
 			$(this).css('outline-color', '');
+		}
+	});
+
+	$(document).click(function(event) { 
+		if(!$(event.target).closest('.menu, .menuBouton').length){
+			// le clic est en dehors d'un menu masque les menus
+			$('.menu').hide();
 		}
 	});
 }
@@ -55,7 +62,7 @@ function escapeHtml(string) {
 }
 
 function escapeSurnom(string) {
-	return String(string).replace(/[ "()']/g, "");
+	return String(string).replace(/[ "()'$]/g, "");
 }
 
 function cleanSpaces(string) {
@@ -78,6 +85,24 @@ function sendMessage(texte, type)
 		socket.emit('message', {texte, type});
 	}
 	$("#message").val('').focus();
+}
+
+function toggle(objectId, buttonId)
+{ 
+	var obj = $("#"+objectId);
+	var btn = $("#"+buttonId);
+	if(obj.css("display") == 'block') {
+		obj.hide();
+		btn.text("Afficher");
+	} else {
+		obj.show();
+		btn.text("Masquer");
+	}
+}
+
+function toggleMenu(menuId)
+{
+	$("#"+ menuId).show();
 }
 
 function connexion(loginForm)
@@ -112,7 +137,7 @@ function writeLogIn(etat)
 	} else {
 		$('#surnom').focus();
 	}
-	setLoginInputEvent();
+	setEvents();
 }
 
 function writeMenu()
@@ -126,13 +151,6 @@ function writeMemoire()
 {
 	var html = new EJS({url: dirViews + 'memoire.ejs'}).render();
 	$('#nav').append(html);
-}
-
-function writeCoin(num, taille)
-{
-	var data = {num, taille, presence: App.cu.presence, loggedIn: App.cu.loggedIn};
-	var html = new EJS({url: dirViews + 'coin.ejs'}).render(data);
-	$('#coins').append(html);
 }
 
 function writeMenuCoins()
@@ -172,6 +190,7 @@ function updateView(action)
 		case 'loggedIn':
 			writeMenu();
 			$('.boutonMove').prop('disabled', false);
+			App.writeUsersMenu();
 			writeMenuCoins();
 			break;
 		case 'loggedOut':
