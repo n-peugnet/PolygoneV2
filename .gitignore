@@ -1,4 +1,5 @@
 node_modules
+.vscode
 desktop.ini
 include/desktop.ini
 styles/desktop.ini

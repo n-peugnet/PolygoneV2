@@ -1,16 +1,16 @@
-$(setLoginInputEvent);
+$(setEvents);
 
 function messageClavier(message, event) {
 	var longueur = message.length;
 	var key = event.keyCode;
 
-    var isPrintable = 
-        (key > 47 && key < 58)   || // number keys
-        key == 32                || // spacebar
-        (key > 64 && key < 91)   || // letter keys
-        (key > 95 && key < 112)  || // numpad keys
-        (key > 185 && key < 193) || // ;=,-./` (in order)
-        (key > 218 && key < 224);   // [\]'! (in order)
+	var isPrintable = 
+		(key > 47 && key < 58)   || // number keys
+		key == 32                || // spacebar
+		(key > 64 && key < 91)   || // letter keys
+		(key > 95 && key < 112)  || // numpad keys
+		(key > 185 && key < 193) || // ;=,-./` (in order)
+		(key > 218 && key < 224);   // [\]'! (in order)
 
 	if (key == 8 || key == 46){
 		if (longueur == 1){
@@ -28,7 +28,7 @@ function messageClavier(message, event) {
 	}
 }
 
-function setLoginInputEvent(){
+function setEvents(){
 	$('#surnom').on('input', function() {
 		$(this).val(escapeSurnom($(this).val()));
 		if (App.isUserLoggedIn($(this).val())){
@@ -37,25 +37,36 @@ function setLoginInputEvent(){
 			$(this).css('outline-color', '');
 		}
 	});
+
+	$(document).click(function(event) { 
+		if(!$(event.target).closest('.menu, .menuBouton').length){
+			// le clic est en dehors d'un menu masque les menus
+			$('.menu').hide();
+		}
+	});
 }
 
 function escapeHtml(string) {
 	var entityMap = {
-	  '&': '&amp;',
-	  '<': '&lt;',
-	  '>': '&gt;',
-	  '"': '&quot;',
-	  "'": '&#39;',
-	  '`': '&#x60;',
-	  '=': '&#x3D;'
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#39;',
+		'`': '&#x60;',
+		'=': '&#x3D;'
 	};
-	return String(string).replace(/[&<>"'`=]/g, function (s) {
+	return string.replace(/[&<>"'`=]/g, function (s) {
 		return entityMap[s];
 	});
 }
 
 function escapeSurnom(string) {
-	return String(string).replace(/[ "()']/g, "");
+	return String(string).replace(/[ "()'$]/g, "");
+}
+
+function cleanSpaces(string) {
+	return string.replace(/ {2,}/g, ' ');
 }
 
 function activateLinks(texte)
@@ -70,9 +81,28 @@ function activateLinks(texte)
 function sendMessage(texte, type)
 {
 	if (texte.length > 0) {
-		socket.emit('message', {texte: escapeHtml(texte), type});
+		texte = cleanSpaces(escapeHtml(texte));
+		socket.emit('message', {texte, type});
 	}
 	$("#message").val('').focus();
+}
+
+function toggle(objectId, buttonId)
+{ 
+	var obj = $("#"+objectId);
+	var btn = $("#"+buttonId);
+	if(obj.css("display") == 'block') {
+		obj.hide();
+		btn.text("Afficher");
+	} else {
+		obj.show();
+		btn.text("Masquer");
+	}
+}
+
+function toggleMenu(menuId)
+{
+	$("#"+ menuId).show();
 }
 
 function connexion(loginForm)
@@ -107,7 +137,7 @@ function writeLogIn(etat)
 	} else {
 		$('#surnom').focus();
 	}
-	setLoginInputEvent();
+	setEvents();
 }
 
 function writeMenu()
@@ -121,13 +151,6 @@ function writeMemoire()
 {
 	var html = new EJS({url: dirViews + 'memoire.ejs'}).render();
 	$('#nav').append(html);
-}
-
-function writeCoin(num, taille)
-{
-	var data = {num, taille, presence: App.cu.presence, loggedIn: App.cu.loggedIn};
-	var html = new EJS({url: dirViews + 'coin.ejs'}).render(data);
-	$('#coins').append(html);
 }
 
 function writeMenuCoins()
@@ -167,6 +190,7 @@ function updateView(action)
 		case 'loggedIn':
 			writeMenu();
 			$('.boutonMove').prop('disabled', false);
+			App.writeUsersMenu();
 			writeMenuCoins();
 			break;
 		case 'loggedOut':
@@ -221,10 +245,9 @@ function extSurnoms(listeUsers)
 	return listeUsers.map(function(u) {return u.surnom; });
 }
 
-Array.prototype.idGen = function()
-{
-	if (this.length == 0)
+function idGen(array){
+	if (array.length == 0)
 		return 0;
 	else
-		return this[this.length - 1].id + 1;
+		return array[array.length - 1].id + 1;
 }

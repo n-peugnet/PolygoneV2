@@ -11,12 +11,12 @@ var config   = require('./config');
 
 var connection = mysql.createConnection(config.mysql);
 var session = exsess({
-    secret: "my-secret",
-    resave: false,
-    saveUninitialized: true
+	secret: config.session.secret,
+	resave: false,
+	saveUninitialized: true
 });
 
-var lieux = [0,0,0,0];
+var lieux = Array(config.app.nbLieux).fill(0);;
 
 // Use express-session middleware for express
 app.use(session);
@@ -28,7 +28,7 @@ app.get('/', function(req, res){
 		sess.prenom = '';
 		sess.surnom = '';
 	}
-	res.render('index.ejs', {prenom: sess.prenom, surnom: sess.surnom});
+	res.render('index.ejs', {prenom: sess.prenom, surnom: sess.surnom, ip: config.client.ip, port: config.client.port});
 });
 app.use(function(req, res, next){
     res.redirect('/');
@@ -38,7 +38,7 @@ app.use(function(req, res, next){
 // Use shared session middleware for socket.io
 // setting autoSave:true
 io.use(iosess(session, {
-    autoSave:true
+	autoSave:true
 })); 
 io.on('connection', function(client){
 //------------ properties ---------------
@@ -51,7 +51,7 @@ io.on('connection', function(client){
 //------------- functions ---------------
 	client.logIn = function(prenom, surnom, couleur, action)
 	{
-		lieux[0] ++;	
+		lieux[0] ++;
 		this.loggedIn = true;
 		this.prenom   = prenom;
 		this.surnom   = surnom;
@@ -253,7 +253,7 @@ function getNbAnonymes()
 		if (client.surnom == null)
 			nb++;
 	}
-	return nb;	
+	return nb;
 }
 
 function extSurnoms(listeClients)
@@ -296,5 +296,5 @@ function move(pres, dest)
 
 function datedLog(o)
 {
-    console.log('[' + new Date().toUTCString() + '] :', o);
+	console.log('[' + new Date().toUTCString() + '] :', o);
 }

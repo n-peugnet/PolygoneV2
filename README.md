@@ -1,6 +1,6 @@
 # Polygone V2
 
-*Le Polygone* is an open chat place online which aim is to mimic a real life conversation through different mechanisms.
+*Le Polygone* is an open online chat place which aim is to mimic real life conversations through different mechanisms.
 
 ## Getting Started
 
