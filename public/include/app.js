@@ -275,7 +275,7 @@ var App = {
 	writeUsersMenu()
 	{
 		this.lieux[this.cu.presence].forEach(function(u){
-			if (!u.current)
+			if (!u.current && u.actif)
 				u.writeMenu();
 		});
 	},
