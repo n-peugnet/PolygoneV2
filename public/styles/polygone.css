@@ -265,7 +265,7 @@ span.puce {
 	min-height: 19px;
 	margin-bottom: 5px;
 	padding: 5px;
-	background-color: #aaaaaa;
+	background-color: rgba(49, 49, 49, 0.46);
 	word-wrap: break-word;
 	-webkit-hyphens: auto;
 	-moz-hyphens: auto;

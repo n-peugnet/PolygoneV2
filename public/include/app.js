@@ -5,7 +5,7 @@ var App = {
 	sons : {
 		user     : new Audio('/sounds/user.wav'),
 		message  : new Audio('/sounds/message.flac'),
-		cri      : new Audio('/sounds/message.flac'),
+		cri      : new Audio('/sounds/cri.wav'),
 		appel    : new Audio('/sounds/appel.wav')
 	},
 	cu : {                // current user informations

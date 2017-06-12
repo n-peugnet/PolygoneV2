@@ -96,7 +96,7 @@ class User {
 	{
 		this.actif = false;
 		this.ecrit = false;
-		this.couleur = '#aaaaaa';
+		this.couleur = 'rgba(49, 49, 49, 0.46)';
 		if (lieu == App.cu.ecoute || lieu == 0){
 			this.updateCol();
 			if (!this.current && this.actif && App.cu.loggedIn && App.cu.presence == lieu)
