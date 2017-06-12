@@ -15,6 +15,25 @@ class Lieu extends Array
 		this.protection = protection;
 	}
 
+	/**
+	 * Get an arry of users which nick name starts with the letters given.
+	 * @param {string} lettres - The firsts letters we are looking for.
+	 * @return {array} - An array of users.
+	 */
+	usersStartingWith(lettres)
+	{
+		var liste = [];
+		lettres = lettres.toLowerCase();
+		this.forEach(function(u){
+			if(!u.current) {
+				let firstLetters = u.surnom.substr(0, lettres.length).toLowerCase();
+				if(firstLetters == lettres)
+					liste.push(u);
+			}
+		})
+		return liste;
+	}
+
 	writeCoin(num)
 	{
 		var data = {num, nom: this.nom, taille: this.taille, presence: App.cu.presence, loggedIn: App.cu.loggedIn};

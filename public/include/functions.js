@@ -1,5 +1,10 @@
 $(setEvents);
 
+/**
+ * Key mapping for the message input field.
+ * @param {string} message - text inside the input field.
+ * @param {KeyboardEvent} event - the keybord event.
+ */
 function messageClavier(message, event) {
 	var longueur = message.length;
 	var key = event.keyCode;
@@ -18,11 +23,11 @@ function messageClavier(message, event) {
 		}
 	} else if(key == 13) {
 		if (event.shiftKey)
-			crier();
+			sendMessage(message, "cri");
 		else
-			sendMessage(message, "texte")
+			sendMessage(message, "texte");
 	} else if(isPrintable) {
-		if (longueur == 0){
+		if (longueur == 0) {
 			socket.emit('ecriture');
 		}
 	}
@@ -35,6 +40,15 @@ function setEvents(){
 			$(this).css('outline-color', 'red');
 		} else {
 			$(this).css('outline-color', '');
+		}
+	});
+
+	$('#message').on('input', function() {
+		var substring = $(this).val().split(' ').pop()
+		var index = substring.indexOf('@');
+		if (index >= 0) {
+			var lettres = substring.substr(index + 1);
+			App.usersStartingWith(lettres);
 		}
 	});
 
@@ -192,6 +206,7 @@ function updateView(action)
 			$('.boutonMove').prop('disabled', false);
 			App.writeUsersMenu();
 			writeMenuCoins();
+			setEvents();
 			break;
 		case 'loggedOut':
 			updateView('listenTo');
@@ -233,11 +248,6 @@ function addMemory(surnom, id)
 function citation(id)
 {
 	App.getMemory(id).send();
-}
-
-function crier()
-{
-	sendMessage( $("#message").val(), "cri");
 }
 
 function extSurnoms(listeUsers)

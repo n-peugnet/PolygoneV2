@@ -45,6 +45,17 @@ var App = {
 		});
 		return listeUsers;
 	},
+
+	/**
+	 * Get an arry of users which nick name starts with the letters given.
+	 * @param {string} lettres - first letters of the users's nicknames.
+	 * @param {number} lieu - (optional)
+	 * @return {User[]}
+	 */
+	usersStartingWith(lettres, lieu = this.cu.presence)
+	{
+		return this.lieux[lieu].usersStartingWith(lettres);
+	},
 	
 	addLieu()
 	{
