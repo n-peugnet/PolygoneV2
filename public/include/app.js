@@ -66,7 +66,7 @@ var App = {
 	
 	addMemory(persCite, citation)
 	{
-		var newCitation = new Citation(idGen(this.cu.memoire), persCite, citation).write();
+		var newCitation = new Souvenir(idGen(this.cu.memoire), persCite, citation).write();
 		this.cu.memoire.push(newCitation);
 	},
 	

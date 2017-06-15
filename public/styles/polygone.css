@@ -307,12 +307,8 @@ button:hover:enabled {
 	cursor: pointer;
 }
 
-.plus {
+.action {
 	display: none;
-}
-
-.message:hover .plus{
-	display: inline-block;
 }
 
 .message{

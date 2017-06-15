@@ -12,32 +12,44 @@ class Message {
 		var data = {surnom, message: activateLinks(this.texte), couleur, id: this.id, type: this.type};
 		var html = new EJS({url: dirViews + 'message.ejs'}).render(data);
 		if (animation)
-			$(html).prependTo('#dires_'+surnom).css('margin-top', '-'+$('#'+surnom+this.id).height()+'px').animate({ marginTop: '0px'});
+			$(html).prependTo('#dires_'+surnom).css('margin-top', '-'+$('#message_'+surnom+this.id).height()+'px').animate({ marginTop: '0px'});
 		else
 			$(html).prependTo('#dires_'+surnom);
+		this.setHoverEvent('#message_', surnom);
 		return this;
 	}
 	
 	erase(surnom)
 	{
-		var idHtml = '#'+surnom+this.id;
+		var idHtml = '#message_'+surnom+this.id;
 		$(idHtml).animate({ opacity: 0}, 500).animate({ height: '0px'}, function() { $(this).remove(); });
+	}
+
+	setHoverEvent(element, surnom) {
+		element += surnom+this.id;
+		$(element).hover(function () {
+			if (App.cu.loggedIn)
+				$(this).children('.action').show();
+		}, function () {
+			$(this).children('.action').hide();
+		})
 	}
 }
 
-class Citation extends Message
+class Souvenir extends Message
 {
 	constructor(id, persCite, texte)
 	{
-		super(id, texte, "citation");
+		super(id, texte, "souvenir");
 		this.persCite = persCite;
 	}
 
 	write()
 	{
 		var data = {persCite: this.persCite, citation: activateLinks(this.texte), id: this.id};
-		var html = new EJS({url: dirViews + 'memory.ejs'}).render(data);
+		var html = new EJS({url: dirViews + 'souvenir.ejs'}).render(data);
 		$('#memoire').prepend(html);
+		this.setHoverEvent('#souvenir_', '');
 		return this;
 	}
 
