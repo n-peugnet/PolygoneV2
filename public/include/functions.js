@@ -48,7 +48,13 @@ function setEvents(){
 		var index = substring.indexOf('@');
 		if (index >= 0) {
 			var lettres = substring.substr(index + 1);
-			App.usersStartingWith(lettres);
+			var liste = App.usersStartingWith(lettres);
+			if (liste.length > 0)
+				writeListeUsers('mentionner', liste);
+			else
+				hideListe('mentionner');
+		} else {
+			hideListe('mentionner');
 		}
 	});
 
@@ -189,6 +195,17 @@ function writeEcoutes()
 	$('#nbEcoutes').empty().append(liste.length);
 }
 
+function writeListeUsers(id, liste)
+{
+	var html = new EJS({url: dirViews + 'listeUsers.ejs'}).render({id, liste});
+	$('#listeUsers_'+ id).replaceWith(html);
+}
+
+function hideListe(id)
+{
+	$('#listeUsers_'+ id).hide();
+}
+
 function updateView(action)
 {
 	switch(action)
@@ -248,6 +265,11 @@ function addMemory(surnom, id)
 function citation(id)
 {
 	App.getMemory(id).send();
+}
+
+function crier()
+{
+	sendMessage( $("#message").val(), "cri");
 }
 
 function extSurnoms(listeUsers)

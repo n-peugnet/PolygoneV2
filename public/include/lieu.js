@@ -25,7 +25,7 @@ class Lieu extends Array
 		var liste = [];
 		lettres = lettres.toLowerCase();
 		this.forEach(function(u){
-			if(!u.current) {
+			if(!u.current && u.actif) {
 				let firstLetters = u.surnom.substr(0, lettres.length).toLowerCase();
 				if(firstLetters == lettres)
 					liste.push(u);
