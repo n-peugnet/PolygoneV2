@@ -1,8 +1,8 @@
 <div id="menu">
 	<% if( etat == 1){ %>
-	<p class="banInfo">Quelqu'un est déjà connecté avec ce surnom, il faut en trouver un autre</p>
+	<p class="error">Quelqu'un est déjà connecté avec ce surnom, il faut en trouver un autre</p>
 	<% } else if( etat == 2){ %>
-	<p class="banInfo">Pour réutiliser ce surnom il faut garder le même prénom. Sinon il faut en trouver un autre surnom.</p>
+	<p class="error">Pour réutiliser ce surnom il faut garder le même prénom. Sinon il faut en trouver un autre surnom.</p>
 	<% } %>
 	<h2>Bienvenue</h2>
 	<form action="javascript:;" onsubmit="connexion(this)" id="formLogin">
