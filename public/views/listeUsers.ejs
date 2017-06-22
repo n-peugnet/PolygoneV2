@@ -1,0 +1,10 @@
+<div class="menu" id="listeUsers_<%= id %>">
+<% liste.forEach(function(u) { %>
+	<ul>
+		<li>
+			<span class="puce" style="background-color: <%= u.couleur %>;"></span>
+			<span class="surnom"><%= u.surnom %></span>
+		</li>
+	</ul>
+<% }); %>
+</div>

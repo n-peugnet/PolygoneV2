@@ -92,6 +92,10 @@ div.inactif .bulleBackground {
 	
 }
 
+#listeUsers_mentionner {
+	top: 50px;
+}
+
 h3.nom {
 	color: white;
 	margin: 0;
@@ -107,7 +111,6 @@ span.menuBouton {
 
 div.menu {
 	position: absolute;
-	display: none;
 	background-color: #eeeeee;
 	border: solid 1px lightgray;
 	min-width: 140px;
@@ -116,13 +119,13 @@ div.menu {
 	z-index: 3;
 }
 
-div.menu ul>li {
+div.menu li {
 	padding: 2px 17px;
 	font-size: 13px;
 	cursor: pointer;
 }
 
-div.menu ul>li:hover {
+div.menu li:hover, div.menu li.active {
 	background-color: #bbbbbb;
 }
 

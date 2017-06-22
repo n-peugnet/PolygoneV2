@@ -1,5 +1,10 @@
 $(setEvents);
 
+/**
+ * Key mapping for the message input field.
+ * @param {string} message - text inside the input field.
+ * @param {KeyboardEvent} event - the keybord event.
+ */
 function messageClavier(message, event) {
 	var longueur = message.length;
 	var key = event.keyCode;
@@ -17,12 +22,22 @@ function messageClavier(message, event) {
 			socket.emit('arretEcriture');
 		}
 	} else if(key == 13) {
-		if (event.shiftKey)
-			crier();
-		else
-			sendMessage(message, "texte")
+		if (!App.mention.active) {
+			if (event.shiftKey)
+				sendMessage(message, "cri");
+			else
+				sendMessage(message, "texte");
+		} else
+			App.mention.validate();
+
+	} else if (App.mention.active) {
+		if (key == 38)
+			App.mention.selectPrev();
+		if (key == 40)
+			App.mention.selectNext();
+
 	} else if(isPrintable) {
-		if (longueur == 0){
+		if (longueur == 0) {
 			socket.emit('ecriture');
 		}
 	}
@@ -38,11 +53,20 @@ function setEvents(){
 		}
 	});
 
+	$('#message').on('input', function() {
+		App.mention.scan();
+	});
+
 	$(document).click(function(event) { 
 		if(!$(event.target).closest('.menu, .menuBouton').length){
 			// le clic est en dehors d'un menu masque les menus
-			$('.menu').hide();
+			updateView('hideMenus');
 		}
+	});
+
+	$(document).keydown(function(event) {
+		if (event.keyCode == 27)
+			updateView('hideMenus');
 	});
 }
 
@@ -69,13 +93,38 @@ function cleanSpaces(string) {
 	return string.replace(/ {2,}/g, ' ');
 }
 
-function activateLinks(texte)
+function analyseMessage(texte)
 {
 	return texte.split(" ").map(function(mot){
-		if (mot.substring(0, 4) == 'http')
-			mot = '<a href="'+mot+'" target="_blank">'+mot+'</a>';
+		mot = activateLinks(mot);
+		mot = activateMentions(mot);
 		return mot;
 	}).join(" ");
+}
+
+function activateLinks(mot)
+{
+	if (mot.substring(0, 4) == 'http')
+		mot = '<a href="'+mot+'" target="_blank">'+mot+'</a>';
+	return mot;
+}
+
+/**
+ * Activate the @user mentions inside the words of a message
+ * @param {string} mot - The word to analyse
+ * @return {string}
+ */
+function activateMentions(mot)
+{
+	var index = mot.lastIndexOf('@');
+	if (index == 0) {
+		var user = mot.substr(1);
+		if (user == App.cu.surnom) {
+			//mettre ici le code de la notification
+		}
+		mot = '<b>' + mot + '</b>';
+	}
+	return mot;
 }
 
 function sendMessage(texte, type)
@@ -175,6 +224,20 @@ function writeEcoutes()
 	$('#nbEcoutes').empty().append(liste.length);
 }
 
+function writeListeUsers(id, liste, selectFirst = false)
+{
+	var html = new EJS({url: dirViews + 'listeUsers.ejs'}).render({id, liste});
+	$('#listeUsers_'+ id).replaceWith(html);
+	if (selectFirst) {
+		$('#listeUsers_'+ id).find('li').first().addClass('active');
+	}
+}
+
+function hideListe(id)
+{
+	$('#listeUsers_'+ id).hide();
+}
+
 function updateView(action)
 {
 	switch(action)
@@ -192,6 +255,7 @@ function updateView(action)
 			$('.boutonMove').prop('disabled', false);
 			App.writeUsersMenu();
 			writeMenuCoins();
+			setEvents();
 			break;
 		case 'loggedOut':
 			updateView('listenTo');
@@ -204,6 +268,9 @@ function updateView(action)
 			App.writeUsers();
 			writeMenuCoins();
 			writeMenu();
+			break;
+		case 'hideMenus':
+			$('.menu').hide();
 			break;
 	}
 }
@@ -250,4 +317,32 @@ function idGen(array){
 		return 0;
 	else
 		return array[array.length - 1].id + 1;
+}
+
+function mod(n, m) {
+	return ((n % m) + m) % m;
+}
+
+/**
+ * Insert a string inside another.
+ * @param {string} str - The base string for the insertion.
+ * @param {number} ind - The index from where to insert.
+ * @param {string} ins - The string to insert
+ * @return {string}
+ */
+function insert(str, ind, ins)
+{
+	return str.substring(0, ind) + ins + str.substr(ind);
+}
+
+/**
+ * Removes a substring  from a string.
+ * @param {string} str 
+ * @param {number} from 
+ * @param {number} to 
+ * @return {string}
+ */
+function removeSubstr(str, from, len)
+{
+	return str.substring(0, from) + str.substr(from + len);
 }
