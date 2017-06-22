@@ -1,4 +1,4 @@
-<div class="message<%= id == "ecrit" ? " ecrit" : "" %>" id="<%= surnom + id %>">
+<div class="message<%= id == "ecrit" ? " ecrit" : "" %>" id="message_<%= surnom + id %>">
 	<div class="bulleBackground pointe" style="border-bottom: 7px solid <%= couleur %>;"></div>
 	<div class="bulleBackground bulle <%= type %>" style="background-color:<%= couleur %>">
 		<% if (type == "citation") { %>
@@ -7,5 +7,5 @@
 		<p><%= message %></p>
 		<%= type == "citation" ? "</div>" : "" %>
 	</div>
-	<button type="button" title="Mémoriser" class="plus" onclick="addMemory('<%= surnom %>', '<%= id %>')" >+</button>
+	<button type="button" title="Mémoriser" class="action" onclick="addMemory('<%= surnom %>', '<%= id %>')" >+</button>
 </div>

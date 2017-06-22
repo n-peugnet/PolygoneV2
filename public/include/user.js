@@ -77,6 +77,7 @@ class User {
 				$('#lieu'+ lieu).prepend(html);
 				$('#lieu'+ lieu).contents().filter(function() { return this.nodeType === 3; }).remove(); //permet de supprimer les espaces HTML
 				$('#message').focus();
+				App.mention.bind($('#message'));
 			} else {
 				$('#lieu'+ lieu).append(html);
 			}
@@ -96,7 +97,7 @@ class User {
 	{
 		this.actif = false;
 		this.ecrit = false;
-		this.couleur = '#aaaaaa';
+		this.couleur = 'rgba(49, 49, 49, 0.46)';
 		if (lieu == App.cu.ecoute || lieu == 0){
 			this.updateCol();
 			if (!this.current && this.actif && App.cu.loggedIn && App.cu.presence == lieu)

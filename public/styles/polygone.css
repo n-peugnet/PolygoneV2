@@ -46,13 +46,13 @@ ul {
 	left: 0;
 	width: 100%;
 	height: 100%;
-    z-index: -1;
+	z-index: -1;
 }
 
 .background canvas {
-    position: absolute;
-    top: calc(10% - 130px);
-    left: calc(6% - 130px);
+	position: absolute;
+	top: calc(10% - 130px);
+	left: calc(6% - 130px);
 }
 
 .background div {
@@ -67,6 +67,7 @@ ul {
 .colonne {
 	position: relative;
 	display: inline-block;
+	vertical-align: top;
 	width: 210px;
 	height: 380px;
 	margin-right: 5px;
@@ -91,6 +92,10 @@ div.inactif .bulleBackground {
 	
 }
 
+#listeUsers_mentionner {
+	top: 50px;
+}
+
 h3.nom {
 	color: white;
 	margin: 0;
@@ -99,13 +104,13 @@ h3.nom {
 
 span.menuBouton {
 	color: white;
-	float: right;
+	position: absolute;
+	right: 0;
 	cursor: pointer;
 }
 
 div.menu {
 	position: absolute;
-	display: none;
 	background-color: #eeeeee;
 	border: solid 1px lightgray;
 	min-width: 140px;
@@ -114,13 +119,13 @@ div.menu {
 	z-index: 3;
 }
 
-div.menu ul>li {
+div.menu li {
 	padding: 2px 17px;
 	font-size: 13px;
 	cursor: pointer;
 }
 
-div.menu ul>li:hover {
+div.menu li:hover, div.menu li.active {
 	background-color: #bbbbbb;
 }
 
@@ -165,11 +170,11 @@ form {
 }
 
 #ajouterCoin {
-    width: 40px;
-    height: 40px;
-    font-size: 35px;
-    text-align: center;
-    cursor: pointer;
+	width: 40px;
+	height: 40px;
+	font-size: 35px;
+	text-align: center;
+	cursor: pointer;
 }
 
 #ajouterCoin:hover {
@@ -182,7 +187,7 @@ form {
 }
 
 .discussions {
-	min-height: 390px;
+	min-height: 398px;
 	white-space: nowrap;
 	overflow: auto;	
 }
@@ -213,10 +218,10 @@ span.puce {
 
 #message {
 	margin: 0;
-    padding: 0 0 3px;
-    border: none;
-    width: 100%;
-    display: block;
+	padding: 0 0 3px;
+	border: none;
+	width: 100%;
+	display: block;
 }
 
 #message:focus  {
@@ -224,21 +229,21 @@ span.puce {
 }
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-  color: #dddddd;
+	color: #dddddd;
 }
 ::-moz-placeholder { /* Firefox 19+ */
-  color: #dddddd;
+	color: #dddddd;
 }
 :-ms-input-placeholder { /* IE 10+ */
-  color: #dddddd;
+	color: #dddddd;
 }
 :-moz-placeholder { /* Firefox 18- */
-  color: #dddddd;
+	color: #dddddd;
 }
 
 .zoneBoutons button{
-    background-size: cover;
-    padding: 12px;
+	background-size: cover;
+	padding: 12px;
 	height: 0;
 	width: 0;
 }
@@ -248,12 +253,12 @@ span.puce {
 }
 
 .pointe {
-  width: 0; 
-  height: 0; 
-  position: relative;
-  left: 8px;
-  border-left: 0 solid transparent;
-  border-right: 8px solid transparent;
+	width: 0; 
+	height: 0; 
+	position: relative;
+	left: 8px;
+	border-left: 0 solid transparent;
+	border-right: 8px solid transparent;
 }
 
 .bulle {
@@ -265,7 +270,7 @@ span.puce {
 	min-height: 19px;
 	margin-bottom: 5px;
 	padding: 5px;
-	background-color: #aaaaaa;
+	background-color: rgba(49, 49, 49, 0.46);
 	word-wrap: break-word;
 	-webkit-hyphens: auto;
 	-moz-hyphens: auto;
@@ -284,12 +289,13 @@ span.puce {
 }
 
 .bulle.cri p{
-    font-size: 25px;
-    font-weight: bold;
+	font-size: 25px;
+	font-weight: bold;
 }
 
 .bulle.citation .bulle {
 	margin: 0;
+	max-width: calc(100% - 10px);
 }
 
 button {
@@ -306,12 +312,8 @@ button:hover:enabled {
 	cursor: pointer;
 }
 
-.plus {
+.action {
 	display: none;
-}
-
-.message:hover .plus{
-	display: inline-block;
 }
 
 .message{
@@ -339,16 +341,24 @@ nav {
 	position: fixed;
 	top: 0;
 	left: 0;
-	padding-left: 5px;
+	padding: 5px;
 	height: 100%;
-	width: 200px;
+	width: 195px;
 	background-color: rgba(242, 242, 242, 0.7);
 }
 
+p.error {
+	background-color: rgba(255, 27, 62, 0.35);
+	padding: 5px;
+	margin: 0;
+	border-radius: 3px;
+	border: solid 1px red;
+}
+
 .description {
-    display: block;
-    margin-top: 30px;
-    padding-right: 5px;
+	display: block;
+	margin-top: 30px;
+	padding-right: 5px;
 }
 
 #memory {
@@ -361,20 +371,20 @@ nav {
 }
 
 .details, h2, .details li {
-    display: inline-block;
+	display: inline-block;
 }
 
 .num {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 .details {
-    margin-left: 10px;
+	margin-left: 10px;
 }
 
 .details li {
-    margin-left: 5px;
-    border: solid 1px rgba(0, 0, 0, 0.15);
-    padding: 2px 5px;
-    border-radius: 2px;
+	margin-left: 5px;
+	border: solid 1px rgba(0, 0, 0, 0.15);
+	padding: 2px 5px;
+	border-radius: 2px;
 }
