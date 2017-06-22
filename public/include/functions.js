@@ -93,13 +93,38 @@ function cleanSpaces(string) {
 	return string.replace(/ {2,}/g, ' ');
 }
 
-function activateLinks(texte)
+function analyseMessage(texte)
 {
 	return texte.split(" ").map(function(mot){
-		if (mot.substring(0, 4) == 'http')
-			mot = '<a href="'+mot+'" target="_blank">'+mot+'</a>';
+		mot = activateLinks(mot);
+		mot = activateMentions(mot);
 		return mot;
 	}).join(" ");
+}
+
+function activateLinks(mot)
+{
+	if (mot.substring(0, 4) == 'http')
+		mot = '<a href="'+mot+'" target="_blank">'+mot+'</a>';
+	return mot;
+}
+
+/**
+ * Activate the @user mentions inside the words of a message
+ * @param {string} mot - The word to analyse
+ * @return {string}
+ */
+function activateMentions(mot)
+{
+	var index = mot.lastIndexOf('@');
+	if (index == 0) {
+		var user = mot.substr(1);
+		if (user == App.cu.surnom) {
+			//mettre ici le code de la notification
+		}
+		mot = '<b>' + mot + '</b>';
+	}
+	return mot;
 }
 
 function sendMessage(texte, type)
