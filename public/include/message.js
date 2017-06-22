@@ -36,11 +36,11 @@ class Message {
 	}
 }
 
-class Souvenir extends Message
+class Citation extends Message
 {
 	constructor(id, persCite, texte)
 	{
-		super(id, texte, "souvenir");
+		super(id, texte, "citation");
 		this.persCite = persCite;
 	}
 
