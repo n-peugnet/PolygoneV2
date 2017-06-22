@@ -67,6 +67,7 @@ ul {
 .colonne {
 	position: relative;
 	display: inline-block;
+	vertical-align: top;
 	width: 210px;
 	height: 380px;
 	margin-right: 5px;
@@ -99,7 +100,8 @@ h3.nom {
 
 span.menuBouton {
 	color: white;
-	float: right;
+	position: absolute;
+	right: 0;
 	cursor: pointer;
 }
 
@@ -182,7 +184,7 @@ form {
 }
 
 .discussions {
-	min-height: 390px;
+	min-height: 398px;
 	white-space: nowrap;
 	overflow: auto;	
 }
