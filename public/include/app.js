@@ -17,6 +17,83 @@ var App = {
 		presence: 0,
 		ecoute: 0
 	},
+	mention : {
+		active: false,
+		lettres: '',
+		liste: [],
+		selection: 0,
+
+		/**
+		 * Assign an input field to the mention object.
+		 * @param {JQuery} jQueryInput - the html form input from which you want to mention users.
+		 */
+		bind(jQueryInput)
+		{
+			this.inputField = jQueryInput;
+		},
+
+		/**
+		 * Check if there is a @ in the jQuery element and act accordingly.
+		 */
+		scan()
+		{
+			var substring = this.inputField.val().split(' ').pop();
+			var index = substring.indexOf('@');
+			if (index != -1) {      // si il y a un '@' dans le dernier mot
+				this.lettres = substring.substr(index + 1);
+				this.liste = App.usersStartingWith(this.lettres);
+				if (this.liste.length > 0)
+				{
+					this.activate();
+				}
+				else
+					this.desactivate();
+			} else {
+				this.desactivate();
+			}
+		},
+		
+		activate()
+		{
+			this.active = true;
+			writeListeUsers('mentionner', this.liste, true);
+		},
+
+		desactivate()
+		{
+			this.active = false;
+			this.selection = 0;
+			hideListe('mentionner');
+		},
+
+		selectPrev()
+		{
+			this.changeSelection(-1);
+		},
+
+		selectNext()
+		{
+			this.changeSelection(1);
+		},
+
+		/**
+		 * Select the next or previous user of te mention list.
+		 * @param {int} sens - The direction in which you want to change the selection (1 : next, -1 : prev).
+		 */
+		changeSelection(sens)
+		{
+			var items = $('#listeUsers_mentionner').find('li');
+			items.filter('.active').removeClass('active');
+			this.selection = mod((this.selection + sens), this.liste.length);
+			items.eq(this.selection).addClass('active');
+		},
+
+		validate()
+		{
+			this.inputField.val(this.inputField.val() + this.liste[this.selection].surnom.substr(this.lettres.length));
+			this.desactivate();
+		}
+	},
 	
 	coins()
 	{

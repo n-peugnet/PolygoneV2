@@ -77,6 +77,7 @@ class User {
 				$('#lieu'+ lieu).prepend(html);
 				$('#lieu'+ lieu).contents().filter(function() { return this.nodeType === 3; }).remove(); //permet de supprimer les espaces HTML
 				$('#message').focus();
+				App.mention.bind($('#message'));
 			} else {
 				$('#lieu'+ lieu).append(html);
 			}

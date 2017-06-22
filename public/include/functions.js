@@ -22,10 +22,20 @@ function messageClavier(message, event) {
 			socket.emit('arretEcriture');
 		}
 	} else if(key == 13) {
-		if (event.shiftKey)
-			sendMessage(message, "cri");
-		else
-			sendMessage(message, "texte");
+		if (!App.mention.active) {
+			if (event.shiftKey)
+				sendMessage(message, "cri");
+			else
+				sendMessage(message, "texte");
+		} else
+			App.mention.validate();
+
+	} else if (App.mention.active) {
+		if (key == 38)
+			App.mention.selectPrev();
+		if (key == 40)
+			App.mention.selectNext();
+
 	} else if(isPrintable) {
 		if (longueur == 0) {
 			socket.emit('ecriture');
@@ -44,25 +54,19 @@ function setEvents(){
 	});
 
 	$('#message').on('input', function() {
-		var substring = $(this).val().split(' ').pop()
-		var index = substring.indexOf('@');
-		if (index >= 0) {
-			var lettres = substring.substr(index + 1);
-			var liste = App.usersStartingWith(lettres);
-			if (liste.length > 0)
-				writeListeUsers('mentionner', liste);
-			else
-				hideListe('mentionner');
-		} else {
-			hideListe('mentionner');
-		}
+		App.mention.scan();
 	});
 
 	$(document).click(function(event) { 
 		if(!$(event.target).closest('.menu, .menuBouton').length){
 			// le clic est en dehors d'un menu masque les menus
-			$('.menu').hide();
+			updateView('hideMenus');
 		}
+	});
+
+	$(document).keydown(function(event) {
+		if (event.keyCode == 27)
+			updateView('hideMenus');
 	});
 }
 
@@ -195,10 +199,13 @@ function writeEcoutes()
 	$('#nbEcoutes').empty().append(liste.length);
 }
 
-function writeListeUsers(id, liste)
+function writeListeUsers(id, liste, selectFirst = false)
 {
 	var html = new EJS({url: dirViews + 'listeUsers.ejs'}).render({id, liste});
 	$('#listeUsers_'+ id).replaceWith(html);
+	if (selectFirst) {
+		$('#listeUsers_'+ id).find('li').first().addClass('active');
+	}
 }
 
 function hideListe(id)
@@ -236,6 +243,9 @@ function updateView(action)
 			App.writeUsers();
 			writeMenuCoins();
 			writeMenu();
+			break;
+		case 'hideMenus':
+			$('.menu').hide();
 			break;
 	}
 }
@@ -282,4 +292,8 @@ function idGen(array){
 		return 0;
 	else
 		return array[array.length - 1].id + 1;
+}
+
+function mod(n, m) {
+	return ((n % m) + m) % m;
 }
