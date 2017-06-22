@@ -297,3 +297,27 @@ function idGen(array){
 function mod(n, m) {
 	return ((n % m) + m) % m;
 }
+
+/**
+ * Insert a string inside another.
+ * @param {string} str - The base string for the insertion.
+ * @param {number} ind - The index from where to insert.
+ * @param {string} ins - The string to insert
+ * @return {string}
+ */
+function insert(str, ind, ins)
+{
+	return str.substring(0, ind) + ins + str.substr(ind);
+}
+
+/**
+ * Removes a substring  from a string.
+ * @param {string} str 
+ * @param {number} from 
+ * @param {number} to 
+ * @return {string}
+ */
+function removeSubstr(str, from, len)
+{
+	return str.substring(0, from) + str.substr(from + len);
+}

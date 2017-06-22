@@ -37,10 +37,10 @@ var App = {
 		 */
 		scan()
 		{
-			var substring = this.inputField.val().split(' ').pop();
-			var index = substring.indexOf('@');
-			if (index != -1) {      // si il y a un '@' dans le dernier mot
-				this.lettres = substring.substr(index + 1);
+			var substring = this.inputField.val().substring(0, this.inputField.caret()).split(' ').pop();
+			this.index = substring.indexOf('@');
+			if (this.index != -1) {      // si il y a un '@' dans le dernier mot
+				this.lettres = substring.substr(this.index + 1);
 				this.liste = App.usersStartingWith(this.lettres);
 				if (this.liste.length > 0)
 				{
@@ -90,7 +90,9 @@ var App = {
 
 		validate()
 		{
-			this.inputField.val(this.inputField.val() + this.liste[this.selection].surnom.substr(this.lettres.length));
+			var cleanInput = removeSubstr(this.inputField.val(), this.index + 1, this.lettres.length);
+			var val = insert(cleanInput, this.index + 1, this.liste[this.selection].surnom + ' ');
+			this.inputField.val(val);
 			this.desactivate();
 		}
 	},
