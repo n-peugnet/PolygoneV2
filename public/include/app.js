@@ -42,7 +42,7 @@ var App = {
 			var index = mot.indexOf('@');
 			if (index == 0) {      // si il y a un '@' en prmière lettre du dernier mot
 				this.index = substring.lastIndexOf('@');
-				this.lettres = mot.substr(this.index + 1);
+				this.lettres = mot.substr(index + 1);
 				this.liste = App.usersStartingWith(this.lettres);
 				if (this.liste.length > 0)
 				{
