@@ -75,7 +75,7 @@ class Ecrit extends Message
 
 	erase(surnom)
 	{
-		var idHtml = '#'+surnom+this.id;
+		var idHtml = '#message_'+surnom+this.id;
 		$(idHtml).animate({ opacity: 0, marginTop: '-' + $(idHtml).height() +'px'}, function() { $(this).remove(); });
 		return this;
 	}
