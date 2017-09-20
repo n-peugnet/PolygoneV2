@@ -8,6 +8,7 @@ var schedule = require('node-schedule');
 var exsess   = require('express-session');
 var iosess   = require("express-socket.io-session");
 var config   = require('./config');
+var params   = config.app;
 
 var connection = mysql.createConnection(config.mysql);
 var session = exsess({
@@ -16,7 +17,7 @@ var session = exsess({
 	saveUninitialized: true
 });
 
-var lieux = Array(config.app.nbLieux).fill(0);;
+var lieux = Array(params.nbLieuxMin).fill(0);;
 
 // Use express-session middleware for express
 app.use(session);
@@ -59,7 +60,7 @@ io.on('connection', function(client){
 		
 		switch(action) {
 			case "ajouter":
-				var session  = {prenom, surnom, couleur};
+				var session = {prenom, surnom, couleur};
 				var query = connection.query('INSERT INTO sessions SET ?', session, function (error, results, fields) {
 					if (error) throw error;
 				});
@@ -109,7 +110,12 @@ io.on('connection', function(client){
 	
 //---------- initialisation -------------
 	var infosClients = extInfos(client.otherClients());
-	client.emit('init', {nbLieux: lieux.length, infosClients, nbAnonymes: getNbAnonymes()});
+	client.emit('init', {
+		nbLieux: lieux.length,
+		infosClients,
+		params,
+		nbAnonymes: getNbAnonymes()
+	});
 	client.broadcast.emit('connection');
 	datedLog('new connection');
 	
@@ -185,20 +191,22 @@ io.on('connection', function(client){
 		}
 		client.ecoute = ecoute;
 	});
-	client.on('addCoin', function(){
-		lieux.push(0);
-		client.broadcast.emit('addCoin');
-		client.emit('addCoin');
-		setTimeout(function removeLieu(){
-			var i = lieux.length - 1;
-			if (lieux[i] <= 0){
-				lieux.pop();
-				client.broadcast.emit('rmvCoin');
-				client.emit('rmvCoin');
-			} else {
-				setTimeout(removeLieu, 60000);
-			}
-		},60000);
+	client.on('addLieu', function(){
+		if (lieux.length < params.nbLieuxMax || params.nbLieuxMax == 0) {
+			lieux.push(0);
+			client.broadcast.emit('addLieu');
+			client.emit('addLieu');
+			setTimeout(function removeLieu(){
+				var i = lieux.length - 1;
+				if (lieux[i] <= 0){
+					lieux.pop();
+					client.broadcast.emit('rmvLieu');
+					client.emit('rmvLieu');
+				} else {
+					setTimeout(removeLieu, 60000);
+				}
+			},60000);
+		}
 	});
 	client.on('addMemory', function(data){
 		var memory = {surnom: client.surnom, pers_cite: data.surnom, citation: data.message};
@@ -269,7 +277,7 @@ function extInfos(listeClients)
 function pickColor()
 {
 	var couleur;
-	switch (Math.floor((Math.random() * 7)))
+	switch (Math.floor( Math.random() * 7 ))
 	{
 		case 0: couleur = "#6289ff";
 		break;

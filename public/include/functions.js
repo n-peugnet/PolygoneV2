@@ -33,8 +33,10 @@ function messageClavier(message, event) {
 	} else if (App.mention.active) {
 		if (key == 38)
 			App.mention.selectPrev();
+			event.preventDefault()
 		if (key == 40)
 			App.mention.selectNext();
+			event.preventDefault()
 
 	} else if(isPrintable) {
 		if (longueur == 0) {
@@ -86,7 +88,7 @@ function escapeHtml(string) {
 }
 
 function escapeSurnom(string) {
-	return String(string).replace(/[ "()'$]/g, "");
+	return String(string).replace(/[ "()'$]/g, "").toLowerCase();
 }
 
 function cleanSpaces(string) {
@@ -204,7 +206,7 @@ function writeMemoire()
 
 function writeMenuCoins()
 {
-	$('#zoneCoins').append('<div class="colonne coin" id="ajouterCoin" onclick="addCoin()">+</div>');
+	$('#zoneCoins').append('<div class="colonne coin" id="ajouterCoin" onclick="addLieu()">+</div>');
 }
 
 function eraseMenuCoins()
@@ -254,7 +256,7 @@ function updateView(action)
 			writeMenu();
 			$('.boutonMove').prop('disabled', false);
 			App.writeUsersMenu();
-			writeMenuCoins();
+			App.writeMenuCoins();
 			setEvents();
 			break;
 		case 'loggedOut':
@@ -266,7 +268,7 @@ function updateView(action)
 			writeAccueil();
 			App.writeCoins();
 			App.writeUsers();
-			writeMenuCoins();
+			App.writeMenuCoins();
 			writeMenu();
 			break;
 		case 'hideMenus':
@@ -285,9 +287,9 @@ function listenTo(lieu)
 	socket.emit('listen', lieu);
 }
 
-function addCoin()
+function addLieu()
 {
-	socket.emit('addCoin');
+	socket.emit('addLieu');
 }
 
 function addMemory(surnom, id)

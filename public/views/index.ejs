@@ -39,6 +39,7 @@
 			
 			socket.on('init', function(data){
 				App.reconnect();
+				App.init(data.params);
 				for (i=1; i < data.nbLieux; i++) {
 					App.addLieu();
 				}
@@ -100,10 +101,10 @@
 				App.listenTo(ecoute);
 				updateView('listenTo');
 			});
-			socket.on('addCoin', function(){
+			socket.on('addLieu', function(){
 				App.addLieu();
 			});
-			socket.on('rmvCoin', function(){
+			socket.on('rmvLieu', function(){
 				App.delLastLieu();
 			});
 			socket.on('disconnection', function(){

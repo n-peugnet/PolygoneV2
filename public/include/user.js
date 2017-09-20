@@ -65,7 +65,7 @@ class User {
 	writeMenu()
 	{
 		var html = new EJS({url: dirViews + 'userMenu.ejs'}).render({surnom: this.surnom});
-		$('#user_' + this.surnom +' div:first-child').append(html);
+		$('#user_' + this.surnom).children(':first').append(html);
 	}
 	
 	//inscrit un utilisateur dans la page
@@ -128,10 +128,10 @@ class User {
 		this.writeMessages();
 	}
 	
-	eraseIn(lieu) 
+	eraseIn(lieu)
 	{
 		if (lieu == App.cu.ecoute || lieu == 0){
-			$('#user_' + this.surnom).remove();
+			$('#user_' + this.surnom).fadeOut( function() { $(this).remove(); });
 		} else {
 			var ligne = $('#user_' + this.surnom);
 			ligne.removeClass('inactif').addClass('empty').attr('id', '');
