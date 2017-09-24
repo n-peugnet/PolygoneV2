@@ -103,6 +103,7 @@ var App = {
 	init(params)
 	{
 		this.params = params;
+		Lieu.setNomLieux(params.nomLieux);
 	},
 	
 	coins()
@@ -346,6 +347,21 @@ var App = {
 				this.sons.user.play();
 		}
 		return index;
+	},
+	
+	writeAccueil()
+	{
+		var data = {
+			ecoute            : this.cu.ecoute,
+			premierLieuPublic : this.params.premierLieuPublic,
+			nomApp            : this.params.nom,
+			nomLieux          : this.params.nomLieux,
+			nomLieuPublic     : this.params.nomLieuPublic
+		};
+		var html = new EJS({url: dirViews + 'accueil.ejs'}).render(data);
+		$('section').empty().append(html);
+		writeEcoutes();
+		this.writeAnonymes();
 	},
 	
 	focusUser(surnom, pres, ecoute)

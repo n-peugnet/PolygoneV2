@@ -29,7 +29,16 @@ app.get('/', function(req, res){
 		sess.prenom = '';
 		sess.surnom = '';
 	}
-	res.render('index.ejs', {prenom: sess.prenom, surnom: sess.surnom, ip: config.client.ip, port: config.client.port});
+	res.render('index.ejs', {
+		ip                : config.client.ip,
+		port              : config.client.port,
+		nomApp            : params.nom,
+		premierLieuPublic : params.premierLieuPublic,
+		nomLieux          : params.nomLieux,
+		nomLieuPublic     : params.nomLieuPublic,
+		prenom            : sess.prenom,
+		surnom            : sess.surnom
+	});
 });
 app.use(function(req, res, next){
     res.redirect('/');

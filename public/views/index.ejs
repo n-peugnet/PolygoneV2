@@ -5,8 +5,8 @@
 		<meta name="viewport" content="width=device-width" />
 		<link rel="stylesheet" href="/styles/polygone.css" />
 		<link rel="icon" type="image/png" href="/img/favicon.png" />
-		<title>Le Polygone</title>
-		<meta name="Title" content="Le Polygone"/>
+		<title><%= nomApp %></title>
+		<meta name="Title" content="<%= nomApp %>"/>
 		<meta name="Keywords" content="node.js, socket.io, chat"/>
 		<meta name="Description" content="Une application de chat en temps réel visant à se rapprocher d'une conversation de vive voix"/>
 	</head>
@@ -14,12 +14,14 @@
 		<div class="background">
 		<canvas data-processing-sources="/views/Polygone_1.pde"></canvas>
 		</div>
-		<nav id="nav">
-		<%- include("login.ejs", {etat: 0}) %>
-		</nav>
-		<section>
-		<%- include("accueil.ejs", {ecoute: 0})%>
-		</section>
+		<div class="foreground">
+			<nav id="nav">
+			<%- include("login.ejs", {etat: 0}) %>
+			</nav>
+			<section>
+			<%- include("accueil.ejs", {ecoute: 0, nomApp, nomLieux,  premierLieuPublic})%>
+			</section>
+		</div>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script type="text/javascript" src="/include/jquery.caret.js"></script>
 		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
@@ -48,6 +50,7 @@
 					App.addUserIn(client.surnom, client.presence, client.ecoute, client.couleur);
 				});
 				App.initAnonymes(data.nbAnonymes);
+				fadeForegroundIn();
 			});
 			socket.on('connection', function(){
 				App.addAnonyme();

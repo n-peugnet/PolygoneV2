@@ -1,6 +1,11 @@
 /** Class representing a place */
 class Lieu extends Array
 {
+	static setNomLieux(nom)
+	{
+		Lieu.nomLieux = nom;
+	}
+
 	/**
 	 * Creates a place.
 	 * @param {string} nom - The new place's name. (optionnal)
@@ -36,8 +41,15 @@ class Lieu extends Array
 
 	writeCoin(num)
 	{
-		var data = {num, nom: this.nom, taille: this.taille, presence: App.cu.presence, loggedIn: App.cu.loggedIn};
-		var html = new EJS({url: dirViews + 'coin.ejs'}).render(data);
+		var data = {
+			nomLieux : Lieu.nomLieux,
+			num,
+			nom      : this.nom,
+			taille   : this.taille,
+			presence : App.cu.presence,
+			loggedIn : App.cu.loggedIn
+		};
+		var html = new EJS({url: dirViews + 'lieu.ejs'}).render(data);
 		$('#coins').append(html);
 	}
 }

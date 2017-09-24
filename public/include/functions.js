@@ -138,8 +138,13 @@ function sendMessage(texte, type)
 	$("#message").val('').focus();
 }
 
+function fadeForegroundIn()
+{
+	$(".foreground").animate({opacity: 1}, 800);
+}
+
 function toggle(objectId, buttonId)
-{ 
+{
 	var obj = $("#"+objectId);
 	var btn = $("#"+buttonId);
 	if(obj.css("display") == 'block') {
@@ -167,15 +172,6 @@ function connexion(loginForm)
 function deconnexion()
 {
 	socket.emit('logOut');
-}
-
-function writeAccueil()
-{
-	var data = {ecoute: App.cu.ecoute};
-	var html = new EJS({url: dirViews + 'accueil.ejs'}).render(data);
-	$('section').empty().append(html);
-	writeEcoutes();
-	App.writeAnonymes();
 }
 
 function writeLogIn(etat)
@@ -265,7 +261,7 @@ function updateView(action)
 			eraseMenuCoins();
 			break;
 		case 'listenTo':
-			writeAccueil();
+			App.writeAccueil();
 			App.writeCoins();
 			App.writeUsers();
 			App.writeMenuCoins();
