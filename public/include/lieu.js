@@ -5,14 +5,14 @@ class Lieu extends Array
 	 * Creates a place.
 	 * @param {string} nom - The new place's name. (optionnal)
 	 * @param {int} taille - The new place's size. (default 6)
-	 * @param {string} protection - The new place's security  plan, possibilities are 'none' or 'password'. (default "none")
+	 * @param {Encryption} encryption - The new place's encryption method (default "none")
 	 */
-	constructor(nom = "", taille = 6, protection = "none")
+	constructor(taille = 6, nom = "", encryption = new Encryption())
 	{
 		super();
-		this.nom = nom;
 		this.taille = taille;
-		this.protection = protection;
+		this.nom = nom;
+		this.encryption = encryption;
 	}
 
 	/**

@@ -202,6 +202,11 @@ var App = {
 		this.goTo(0);
 		this.delUser(this.cu.surnom, this.cu.presence);
 	},
+
+	presenceCUser()
+	{
+		return this.lieux[this.cu.presence];
+	},
 	
 	goTo(dest)
 	{
@@ -213,7 +218,17 @@ var App = {
 	listenTo(lieu)
 	{
 		this.focusUser(this.cu.surnom, this.cu.presence, lieu);
-		this.cu.ecoute = lieu;		
+		this.cu.ecoute = lieu;
+	},
+	
+	sendMessage(texte, type)
+	{
+		if (texte.length > 0) {
+			texte = cleanSpaces(escapeHtml(texte));
+			texte = this.presenceCUser().encryption.encrypt(texte);
+			socket.emit('message', {texte, type});
+		}
+		$("#message").val('').focus();
 	},
 	
 	initAnonymes(nb)

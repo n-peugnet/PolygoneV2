@@ -24,9 +24,9 @@ function messageClavier(message, event) {
 	} else if(key == 13) {
 		if (!App.mention.active) {
 			if (event.shiftKey)
-				sendMessage(message, "cri");
+				App.sendMessage(message, "cri");
 			else
-				sendMessage(message, "texte");
+				App.sendMessage(message, "texte");
 		} else
 			App.mention.validate();
 
@@ -127,15 +127,6 @@ function activateMentions(mot)
 		mot = '<b>' + mot + '</b>';
 	}
 	return mot;
-}
-
-function sendMessage(texte, type)
-{
-	if (texte.length > 0) {
-		texte = cleanSpaces(escapeHtml(texte));
-		socket.emit('message', {texte, type});
-	}
-	$("#message").val('').focus();
 }
 
 function toggle(objectId, buttonId)
@@ -306,7 +297,7 @@ function citation(id)
 
 function crier()
 {
-	sendMessage( $("#message").val(), "cri");
+	App.sendMessage( $("#message").val(), "cri");
 }
 
 function extSurnoms(listeUsers)
@@ -314,14 +305,32 @@ function extSurnoms(listeUsers)
 	return listeUsers.map(function(u) {return u.surnom; });
 }
 
-function idGen(array){
+function idGen(array)
+{
 	if (array.length == 0)
 		return 0;
 	else
 		return array[array.length - 1].id + 1;
 }
 
-function mod(n, m) {
+/**
+ * Crypt or decrypt a message with a key
+ * @param {string} msg - the message to crypt or decrypt
+ * @param {string} key - the key
+ */
+function cryptSym(msg, key)
+{
+	var lenMsg = msg.length;
+	var lenKey = key.length;
+	var result = '';
+	for (var i=0; i<lenMsg; i++) {
+		result += String.fromCharCode(msg.charCodeAt(i) ^ key.charCodeAt(i % lenKey));
+	}
+	return result;
+}
+
+function mod(n, m)
+{
 	return ((n % m) + m) % m;
 }
 
