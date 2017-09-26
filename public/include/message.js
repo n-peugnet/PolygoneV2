@@ -7,9 +7,16 @@ class Message {
 		this.type = type;
 	}
 	
-	write(surnom, couleur, animation)
+	/**
+	 * renders a message
+	 * @param {string} surnom 
+	 * @param {string} couleur 
+	 * @param {boolean} animation 
+	 * @param {Encryption} crypto 
+	 */
+	write(surnom, couleur, animation, encryption)
 	{
-		var data = {surnom, message: analyseMessage(this.texte), couleur, id: this.id, type: this.type};
+		var data = {surnom, message: analyseMessage(encryption.decrypt(this.texte)), couleur, id: this.id, type: this.type};
 		var html = new EJS({url: dirViews + 'message.ejs'}).render(data);
 		if (animation)
 			$(html).prependTo('#dires_'+surnom).css('margin-top', '-'+$('#message_'+surnom+this.id).height()+'px').animate({ marginTop: '0px'});
@@ -53,9 +60,10 @@ class Citation extends Message
 		return this;
 	}
 
-	send()
+	send(encryption)
 	{
-		socket.emit('message', {texte: this.persCite + ' : ' + this.texte, type: this.type});
+		var texte = encryption.encrypt(this.persCite + ' : ' + this.texte);
+		socket.emit('message', {texte, type: this.type});
 		return this;
 	}
 }

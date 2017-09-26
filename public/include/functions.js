@@ -24,9 +24,9 @@ function messageClavier(message, event) {
 	} else if(key == 13) {
 		if (!App.mention.active) {
 			if (event.shiftKey)
-				sendMessage(message, "cri");
+				App.sendMessage(message, "cri");
 			else
-				sendMessage(message, "texte");
+				App.sendMessage(message, "texte");
 		} else
 			App.mention.validate();
 
@@ -57,6 +57,17 @@ function setEvents(){
 
 	$('#message').on('input', function() {
 		App.mention.scan();
+	});
+	
+	$('#cleEncrypt').on('input', function() {
+		App.updateCryptoKey($(this).val());
+	});
+	
+	$('#activerEncrypt').change(function(e) {
+		var type = "";
+		if ( $(this).prop('checked') ) type = "vernam";
+		else type = "none";
+		App.updateCryptoType(type);
 	});
 
 	$(document).click(function(event) { 
@@ -127,15 +138,6 @@ function activateMentions(mot)
 		mot = '<b>' + mot + '</b>';
 	}
 	return mot;
-}
-
-function sendMessage(texte, type)
-{
-	if (texte.length > 0) {
-		texte = cleanSpaces(escapeHtml(texte));
-		socket.emit('message', {texte, type});
-	}
-	$("#message").val('').focus();
 }
 
 function toggle(objectId, buttonId)
@@ -292,21 +294,31 @@ function addLieu()
 	socket.emit('addLieu');
 }
 
-function addMemory(surnom, id)
-{
-	var message = App.getUser(surnom).getMessage(id).texte;
-	socket.emit('addMemory', {surnom, message});
-	App.addMemory(surnom, message);
-}
-
-function citation(id)
-{
-	App.getMemory(id).send();
-}
-
 function crier()
 {
-	sendMessage( $("#message").val(), "cri");
+	App.sendMessage( $("#message").val(), "cri");
+}
+
+function askSymKey(surnom)
+{
+	var rsa = rsaGen();
+	var data = {
+		surnom,
+		n : rsa.n,
+		e : rsa.e
+	}
+	socket.emit('askSymKey', data);
+}
+
+/**
+ * Send the current user symetric key to another user based on the nickname, encrypted whith a rsa public key.
+ * @param {string} surnom - the other user's nickname
+ * @param {RSAKey} rsapub - the other user's rsa public key
+ */
+function sendSymKey(surnom, rsapub)
+{
+	var cSymKey = rsapub.encrypt(App.cu.crypto.key);
+	socket.emit('sendSymKey', {surnom, cSymKey});
 }
 
 function extSurnoms(listeUsers)
@@ -314,14 +326,35 @@ function extSurnoms(listeUsers)
 	return listeUsers.map(function(u) {return u.surnom; });
 }
 
-function idGen(array){
+function idGen(array)
+{
 	if (array.length == 0)
 		return 0;
 	else
 		return array[array.length - 1].id + 1;
 }
 
-function mod(n, m) {
+/**
+ * Crypt or decrypt a message with a key
+ * @param {string} msg - the message to crypt or decrypt
+ * @param {string} key - the key
+ */
+function cryptVernam(msg, key)
+{
+	var lenMsg = msg.length;
+	var lenKey = key.length;
+	var result = '';
+	if (lenKey > 0) {
+		for (var i=0; i<lenMsg; i++) {
+			result += String.fromCharCode((msg.charCodeAt(i) ^ 100) ^ key.charCodeAt(i % lenKey));
+		}
+		return result;
+	}
+	return msg;
+}
+
+function mod(n, m)
+{
 	return ((n % m) + m) % m;
 }
 
