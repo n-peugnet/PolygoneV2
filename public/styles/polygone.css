@@ -149,7 +149,14 @@ div.menu li:hover, div.menu li.active {
 
 form {
 	margin-bottom: 5px;
+	/* padding-left: 5px; */
+	/* border-left: solid 4px rgba(49, 49, 49, 0.46); */
 }
+
+input[type="checkbox"] {
+	vertical-align: text-top;
+}
+
 /*#boutonReduire {
 	position: absolute;
 	bottom: 0;

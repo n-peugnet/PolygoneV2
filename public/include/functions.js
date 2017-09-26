@@ -58,6 +58,17 @@ function setEvents(){
 	$('#message').on('input', function() {
 		App.mention.scan();
 	});
+	
+	$('#cleEncrypt').on('input', function() {
+		App.updateCryptoKey($(this).val());
+	});
+	
+	$('#activerEncrypt').change(function(e) {
+		var type = "";
+		if ( $(this).prop('checked') ) type = "vernam";
+		else type = "none";
+		App.updateCryptoType(type);
+	});
 
 	$(document).click(function(event) { 
 		if(!$(event.target).closest('.menu, .menuBouton').length){
@@ -283,21 +294,31 @@ function addLieu()
 	socket.emit('addLieu');
 }
 
-function addMemory(surnom, id)
-{
-	var message = App.getUser(surnom).getMessage(id).texte;
-	socket.emit('addMemory', {surnom, message});
-	App.addMemory(surnom, message);
-}
-
-function citation(id)
-{
-	App.getMemory(id).send();
-}
-
 function crier()
 {
 	App.sendMessage( $("#message").val(), "cri");
+}
+
+function askSymKey(surnom)
+{
+	var rsa = rsaGen();
+	var data = {
+		surnom,
+		n : rsa.n,
+		e : rsa.e
+	}
+	socket.emit('askSymKey', data);
+}
+
+/**
+ * Send the current user symetric key to another user based on the nickname, encrypted whith a rsa public key.
+ * @param {string} surnom - the other user's nickname
+ * @param {RSAKey} rsapub - the other user's rsa public key
+ */
+function sendSymKey(surnom, rsapub)
+{
+	var cSymKey = rsapub.encrypt(App.cu.crypto.key);
+	socket.emit('sendSymKey', {surnom, cSymKey});
 }
 
 function extSurnoms(listeUsers)
@@ -318,15 +339,18 @@ function idGen(array)
  * @param {string} msg - the message to crypt or decrypt
  * @param {string} key - the key
  */
-function cryptSym(msg, key)
+function cryptVernam(msg, key)
 {
 	var lenMsg = msg.length;
 	var lenKey = key.length;
 	var result = '';
-	for (var i=0; i<lenMsg; i++) {
-		result += String.fromCharCode(msg.charCodeAt(i) ^ key.charCodeAt(i % lenKey));
+	if (lenKey > 0) {
+		for (var i=0; i<lenMsg; i++) {
+			result += String.fromCharCode((msg.charCodeAt(i) ^ 100) ^ key.charCodeAt(i % lenKey));
+		}
+		return result;
 	}
-	return result;
+	return msg;
 }
 
 function mod(n, m)

@@ -8,11 +8,12 @@ class User {
 	 * @param {string} couleur - The new User's color.
 	 * @param {boolean} current - True is the new User is the current User
 	 */
-	constructor(surnom, ecoute, couleur, current)
+	constructor(surnom, ecoute, couleur, current, encrypt = 'none')
 	{
 		this.messages = [];
 		this.surnom = surnom;
 		this.couleur = couleur;
+		this.crypto = new Encryption(encrypt);
 		this.current = current;
 		this.ecoute = ecoute;
 		this.ecrit = false;
@@ -44,7 +45,7 @@ class User {
 	{
 		this.notWriting();
 		var id = idGen(this.messages);
-		var newMessage = new Message(id, texte, type).write(this.surnom, this.couleur, true);
+		var newMessage = new Message(id, texte, type).write(this.surnom, this.couleur, true, this.crypto);
 		this.messages.push(newMessage);
 		setTimeout($.proxy(function(){
 			this.delMessage(id);
@@ -144,7 +145,7 @@ class User {
 	{
 		var self = this;
 		this.messages.forEach(function(m){
-			m.write(self.surnom, self.couleur, false);
+			m.write(self.surnom, self.couleur, false, this.crypto);
 		});
 		if (this.ecrit){
 			this.writeWriting();

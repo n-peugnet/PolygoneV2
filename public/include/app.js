@@ -15,6 +15,8 @@ var App = {
 		prenom: "",
 		surnom: "",
 		couleur: "",
+		crypto: new Encryption("none"),
+		privKey: new RSAKey(),
 		presence: 0,
 		ecoute: 0
 	},
@@ -163,11 +165,25 @@ var App = {
 		this.lieux.splice(lieu, 1);
 		eraseCoin(lieu);
 	},
-	
+
+	addCitation(surnom, id)
+	{
+		var user     = this.getUser(surnom)
+		var cmessage = user.getMessage(id).texte;
+		var message  = user.crypto.decrypt(cmessage);
+		socket.emit('addMemory', {surnom, message});
+		App.addMemory(surnom, message);
+	},
+
 	addMemory(persCite, citation)
 	{
 		var newCitation = new Citation(idGen(this.cu.memoire), persCite, citation).write();
 		this.cu.memoire.push(newCitation);
+	},
+	
+	sendCitation(id)
+	{
+		this.getMemory(id).send(this.cu.crypto);
 	},
 	
 	getMemory(id)
@@ -225,10 +241,30 @@ var App = {
 	{
 		if (texte.length > 0) {
 			texte = cleanSpaces(escapeHtml(texte));
-			texte = this.presenceCUser().encryption.encrypt(texte);
+			texte = this.cu.crypto.encrypt(texte);
 			socket.emit('message', {texte, type});
 		}
 		$("#message").val('').focus();
+	},
+	
+	updateCryptoType(type)
+	{
+		this.cu.crypto.type = type;
+		this.getUserIn(this.cu.surnom, this.cu.presence).crypto.type = type;
+	},
+
+	updateCryptoKey(key)
+	{
+		this.cu.crypto.key = key;
+		this.getUserIn(this.cu.surnom, this.cu.presence).crypto.key = key;
+	},
+	
+	rsaGen() {
+		var before = new Date();
+		console.log("Generating rsa key");
+		this.cu.privKey.generate(2048, '10001');
+		var after = new Date();
+		console.log("Key Generation Time: " +(after - before) + "ms");
 	},
 	
 	initAnonymes(nb)
@@ -311,12 +347,24 @@ var App = {
 		return this.lieux[lieu].findIndex(function(u) {return u.surnom == surnom; });
 	},
 	
+	/**
+	 * finds a user based on its presence and its nickname
+	 * @param {string} surnom - the user's nickname
+	 * @param {int} lieu - the place's number
+	 * @return {User}
+	 */
 	getUserIn(surnom, lieu)
 	{
 		index = this.indexOfUser(surnom, lieu);
 		return this.lieux[lieu][index];
 	},
 	
+	
+	/**
+	 * finds a user based on its nickname
+	 * @param {string} surnom - the user's nickname
+	 * @return {User}
+	 */
 	getUser(surnom)
 	{
 		return this.allUsers().find(function(u) {return u.surnom == surnom; });

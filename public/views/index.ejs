@@ -32,10 +32,10 @@
 		<script type="text/javascript" src="/include/rng.js"></script>
 		<script type="text/javascript" src="/include/rsa.js"></script>
 		<script type="text/javascript" src="/include/rsa2.js"></script>
+		<script type="text/javascript" src="/include/encryption.js"></script>
 		<script type="text/javascript" src="/include/functions.js"></script>
 		<script type="text/javascript" src="/include/message.js"></script>
 		<script type="text/javascript" src="/include/user.js"></script>
-		<script type="text/javascript" src="/include/encryption.js"></script>
 		<script type="text/javascript" src="/include/lieu.js"></script>
 		<script type="text/javascript" src="/include/app.js"></script>
 		<script type="text/javascript">
@@ -107,6 +107,17 @@
 			socket.on('listenTo', function(ecoute){
 				App.listenTo(ecoute);
 				updateView('listenTo');
+			});
+			// someone else asks for your symetric key
+			socket.on('askSymKey', function(data){
+				var demandeur = App.getUser(data.surnom);
+				var rsapub = new RSAKey();
+				rsapub.setPublic(data.n, data.e);
+			});
+			// someone else sends you his/her symetric key
+			socket.on('sendSymKey', function(data){
+				App.cu.privKey.decrypt(data.cSymKey);
+				App.getUser(data.surnom);
 			});
 			socket.on('addLieu', function(){
 				App.addLieu();

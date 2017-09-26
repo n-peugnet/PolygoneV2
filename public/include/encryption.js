@@ -1,48 +1,27 @@
 /** Class representing a type of encryption */
 class Encryption {
 
-	static create(type, key = '') {
-		var encryption = new Encryption();;
-		switch (type) {
-			case "password":
-				if ( key.length > 0)
-					encryption = new Symetric(type, key);
-				break;
-		}
-		return encryption
-	}
-
-	constructor(type = "none")
+	constructor(type, key = '')
 	{
 		this.type = type;
+		this.key  = key;
 	}
 
 	encrypt(texte)
 	{
-		return texte;
+		switch (this.type) {
+			case "vernam": return cryptVernam(texte, this.key);
+			case "none":
+			default: return texte;
+		}
 	}
 
 	decrypt(texte)
 	{
-		return texte;
-	}
-}
-
-class Symetric extends Encryption
-{
-	constructor(type, key)
-	{
-		super(type);
-		this.key = key;
-	}
-
-	encrypt(texte)
-	{
-		return cryptSym(texte, this.key);
-	}
-
-	decrypt(texte)
-	{
-		return cryptSym(texte, this.key);
+		switch (this.type) {
+			case "vernam": return cryptVernam(texte, this.key);
+			case "none":
+			default: return texte;
+		}
 	}
 }

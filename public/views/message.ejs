@@ -7,5 +7,5 @@
 		<p><%= message %></p>
 		<%= type == "citation" ? "</div>" : "" %>
 	</div>
-	<button type="button" title="Mémoriser" class="action" onclick="addMemory('<%= surnom %>', '<%= id %>')" >+</button>
+	<button type="button" title="Mémoriser" class="action" onclick="App.addCitation('<%= surnom %>', '<%= id %>')" >+</button>
 </div>
