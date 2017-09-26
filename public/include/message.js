@@ -72,12 +72,12 @@ class Ecrit extends Message
 {
 	constructor()
 	{
-		super("ecrit",  '. . .', "writing");
+		super("ecrit", '. . .', "writing");
 	}
 
 	write(surnom)
 	{
-		super.write(surnom, '#cccccc', true);
+		super.write(surnom, '#cccccc', true, new Encryption("none"));
 		return this;
 	}
 

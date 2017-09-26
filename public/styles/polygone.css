@@ -13,7 +13,7 @@ body {
 }
 
 
-a, p, h3, li, label, input, textarea {
+a, p, h3, h4, li, label, input, textarea {
 	font-family: segoeui, Arial, sans-serif;
 	font-size: 14px;
 }
@@ -25,9 +25,14 @@ h1, h2 {
 	font-stretch: condensed;
 }
 
-h3 {
+h3, h4 {
 	margin-top: 5px;
 	margin-bottom: 5px;
+}
+
+h4 {
+	font-style: italic;
+	font-weight: normal;
 }
 
 li {
@@ -60,8 +65,11 @@ ul {
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 100%;
-	
+	height: 100%;	
+}
+
+.foreground {
+	opacity: 0;
 }
 
 .colonne {

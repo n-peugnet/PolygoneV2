@@ -1,7 +1,9 @@
-<h1>Le Polygone</h1>
-<% if (ecoute != 0) { %>
+<h1><%= nomApp %></h1>
+<% 
+if (ecoute != 0) {
+%>
 <article>
-	<h2>Coin <%= ecoute %></h2>
+	<h2><%= nomLieux %> <%= ecoute %></h2>
 	<div class="details">
 		<ul>
 			<li><span class="num" id="nbEcoutes">0</span> Ecoutes</li>
@@ -9,9 +11,12 @@
 	</div>
 	<div id="lieu<%= ecoute %>" class="discussions"></div>
 </article>
-<% } %>
+<%
+}
+if (premierLieuPublic) {
+%>
 <article>
-	<h2>Centre</h2>
+	<h2><%= nomLieuPublic %></h2>
 	<div class="details">
 		<ul>
 			<li><span class="num" id="nbAnonymes">0</span> Anonymes</li>
@@ -23,7 +28,8 @@
 	<% } %>
 	<div id="lieu0" class="discussions"></div>
 </article>
+<% } %>
 <article>
-	<h2>Coins</h2>
+	<h2><%= nomLieux %>s</h2>
 	<div id="zoneCoins"><div id="coins"></div></div>
 </article>
