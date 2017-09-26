@@ -312,7 +312,7 @@ var App = {
 		var self = this;
 		var index = this.indexOfUser(surnom, lieu);
 		this.lieux[lieu][index].disableIn(lieu);
-		index = this.moveUser(surnom, lieu, 0);
+		if (lieu != 0) index = this.moveUser(surnom, lieu, 0);
 		this.addAnonyme();
 		setTimeout(function(){
 			if(!self.lieux[0][index].actif){
