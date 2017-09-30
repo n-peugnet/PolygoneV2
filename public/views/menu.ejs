@@ -1,13 +1,10 @@
 <div id="menu">
 	<h2><%= surnom %></h2>
-	<p>Assis <%= presence == 0 ? "au centre" : "au coin " + presence %></p>
+	<p>Présence : <%= presence == 0 ? nomPremierLieu : nomLieux + ' ' + presence %></p>
 	<button onclick="deconnexion()">Sortir</button>
 	<h3>Encryption</h3>
-	<form>
-		<label for="activerEncrypt">Activer</label>
-		<input type="checkbox" name="activerEncrypt" id="activerEncrypt" /><br>
-		<label for="cleEncrypt">Clé de chiffrement</label><br>
-		<input type="text" name="cleEncrypt" id="cleEncrypt" maxlength="500" value="" />
-		</label>
-	</form>
+	<label for="activerEncrypt">Activer</label>
+	<input type="checkbox" name="activerEncrypt" id="activerEncrypt" <%= typeEncrypt == 'vernam' ? 'checked' : '' %> /><br>
+	<label for="cleEncrypt">Clé de chiffrement</label><br>
+	<input type="text" name="cleEncrypt" id="cleEncrypt" maxlength="500" value="<%= cleEncrypt %>" />
 </div>

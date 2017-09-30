@@ -8,7 +8,7 @@ class User {
 	 * @param {string} couleur - The new User's color.
 	 * @param {boolean} current - True is the new User is the current User
 	 */
-	constructor(surnom, ecoute, couleur, current, encrypt = 'none')
+	constructor(surnom, ecoute, couleur, current, encrypt = 'vernam')
 	{
 		this.messages = [];
 		this.surnom = surnom;
@@ -65,8 +65,9 @@ class User {
 
 	writeMenu()
 	{
-		var html = new EJS({url: dirViews + 'userMenu.ejs'}).render({surnom: this.surnom});
+		var html = new EJS({url: dirViews + 'userMenu.ejs'}).render({surnom: this.surnom, cryptoKey: this.crypto.key});
 		$('#user_' + this.surnom).children(':first').append(html);
+		setEvents();
 	}
 	
 	//inscrit un utilisateur dans la page
@@ -127,6 +128,7 @@ class User {
 		var html = this.genColonne();
 		$('#user_' + this.surnom).replaceWith(html);
 		this.writeMessages();
+		return this;
 	}
 	
 	eraseIn(lieu)
@@ -143,9 +145,10 @@ class User {
 	
 	writeMessages()
 	{
+		$('#dires_' + this.surnom).empty();
 		var self = this;
 		this.messages.forEach(function(m){
-			m.write(self.surnom, self.couleur, false, this.crypto);
+			m.write(self.surnom, self.couleur, false, self.crypto);
 		});
 		if (this.ecrit){
 			this.writeWriting();

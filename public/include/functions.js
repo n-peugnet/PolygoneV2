@@ -1,4 +1,5 @@
 $(setEvents);
+$(fadeBackgroundIn);
 
 /**
  * Key mapping for the message input field.
@@ -31,12 +32,14 @@ function messageClavier(message, event) {
 			App.mention.validate();
 
 	} else if (App.mention.active) {
-		if (key == 38)
+		if (key == 38) {
 			App.mention.selectPrev();
-			event.preventDefault()
-		if (key == 40)
+			event.preventDefault();
+		}
+		if (key == 40) {
 			App.mention.selectNext();
-			event.preventDefault()
+			event.preventDefault();
+		}
 
 	} else if(isPrintable) {
 		if (longueur == 0) {
@@ -60,7 +63,11 @@ function setEvents(){
 	});
 	
 	$('#cleEncrypt').on('input', function() {
-		App.updateCryptoKey($(this).val());
+		App.updateCryptoKeyCU($(this).val());
+	});
+	
+	$('.cleEncrypt').on('input', function() {
+		App.updateCryptoKey($(this).val(), this.dataset.surnom);
 	});
 	
 	$('#activerEncrypt').change(function(e) {
@@ -78,7 +85,8 @@ function setEvents(){
 	});
 
 	$(document).keydown(function(event) {
-		if (event.keyCode == 27)
+		var keys = [27, 13];
+		if (keys.includes(event.keyCode))
 			updateView('hideMenus');
 	});
 }
@@ -140,9 +148,14 @@ function activateMentions(mot)
 	return mot;
 }
 
+function fadeBackgroundIn()
+{
+	$(".background").animate({opacity: 1}, 1000);
+}
+
 function fadeForegroundIn()
 {
-	$(".foreground").animate({opacity: 1}, 800);
+	$(".foreground").animate({opacity: 1}, 700);
 }
 
 function toggle(objectId, buttonId)
@@ -189,13 +202,6 @@ function writeLogIn(etat)
 	setEvents();
 }
 
-function writeMenu()
-{
-	var data = {surnom: App.cu.surnom, presence: App.cu.presence};
-	var html = new EJS({url: dirViews + 'menu.ejs'}).render(data);
-	$('#menu').replaceWith(html);
-}
-
 function writeMemoire()
 {
 	var html = new EJS({url: dirViews + 'memoire.ejs'}).render();
@@ -220,7 +226,6 @@ function eraseCoin(num)
 function writeEcoutes()
 {
 	var liste = App.usersListeningTo(App.cu.ecoute);
-	console.log(liste);
 	$('#nbEcoutes').empty().append(liste.length);
 }
 
@@ -251,7 +256,7 @@ function updateView(action)
 			writeLogIn(2);
 			break;
 		case 'loggedIn':
-			writeMenu();
+			App.writeMenu();
 			$('.boutonMove').prop('disabled', false);
 			App.writeUsersMenu();
 			App.writeMenuCoins();
@@ -267,7 +272,8 @@ function updateView(action)
 			App.writeCoins();
 			App.writeUsers();
 			App.writeMenuCoins();
-			writeMenu();
+			App.writeMenu();
+			setEvents();
 			break;
 		case 'hideMenus':
 			$('.menu').hide();
@@ -297,7 +303,7 @@ function crier()
 
 function askSymKey(surnom)
 {
-	var rsa = rsaGen();
+	var rsa = App.rsaGen();
 	var data = {
 		surnom,
 		n : rsa.n,

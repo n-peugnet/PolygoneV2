@@ -254,10 +254,19 @@ var App = {
 		this.getUserIn(this.cu.surnom, this.cu.presence).crypto.type = type;
 	},
 
-	updateCryptoKey(key)
+	updateCryptoKeyCU(key)
 	{
 		this.cu.crypto.key = key;
 		this.getUserIn(this.cu.surnom, this.cu.presence).crypto.key = key;
+	},
+	
+	updateCryptoKey(key, surnom)
+	{
+		var pres =  this.cu.presence;
+		var user = this.getUserIn(surnom, pres);
+		user.crypto.key = key;
+		user.writeMessages();
+
 	},
 	
 	rsaGen() {
@@ -266,6 +275,7 @@ var App = {
 		this.cu.privKey.generate(2048, '10001');
 		var after = new Date();
 		console.log("Key Generation Time: " +(after - before) + "ms");
+		return this.cu.privKey;
 	},
 	
 	initAnonymes(nb)
@@ -412,6 +422,15 @@ var App = {
 		return index;
 	},
 	
+	focusUser(surnom, pres, ecoute)
+	{
+		var ecoutePre = this.getUserIn(surnom, pres).ecoute
+		this.getUserIn(surnom, pres).ecoute = ecoute
+		if (ecoute == this.cu.ecoute || ecoutePre == this.cu.ecoute) {
+			writeEcoutes();
+		}
+	},
+	
 	writeAccueil()
 	{
 		var data = {
@@ -427,13 +446,18 @@ var App = {
 		this.writeAnonymes();
 	},
 	
-	focusUser(surnom, pres, ecoute)
+	writeMenu()
 	{
-		var ecoutePre = this.getUserIn(surnom, pres).ecoute
-		this.getUserIn(surnom, pres).ecoute = ecoute
-		if (ecoute == this.cu.ecoute || ecoutePre == this.cu.ecoute) {
-			writeEcoutes();
-		}
+		var data = {
+			surnom         : this.cu.surnom,
+			presence       : this.cu.presence,
+			nomPremierLieu : this.params.nomLieuPublic,
+			nomLieux       : this.params.nomLieux,
+			typeEncrypt    : this.cu.crypto.type,
+			cleEncrypt     : this.cu.crypto.key
+		};
+		var html = new EJS({url: dirViews + 'menu.ejs'}).render(data);
+		$('#menu').replaceWith(html);
 	},
 
 	writeAnonymes()

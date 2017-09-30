@@ -45,6 +45,7 @@ ul {
 }
 
 .background {
+	opacity: 0;
 	background-color: white;
 	position: fixed;
 	top: 0;
@@ -56,6 +57,7 @@ ul {
 
 .background canvas {
 	position: absolute;
+	outline: none;
 	top: calc(10% - 130px);
 	left: calc(6% - 130px);
 }
@@ -127,8 +129,16 @@ div.menu {
 	z-index: 3;
 }
 
-div.menu li {
+div.menu li, div.menu div {
 	padding: 2px 17px;
+	cursor: pointer;
+}
+
+div.menu div {
+	margin: 2px 2px;
+}
+
+div.menu li, div.menu label {
 	font-size: 13px;
 	cursor: pointer;
 }
