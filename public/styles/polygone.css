@@ -8,10 +8,13 @@
 	src: url('/styles/segoeui.ttf');
 }
 
+* {
+	box-sizing: border-box;
+}
+
 body {
 	margin: 5px;
 }
-
 
 a, p, h3, h4, li, label, input, textarea {
 	font-family: segoeui, Arial, sans-serif;
@@ -181,16 +184,16 @@ input[type="checkbox"] {
 	right: 0;
 }*/
 
-.coin {
+.lieu {
 	height: auto;
-	width: 200px;
+	width: 100%;
 	padding: 5px;
 	vertical-align: top;
 	background-color: rgba(242, 242, 242, 0.7);
 	margin-bottom: 5px;
 }
 
-.coin>ul {
+.lieu>ul {
 	margin-bottom: 10px;
 }
 
@@ -200,6 +203,7 @@ input[type="checkbox"] {
 	font-size: 35px;
 	text-align: center;
 	cursor: pointer;
+	background-color: rgba(242, 242, 242, 0.7);
 }
 
 #ajouterCoin:hover {
@@ -217,13 +221,22 @@ input[type="checkbox"] {
 	overflow: auto;	
 }
 
-#zoneCoins {
+#zoneLieux {
 	white-space: nowrap;
-	overflow: auto;
+	width: calc(100% - 5px);
+	max-height: 100%;
+	position: absolute;
+	bottom: 0;
+	top: 58px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	z-index: 8;
+	padding: inherit;
+	left: 0;
 }
 
-#coins{
-	display: inline-block;
+#lieux {
+	max-width: 100%;
 }
 
 span.puce {
@@ -290,8 +303,8 @@ span.puce {
 	display: inline-block;
 	white-space: normal;
 	vertical-align: middle;
-	max-width: 155px;
-	min-width: 15px;
+	max-width: 165px;
+	min-width: 25px;
 	min-height: 19px;
 	margin-bottom: 5px;
 	padding: 5px;
@@ -320,7 +333,7 @@ span.puce {
 
 .bulle.citation .bulle {
 	margin: 0;
-	max-width: calc(100% - 10px);
+	max-width: 100%;
 }
 
 button {
@@ -355,21 +368,27 @@ button:hover:enabled {
 }
 
 section {
-	margin-left: 205px;
+	margin-left: 395px;
 	transform: translateX(none);
 	transition-property: transform;
 	transition-duration: 200ms;
 }
 
-nav {
-	display: inline-block;
+nav, #menuLieux {
 	position: fixed;
 	top: 0;
 	left: 0;
-	padding: 5px;
+	padding: 0 5px;
 	height: 100%;
-	width: 195px;
+	width: 200px;
 	background-color: rgba(242, 242, 242, 0.7);
+}
+
+article#menuLieux {
+	left: 200px;
+	height: auto;
+	height: 100%;
+	background-color: transparent;
 }
 
 p.error {

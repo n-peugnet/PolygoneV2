@@ -1,22 +1,21 @@
-<h1><%= nomApp %></h1>
 <% 
 if (ecoute != 0) {
 %>
 <article>
-	<h2><%= nomLieux %> <%= ecoute %></h2>
+	<h2><%= nomLieu %> <%= ecoute %></h2>
 	<div class="details">
 		<ul>
 			<li><span class="num" id="nbEcoutes">0</span> Ecoutes</li>
 		</ul>
 	</div>
-	<div id="lieu<%= ecoute %>" class="discussions"></div>
+	<div id="discutLieu<%= ecoute %>" class="discussions"></div>
 </article>
 <%
 }
 if (premierLieuPublic) {
 %>
 <article>
-	<h2><%= nomLieuPublic %></h2>
+	<h2><%= nomLieu0 %></h2>
 	<div class="details">
 		<ul>
 			<li><span class="num" id="nbAnonymes">0</span> Anonymes</li>
@@ -26,10 +25,10 @@ if (premierLieuPublic) {
 	<button class ="boutonMove" onclick="goTo(0)" >Y retourner</button>
 	<button id="toggleLieu0" onclick="toggle('lieu0', 'toggleLieu0');">Masquer</button>
 	<% } %>
-	<div id="lieu0" class="discussions"></div>
+	<div id="discutLieu0" class="discussions"></div>
 </article>
 <% } %>
-<article>
-	<h2><%= nomLieux %>s</h2>
-	<div id="zoneCoins"><div id="coins"></div></div>
+<article id="menuLieux">
+	<h2><%= nomLieux %></h2>
+	<div id="zoneLieux"><div id="lieux"></div></div>
 </article>

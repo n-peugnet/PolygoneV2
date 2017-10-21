@@ -1,6 +1,6 @@
 /** @namespace */
 var App = {
-	lieux : [new Lieu("centre")],  // List of the different places.
+	lieux : [new Lieu(0, [], 0)],  // List of the different places.
 	nbAnonymes: 0,
 	params : {},
 	sons : {
@@ -105,10 +105,11 @@ var App = {
 	init(params)
 	{
 		this.params = params;
-		Lieu.setNomLieux(params.nomLieux);
+		this.lieux[0].nom = params.nomLieu0;
+		Lieu.setNomLieu(params.nomLieu);
 	},
 	
-	coins()
+	lieuxPrives()
 	{
 		return this.lieux.slice(1);
 	},
@@ -149,16 +150,16 @@ var App = {
 	
 	addLieu()
 	{
-		var newLieu = new Lieu();
-		i = this.lieux.push(newLieu)-1;
-		newLieu.writeCoin(i);
+		var newLieu = new Lieu(this.lieux.length);
+		this.lieux.push(newLieu);
+		newLieu.write(this.cu);
 		if (this.lieux.length == this.params.nbLieuxMax) eraseMenuCoins();
 	},
 	
 	delLastLieu()
 	{
 		this.delLieu(this.lieux.length - 1);
-		if (this.lieux.length == this.params.nbLieuxMax -1) writeMenuCoins();
+		if (this.lieux.length == this.params.nbLieuxMax -1) writeMenuLieux();
 	},
 	
 	delLieu(lieu)
@@ -436,9 +437,10 @@ var App = {
 		var data = {
 			ecoute            : this.cu.ecoute,
 			premierLieuPublic : this.params.premierLieuPublic,
-			nomApp            : this.params.nom,
+			nomApp            : this.params.nomApp,
+			nomLieu           : this.params.nomLieu,
 			nomLieux          : this.params.nomLieux,
-			nomLieuPublic     : this.params.nomLieuPublic
+			nomLieu0     : this.params.nomLieu0
 		};
 		var html = new EJS({url: dirViews + 'accueil.ejs'}).render(data);
 		$('section').empty().append(html);
@@ -449,10 +451,11 @@ var App = {
 	writeMenu()
 	{
 		var data = {
+			nomApp         : this.params.nomApp,
 			surnom         : this.cu.surnom,
 			presence       : this.cu.presence,
-			nomPremierLieu : this.params.nomLieuPublic,
-			nomLieux       : this.params.nomLieux,
+			nomPremierLieu : this.params.nomLieu0,
+			nomLieu        : this.params.nomLieu,
 			typeEncrypt    : this.cu.crypto.type,
 			cleEncrypt     : this.cu.crypto.key
 		};
@@ -468,7 +471,8 @@ var App = {
 	writeUsers()
 	{
 		for (i=0; i < this.lieux.length; i++) {
-			$('#lieu'+i).empty();
+			if (i == this.cu.ecoute || (i == 0 && this.params.premierLieuPublic))
+				$('#discutLieu'+i).empty();
 			this.lieux[i].forEach(function(u) {
 				u.writeIn(i);
 			});
@@ -482,21 +486,20 @@ var App = {
 				u.writeMenu();
 		});
 	},
-		
-	writeCoins()
+
+	writeLieux()
 	{
-		$('#coins').empty();
-		for (i=1; i < this.lieux.length; i++) {
-			if (i != this.cu.ecoute){
-				this.lieux[i].writeCoin(i);
-			}
-		}
+		$('#lieux').empty();
+		var cu = this.cu;
+		this.lieux.forEach(function(lieu) {
+			lieu.write(cu);
+		});
 	},
 
-	writeMenuCoins()
+	writeMenuLieux()
 	{
 		if (this.lieux.length < this.params.nbLieuxMax || this.params.nbLieuxMax == 0) {
-			writeMenuCoins();
+			writeMenuLieux();
 		}
 	}
 }

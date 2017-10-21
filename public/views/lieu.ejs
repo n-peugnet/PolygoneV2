@@ -1,14 +1,16 @@
-<div class="colonne coin" id="coin<%= num %>">
-	<h3><%= nomLieux %> <%= num %></h3>
+<div class="lieu <%= num == presence ? 'presence' : '' %>" id="lieu<%= num %>">
+	<h3><%= nomLieu %> <%= num %></h3>
 	<h4><%= nom %></h4>
 	<ul>
-<%  for (var i = 0; i < taille; i++) {%>
+<% for (var i = 0; i < taille; i++) {%>
 		<li class="empty">
 			<span class="puce"></span>
 			<span class="surnom"></span>
 		</li>
-<%}%>
+<% } %>
 	</ul>
-	<button class ="boutonMove" onclick="goTo(<%= num %>)" <%= !loggedIn ? "disabled" : ""%> ><%= presence == num ? "Y retourner" : "S'assoir" %></button>
-	<% if (presence != num) { %><button class ="boutonMove" onclick="listenTo(<%= num %>)" <%= !loggedIn ? "disabled" : "" %> >Ecouter</button><% } %>
+	<button class ="boutonMove" onclick="goTo(<%= num %>)" <%= !loggedIn || (presence == num && ecoute == num) ? "disabled" : ""%> ><%= presence == num ? "Y retourner" : "Y Aller" %></button>
+<% if (presence != num) { %>
+	<button class ="boutonMove" onclick="listenTo(<%= num %>)" <%= !loggedIn || (ecoute == num) ? "disabled" : "" %> ><%= presence == num ? "Y retourner" : "Ecouter" %></button>
+<% } %>
 </div>

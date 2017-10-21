@@ -16,10 +16,10 @@
 		</div>
 		<div class="foreground">
 			<nav id="nav">
-			<%- include("login.ejs", {etat: 0}) %>
+			<%- include("login.ejs", {etat: 0, nomApp}) %>
 			</nav>
 			<section>
-			<%- include("accueil.ejs", {ecoute: 0, nomApp, nomLieux,  premierLieuPublic})%>
+			<%- include("accueil.ejs", {ecoute: 0, nomLieux, premierLieuPublic})%>
 			</section>
 		</div>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -49,10 +49,10 @@
 			socket.on('init', function(data){
 				App.reconnect();
 				App.init(data.params);
+				App.writeLieux();
 				for (i=1; i < data.nbLieux; i++) {
 					App.addLieu();
 				}
-				App.writeCoins();
 				data.infosClients.forEach( function(client){
 					App.addUserIn(client.surnom, client.presence, client.ecoute, client.couleur);
 				});

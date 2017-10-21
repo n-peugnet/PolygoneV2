@@ -1,20 +1,24 @@
 /** Class representing a place */
 class Lieu extends Array
 {
-	static setNomLieux(nom)
+	static setNomLieu(nom)
 	{
-		Lieu.nomLieux = nom;
+		Lieu.nomLieu = nom;
 	}
 
 	/**
 	 * Creates a place.
+	 * @param {int} num - The new place's number.
 	 * @param {string} nom - The new place's name. (optionnal)
+	 * @param {User[]} users - Users in this place.
 	 * @param {int} taille - The new place's size. (default 6)
 	 * @param {string} protection - The new place's protection method (default "none")
 	 */
-	constructor(taille = 6, nom = "", protection = 'none')
+	constructor(num, users = [], taille = 6, nom = "", protection = 'none')
 	{
 		super();
+		this.num = num;
+		this.users = users;
 		this.taille = taille;
 		this.nom = nom;
 		this.protection = protection;
@@ -39,17 +43,22 @@ class Lieu extends Array
 		return liste;
 	}
 
-	writeCoin(num)
+	write(cu)
 	{
 		var data = {
-			nomLieux : Lieu.nomLieux,
-			num,
+			nomLieu  : Lieu.nomLieu,
+			num      : this.num,
 			nom      : this.nom,
 			taille   : this.taille,
-			presence : App.cu.presence,
-			loggedIn : App.cu.loggedIn
+			presence : cu.presence,
+			ecoute   : cu.ecoute,
+			loggedIn : cu.loggedIn
 		};
-		var html = new EJS({url: dirViews + 'lieu.ejs'}).render(data);
-		$('#coins').append(html);
+		var tmpl = 'lieu.ejs';
+		if (this.num == 0) {
+			tmpl = 'lieu0.ejs'
+		}
+		var html = new EJS({url: dirViews + tmpl}).render(data);
+		$('#lieux').append(html);
 	}
 }
