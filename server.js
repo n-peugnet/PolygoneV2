@@ -32,10 +32,11 @@ app.get('/', function(req, res){
 	res.render('index.ejs', {
 		ip                : config.client.ip,
 		port              : config.client.port,
-		nomApp            : params.nom,
+		nomApp            : params.nomApp,
 		premierLieuPublic : params.premierLieuPublic,
+		nomLieu           : params.nomLieu,
 		nomLieux          : params.nomLieux,
-		nomLieuPublic     : params.nomLieuPublic,
+		nomLieu0     : params.nomLieu0,
 		prenom            : sess.prenom,
 		surnom            : sess.surnom
 	});
