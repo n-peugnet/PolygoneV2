@@ -83,7 +83,7 @@ var App = {
 
 		/**
 		 * Select the next or previous user of te mention list.
-		 * @param {int} sens - The direction in which you want to change the selection (1 : next, -1 : prev).
+		 * @param {number} sens - The direction in which you want to change the selection (1 : next, -1 : prev).
 		 */
 		changeSelection(sens)
 		{
@@ -118,7 +118,7 @@ var App = {
 	{
 		var listeUsers = [];
 		this.lieux.forEach(function(lieu) {
-			listeUsers = listeUsers.concat(lieu);
+			listeUsers = listeUsers.concat(lieu.users);
 		});
 		return listeUsers;
 	},
@@ -128,7 +128,7 @@ var App = {
 		var listeUsers = [];
 		this.lieux.forEach(function(l, numLieu) {
 			if (numLieu != lieu){
-				l.forEach(function(u){
+				l.users.forEach(function(u){
 					if (u.ecoute == lieu)
 						listeUsers.push(u);
 				});
@@ -308,12 +308,7 @@ var App = {
 	addUserIn(surnom, pres, ecoute, couleur)
 	{
 		var current = surnom == this.cu.surnom && this.cu.loggedIn; //determine si l'utilisateur est bien l'utilisateur courant
-		if (this.containsUser(surnom, pres)){
-			this.lieux[pres][this.indexOfUser(surnom, pres)].reactivateIn(pres, couleur, current);
-		} else {
-			var newUser = new User (surnom, ecoute, couleur, current).writeIn(pres);
-			this.lieux[pres].push(newUser);
-		}
+		this.lieux[pres].addUser(surnom, ecoute, couleur, current);
 	},
 	
 	addMessageTo(surnom, lieu, texte, type)
@@ -332,11 +327,6 @@ var App = {
 		this.getUserIn(surnom, lieu).addMessage(texte, type);
 	},
 	
-	containsUser(surnom, lieu)
-	{
-		return this.lieux[lieu].map(function(u) {return u.surnom; }).includes(surnom);
-	},
-	
 	isUserLoggedIn(surnom)
 	{
 		var user = this.getUser(surnom);
@@ -349,26 +339,14 @@ var App = {
 	},
 	
 	/**
-	 * Get a user's index in the place he is, based on it's nickname.
-	 * @param {string} surnom - The user's nickname.
-	 * @param {number} lieu - The user's place.
-	 * @return {number} The user's index.
-	 */
-	indexOfUser(surnom, lieu)
-	{
-		return this.lieux[lieu].findIndex(function(u) {return u.surnom == surnom; });
-	},
-	
-	/**
 	 * finds a user based on its presence and its nickname
 	 * @param {string} surnom - the user's nickname
-	 * @param {int} lieu - the place's number
+	 * @param {number} lieu - the place's number
 	 * @return {User}
 	 */
 	getUserIn(surnom, lieu)
 	{
-		index = this.indexOfUser(surnom, lieu);
-		return this.lieux[lieu][index];
+		return this.lieux[lieu].getUser(surnom);
 	},
 	
 	
@@ -385,14 +363,17 @@ var App = {
 	delUser(surnom, lieu)
 	{
 		var self = this;
-		var index = this.indexOfUser(surnom, lieu);
-		this.lieux[lieu][index].disableIn(lieu);
-		if (lieu != 0) index = this.moveUser(surnom, lieu, 0);
+		var user = this.lieux[lieu].getUser(surnom);
+		user.disableIn(lieu);
+		if (lieu != 0) this.moveUser(surnom, lieu, 0);
 		this.addAnonyme();
 		setTimeout(function(){
-			if(!self.lieux[0][index].actif){
-				self.lieux[0][index].eraseIn(0);
-				self.lieux[0].splice(index,1);
+			console.log(user);
+			user = self.lieux[0].getUser(surnom);
+			console.log(user);
+			if(!user.actif){
+				user.eraseIn(0);
+				self.lieux[0].removeUser(surnom);
 			}
 		}, 17000);
 	},
@@ -406,27 +387,25 @@ var App = {
 	 */
 	moveUser(surnom, lDepart, lArrivee)
 	{
-		var index = this.indexOfUser(surnom, lDepart);
-		var user = this.lieux[lDepart].splice(index,1)[0];
-		var ecoutePre = user.ecoute;
-		user.ecoute = lArrivee;
-		if ( ecoutePre == this.cu.ecoute)
-			writeEcoutes();
-		index = this.lieux[lArrivee].push(user) - 1;
-		if (!user.current)
+		this.focusUser(surnom, lDepart, lArrivee);
+		if ( lDepart != lArrivee)
 		{
-			user.eraseIn(lDepart);
-			user.writeIn(lArrivee);
-			if (lArrivee == this.cu.presence && user.actif)
-				this.sons.user.play();
+			var user = this.lieux[lDepart].removeUser(surnom);
+			index = this.lieux[lArrivee].moveUserIn(user);
+			if (!user.current)
+			{
+				user.eraseIn(lDepart);
+				user.writeIn(lArrivee);
+				if (lArrivee == this.cu.presence && user.actif)
+					this.sons.user.play();
+			}
 		}
 		return index;
 	},
 	
 	focusUser(surnom, pres, ecoute)
 	{
-		var ecoutePre = this.getUserIn(surnom, pres).ecoute
-		this.getUserIn(surnom, pres).ecoute = ecoute
+		var ecoutePre = this.getUserIn(surnom, pres).listenTo(ecoute);
 		if (ecoute == this.cu.ecoute || ecoutePre == this.cu.ecoute) {
 			writeEcoutes();
 		}
@@ -473,18 +452,13 @@ var App = {
 		for (i=0; i < this.lieux.length; i++) {
 			if (i == this.cu.ecoute || (i == 0 && this.params.premierLieuPublic))
 				$('#discutLieu'+i).empty();
-			this.lieux[i].forEach(function(u) {
-				u.writeIn(i);
-			});
+			this.lieux[i].writeUsers();
 		}
 	},
 
 	writeUsersMenu()
 	{
-		this.lieux[this.cu.presence].forEach(function(u){
-			if (!u.current && u.actif)
-				u.writeMenu();
-		});
+		this.lieux[this.cu.presence].writeUsersMenu();
 	},
 
 	writeLieux()
