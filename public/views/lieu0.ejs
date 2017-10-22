@@ -1,0 +1,4 @@
+<div class="lieu <%= num == presence ? 'presence' : '' %>" id="lieu<%= num %>">
+	<h3><%= nom %></h3>
+	<button class ="boutonMove <%= num == presence ? 'presence' : '' %>" onclick="goTo(<%= num %>)" <%= !loggedIn || (presence == num && ecoute == num) ? "disabled" : ""%> ><%= presence == num ? "Y retourner" : "Y aller" %></button>
+</div>

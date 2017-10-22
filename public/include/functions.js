@@ -191,7 +191,7 @@ function deconnexion()
 
 function writeLogIn(etat)
 {
-	var data = {etat, prenom: App.cu.prenom, surnom: App.cu.surnom};
+	var data = {etat, prenom: App.cu.prenom, surnom: App.cu.surnom, nomApp: App.params.nomApp};
 	var html = new EJS({url: dirViews + 'login.ejs'}).render(data);
 	$('#nav').empty().append(html);
 	if (etat < 2) {
@@ -208,9 +208,9 @@ function writeMemoire()
 	$('#nav').append(html);
 }
 
-function writeMenuCoins()
+function writeMenuLieux()
 {
-	$('#zoneCoins').append('<div class="colonne coin" id="ajouterCoin" onclick="addLieu()">+</div>');
+	$('#zoneLieux').append('<div class="colonne coin" id="ajouterCoin" onclick="addLieu()">+</div>');
 }
 
 function eraseMenuCoins()
@@ -220,7 +220,7 @@ function eraseMenuCoins()
 
 function eraseCoin(num)
 {
-	$('#coin'+num).remove();
+	$('#lieu'+num).remove();
 }
 
 function writeEcoutes()
@@ -257,9 +257,9 @@ function updateView(action)
 			break;
 		case 'loggedIn':
 			App.writeMenu();
-			$('.boutonMove').prop('disabled', false);
+			$('.boutonMove').not('.presence').prop('disabled', false);
 			App.writeUsersMenu();
-			App.writeMenuCoins();
+			App.writeMenuLieux();
 			setEvents();
 			break;
 		case 'loggedOut':
@@ -269,9 +269,9 @@ function updateView(action)
 			break;
 		case 'listenTo':
 			App.writeAccueil();
-			App.writeCoins();
+			App.writeLieux();
 			App.writeUsers();
-			App.writeMenuCoins();
+			App.writeMenuLieux();
 			App.writeMenu();
 			setEvents();
 			break;

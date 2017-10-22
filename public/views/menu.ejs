@@ -1,7 +1,8 @@
 <div id="menu">
+	<h1><%= nomApp %></h1>
 	<h2><%= surnom %></h2>
-	<p>Présence : <%= presence == 0 ? nomPremierLieu : nomLieux + ' ' + presence %></p>
-	<button onclick="deconnexion()">Sortir</button>
+	<button onclick="deconnexion()">Déconnexion</button>
+	<p>Présence : <%= presence == 0 ? nomPremierLieu : nomLieu + ' ' + presence %></p>
 	<h3>Encryption</h3>
 	<label for="activerEncrypt">Activer</label>
 	<input type="checkbox" name="activerEncrypt" id="activerEncrypt" <%= typeEncrypt == 'vernam' ? 'checked' : '' %> /><br>

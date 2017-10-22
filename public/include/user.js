@@ -57,6 +57,18 @@ class User {
 		index = this.messages.map(function(m) { return m.id; }).indexOf(id); //trouve l'index du message dont l'id est égal à id
 		this.messages.splice(index, 1)[0].erase(this.surnom, id);
 	}
+
+	/**
+	 * Makes a user listen to another place.
+	 * @param {number} lieu - new listening place.
+	 * @returns {number} - previous listening place.
+	 */
+	listenTo(lieu)
+	{
+		var ecoute = this.ecoute
+		this.ecoute = lieu;
+		return ecoute;
+	}
 	
 	genColonne()
 	{
@@ -76,22 +88,21 @@ class User {
 		if (lieu == App.cu.ecoute || lieu == 0){
 			var html = this.genColonne();
 			if (this.current) {
-				$('#lieu'+ lieu).prepend(html);
-				$('#lieu'+ lieu).contents().filter(function() { return this.nodeType === 3; }).remove(); //permet de supprimer les espaces HTML
+				$('#discutLieu'+ lieu).prepend(html);
+				$('#discutLieu'+ lieu).contents().filter(function() { return this.nodeType === 3; }).remove(); //permet de supprimer les espaces HTML
 				$('#message').focus();
 				App.mention.bind($('#message'));
 			} else {
-				$('#lieu'+ lieu).append(html);
+				$('#discutLieu'+ lieu).append(html);
 			}
 			if (!this.current && this.actif && App.cu.loggedIn && App.cu.presence == lieu)
 				this.writeMenu();
 			this.writeMessages();
-		} else {
-			var ligne = $('#coin' + lieu + ' li.empty:first');
-			ligne.removeClass('empty').attr('id', 'user_'+ this.surnom);
-			ligne.children('span.puce').css('backgroundColor', this.couleur);
-			ligne.children('span.surnom').text(this.surnom);
 		}
+		var ligne = $('#lieu' + lieu + ' li.empty:first');
+		ligne.removeClass('empty').attr('id', 'presenceUser_'+ this.surnom);
+		ligne.children('span.puce').css('backgroundColor', this.couleur);
+		ligne.children('span.surnom').text(this.surnom);
 		return this;
 	} 
 	
@@ -135,12 +146,11 @@ class User {
 	{
 		if (lieu == App.cu.ecoute || lieu == 0){
 			$('#user_' + this.surnom).fadeOut( function() { $(this).remove(); });
-		} else {
-			var ligne = $('#user_' + this.surnom);
-			ligne.removeClass('inactif').addClass('empty').attr('id', '');
-			ligne.children('span.puce').css('backgroundColor', '#dddddd');
-			ligne.children('span.surnom').text('');
 		}
+		var ligne = $('#presenceUser_' + this.surnom);
+		ligne.removeClass('inactif').addClass('empty').attr('id', '');
+		ligne.children('span.puce').css('backgroundColor', '#dddddd');
+		ligne.children('span.surnom').text('');
 	}
 	
 	writeMessages()
