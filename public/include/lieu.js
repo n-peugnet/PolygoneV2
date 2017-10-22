@@ -83,7 +83,7 @@ class Lieu
 	{
 		var liste = [];
 		lettres = lettres.toLowerCase();
-		this.forEach(function(u){
+		this.users.forEach(function(u){
 			if(!u.current && u.actif) {
 				let firstLetters = u.surnom.substr(0, lettres.length).toLowerCase();
 				if(firstLetters == lettres)
