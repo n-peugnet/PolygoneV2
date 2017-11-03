@@ -1,10 +1,10 @@
 <span class="menuBouton" onclick="toggleMenu('menu_<%= surnom %>');">⠇</span>
-<div class="menu" id="menu_<%= surnom %>" style="display: none;">
+<div class="menu user" id="menu_<%= surnom %>" style="display: none;">
 	<ul>
-		<li onclick="askSymKey('<%= surnom %>')">Demander sa clé de décryptage</li>
+		<li class="selectionnable" onclick="askSymKey('<%= surnom %>')">Demander sa clé de décryptage</li>
+		<li>
+			<label for="cleEncrypt_<%= surnom %>" >Clé : </label>
+			<input type="text" title="Modifier" id="cleEncrypt_<%= surnom %>" name="cleEncrypt_<%= surnom %>" class="cleEncrypt" data-surnom="<%= surnom %>" value="<%= cryptoKey %>"/>
+		</li>
 	</ul>
-	<div>
-		<label for="cleEncrypt_<%= surnom %>" >Clé : </label>
-		<input type="text" title="Modifier" id="cleEncrypt_<%= surnom %>" name="cleEncrypt_<%= surnom %>" class="cleEncrypt" data-surnom="<%= surnom %>" value="<%= cryptoKey %>"/>
-	</div>
 </div>

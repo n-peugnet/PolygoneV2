@@ -79,11 +79,11 @@ ul {
 
 .colonne {
 	position: relative;
-	display: inline-block;
-	vertical-align: top;
-	width: 210px;
-	height: 380px;
+	display: flex;
+	flex-direction: column;
+	min-width: 210px;
 	margin-right: 5px;
+	margin-bottom: 5px;
 	border-radius: 3px;
 }
 
@@ -123,36 +123,43 @@ span.menuBouton {
 }
 
 div.menu {
-	position: absolute;
-	background-color: #eeeeee;
-	border: solid 1px lightgray;
 	min-width: 140px;
 	top: 24px;
 	right: 5px;
 	z-index: 3;
 }
 
-div.menu li, div.menu div {
+div.liste-users {
+	position: absolute;
+	background-color: #eeeeee;
+	border: solid 1px lightgray;
+}
+
+div.menu li {
 	padding: 2px 17px;
-	cursor: pointer;
 }
 
-div.menu div {
-	margin: 2px 2px;
+div.menu.user li{
+	padding: 2px;
+	color: white;
 }
 
-div.menu li, div.menu label {
+div.menu.user ul{
+	padding: 0;
+}
+
+div.menu li.selectionnable, div.menu label {
 	font-size: 13px;
 	cursor: pointer;
 }
 
-div.menu li:hover, div.menu li.active {
-	background-color: #bbbbbb;
+div.menu li.selectionnable:hover, div.menu li.active {
+	background-color: rgba(0, 0, 0, 0.15);
 }
 
 .dires {
 	position: relative;
-	height: 350px;
+	height: 100%;
 	overflow-y: auto;
 	overflow-x: hidden;
 	padding-top: 5px;
@@ -161,11 +168,6 @@ div.menu li:hover, div.menu li.active {
 	margin: 0;
 	background-color: rgba(242, 242, 242, 0.7);
 	border-radius: 0 0 3px 3px;
-}
-
-.personnels {
-	height: 290px;
-	
 }
 
 form {
@@ -211,12 +213,10 @@ input[type="checkbox"] {
 	
 }
 
-#discussions {
-	display: block;
-}
-
 .discussions {
-	min-height: 398px;
+	display: flex;
+	flex-wrap: nowrap;
+	height: 390px;
 	white-space: nowrap;
 	overflow: auto;	
 }

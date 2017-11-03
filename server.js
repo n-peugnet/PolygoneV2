@@ -239,7 +239,7 @@ io.on('connection', function(client){
 	});
 });
 
-server.listen(config.web.port, datedLog("Listening on port " + config.web.port));
+server.listen(config.web.port, datedLog("Listening on port " + config.web.port + ", clients connects to " + config.client.ip + ":" + config.client.port));
 
 var j = schedule.scheduleJob('0 2 * * *', function(){
 	var query = connection.query('DELETE FROM sessions WHERE DATE_ADD(date_activite, INTERVAL 20 DAY) <= NOW()', function (error, results, fields) {

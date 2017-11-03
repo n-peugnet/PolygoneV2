@@ -54,7 +54,7 @@ class User {
 	
 	delMessage(id)
 	{
-		index = this.messages.map(function(m) { return m.id; }).indexOf(id); //trouve l'index du message dont l'id est égal à id
+		var index = this.messages.map(function(m) { return m.id; }).indexOf(id); //trouve l'index du message dont l'id est égal à id
 		this.messages.splice(index, 1)[0].erase(this.surnom, id);
 	}
 

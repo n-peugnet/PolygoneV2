@@ -202,15 +202,9 @@ function writeLogIn(etat)
 	setEvents();
 }
 
-function writeMemoire()
-{
-	var html = new EJS({url: dirViews + 'memoire.ejs'}).render();
-	$('#nav').append(html);
-}
-
 function writeMenuLieux()
 {
-	$('#zoneLieux').append('<div class="colonne coin" id="ajouterCoin" onclick="addLieu()">+</div>');
+	$('#zoneLieux').append('<div class="coin" id="ajouterCoin" onclick="addLieu()">+</div>');
 }
 
 function eraseMenuCoins()
