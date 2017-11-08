@@ -42,11 +42,11 @@ class User {
 		new Ecrit().erase(this.surnom);
 	}
 	
-	addMessage(texte, type)
+	addMessage(texte, type, encrypted)
 	{
 		this.notWriting();
 		var id = idGen(this.messages);
-		var newMessage = new Message(id, texte, type).write(this.surnom, this.couleur, true, this.crypto);
+		var newMessage = new Message(id, texte, type, encrypted).write(this.surnom, this.couleur, true, this.crypto);
 		this.messages.push(newMessage);
 		setTimeout($.proxy(function(){
 			this.delMessage(id);

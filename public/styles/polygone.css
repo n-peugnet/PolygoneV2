@@ -317,6 +317,10 @@ span.puce {
 	hyphens: auto;
 }
 
+.bulle.encrypted {
+	border-left: solid #000000 4px;
+}
+
 .bulle p{
 	margin: 0;
 	color: white;

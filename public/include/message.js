@@ -1,10 +1,11 @@
 /** Class representing a message */
 class Message {
-	constructor(id, texte, type)
+	constructor(id, texte, type, encrypted)
 	{
 		this.id = id;
 		this.texte = texte;
 		this.type = type;
+		this.encrypted = encrypted;
 	}
 	
 	/**
@@ -12,11 +13,13 @@ class Message {
 	 * @param {string} surnom 
 	 * @param {string} couleur 
 	 * @param {boolean} animation 
-	 * @param {Encryption} crypto 
+	 * @param {Encryption} encryption 
 	 */
 	write(surnom, couleur, animation, encryption)
 	{
-		var data = {surnom, message: analyseMessage(encryption.decrypt(this.texte)), couleur, id: this.id, type: this.type};
+		console.log(this);
+		var texte = this.encrypted ? encryption.decrypt(this.texte) : this.texte;
+		var data = {surnom, message: analyseMessage(texte), couleur, id: this.id, type: this.type, encrypted: this.encrypted};
 		var html = new EJS({url: dirViews + 'message.ejs'}).render(data);
 		if (animation)
 			$(html).prependTo('#dires_'+surnom).css('margin-top', '-'+$('#message_'+surnom+this.id).height()+'px').animate({ marginTop: '0px'});
@@ -63,7 +66,7 @@ class Citation extends Message
 	send(encryption)
 	{
 		var texte = encryption.encrypt(this.persCite + ' : ' + this.texte);
-		socket.emit('message', {texte, type: this.type});
+		socket.emit('message', {texte, type: this.type, encrypted: encryption.type != 'none'});
 		return this;
 	}
 }

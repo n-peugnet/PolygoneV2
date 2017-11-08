@@ -95,7 +95,7 @@
 				App.getUserIn(data.surnom, data.lieu).notWriting();
 			});
 			socket.on('message', function(data){
-				App.addMessageTo(data.surnom, data.lieu, data.message, data.type);
+				App.addMessageTo(data.surnom, data.lieu, data.texte, data.type, data.encrypted);
 			});
 			socket.on('move', function(data){
 				App.moveUser(data.surnom, data.presence, data.destination);

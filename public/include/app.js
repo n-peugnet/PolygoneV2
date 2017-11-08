@@ -108,6 +108,11 @@ var App = {
 		this.getMemory(id).send(this.cu.crypto);
 	},
 	
+	/**
+	 * get a memory from the list by its id
+	 * @param {number} id 
+	 * @returns {Citation}
+	 */
 	getMemory(id)
 	{
 		return this.cu.memoire.find(function(m){ return m.id == id; });
@@ -166,7 +171,10 @@ var App = {
 		if (texte.length > 0) {
 			texte = cleanSpaces(escapeHtml(texte));
 			texte = this.cu.crypto.encrypt(texte);
-			socket.emit('message', {texte, type});
+			var encrypted = this.cu.crypto.type != "none";
+			var data = { texte, type, encrypted };
+			console.log (data);
+			socket.emit('message', data);
 		}
 		$("#message").val('').focus();
 	},
@@ -238,7 +246,7 @@ var App = {
 		this.lieux[pres].addUser(user);
 	},
 	
-	addMessageTo(surnom, lieu, texte, type)
+	addMessageTo(surnom, lieu, texte, type, encrypted)
 	{
 		if (surnom != this.cu.surnom && lieu == this.cu.ecoute)
 		{
@@ -251,7 +259,7 @@ var App = {
 					this.sons.message.play();
 			}
 		}
-		this.getUserIn(surnom, lieu).addMessage(texte, type);
+		this.getUserIn(surnom, lieu).addMessage(texte, type, encrypted);
 	},
 	
 	isUserLoggedIn(surnom)
