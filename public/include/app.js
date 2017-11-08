@@ -131,7 +131,9 @@ var App = {
 	{
 		this.cu.loggedIn = true;
 		this.cu.couleur = couleur;
-		this.addUser(this.cu.surnom, couleur);
+		this.rsaGen();
+		this.addUserIn(0, new User(this.cu.surnom, 0, couleur, true, "none"));
+		this.rmvAnonyme();
 	},
 	
 	logOutCUser()
@@ -183,20 +185,26 @@ var App = {
 	
 	updateCryptoKey(key, surnom)
 	{
-		var pres =  this.cu.presence;
+		var pres = this.cu.presence;
 		var user = this.getUserIn(surnom, pres);
 		user.crypto.key = key;
 		user.writeMessages();
 
 	},
 	
-	rsaGen() {
-		var before = new Date();
-		console.log("Generating rsa key");
-		this.cu.privKey.generate(2048, '10001');
-		var after = new Date();
-		console.log("Key Generation Time: " +(after - before) + "ms");
-		return this.cu.privKey;
+	rsaGen()
+	{
+		var self = this;
+		var worker = new Worker("workers/rsaGen.js"); // Déclaration du worker
+		worker.postMessage(['param','keep']); // Envoie un message au worker
+
+		// Événement lancé lorsque le worker a fini sa tâche.
+		worker.onmessage = function(m) {
+			var n = m.data.n;
+			var e = m.data.e;
+			var d = m.data.d;
+			self.cu.privKey.setPrivate(n, e, d);
+		}
 	},
 	
 	initAnonymes(nb)
@@ -219,16 +227,15 @@ var App = {
 
 	addUser(surnom, couleur)
 	{
-		this.addUserIn(surnom, 0, 0, couleur);
+		this.addUserIn(0, new User(surnom, 0, couleur, false));
 		this.rmvAnonyme();
-		if (surnom != this.cu.surnom && this.cu.presence == 0)
+		if (this.cu.presence == 0)
 			this.sons.user.play();
 	},
 	
-	addUserIn(surnom, pres, ecoute, couleur)
+	addUserIn(pres, user)
 	{
-		var current = surnom == this.cu.surnom && this.cu.loggedIn; //determine si l'utilisateur est bien l'utilisateur courant
-		this.lieux[pres].addUser(surnom, ecoute, couleur, current);
+		this.lieux[pres].addUser(user);
 	},
 	
 	addMessageTo(surnom, lieu, texte, type)
@@ -311,16 +318,11 @@ var App = {
 		if ( lDepart != lArrivee)
 		{
 			var user = this.lieux[lDepart].removeUser(surnom);
-			index = this.lieux[lArrivee].moveUserIn(user);
-			if (!user.current)
-			{
-				user.eraseIn(lDepart);
-				user.writeIn(lArrivee);
-				if (lArrivee == this.cu.presence && user.actif)
-					this.sons.user.play();
+			if (!user.current && lArrivee == this.cu.presence && user.actif) {
+				this.sons.user.play();
 			}
+			this.lieux[lArrivee].moveUserIn(user);
 		}
-		return index;
 	},
 	
 	focusUser(surnom, pres, ecoute)

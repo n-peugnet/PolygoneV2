@@ -5,6 +5,8 @@
 		]
 	},
 	"include": [
-		"include/*"
+		"include/*",
+		"views/*",
+		"workers/*"
 	]
 }

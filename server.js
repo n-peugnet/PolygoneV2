@@ -224,6 +224,29 @@ io.on('connection', function(client){
 			if (error) throw error;
 		});
 	});
+	client.on('askSymKey', function(data){
+		var liste = loggedInClients();
+		var c = getClient(liste, data.surnom);
+		if (c != undefined) {
+			data = {
+				surnom : client.surnom,
+				n      : data.n,
+				e      : data.e
+			};
+			c.emit('askSymKey', data);
+		}
+	});
+	client.on('sendSymKey', function(data){
+		var liste = loggedInClients();
+		var c = getClient(liste, data.surnom);
+		if (c != undefined) {
+			data = {
+				surnom : client.surnom,
+				cSymKey : data.cSymKey
+			};
+			c.emit('sendSymKey', data);
+		}
+	});
 	client.on('disconnect', function(){
 		if (client.loggedIn)
 		{	
@@ -277,6 +300,16 @@ function getNbAnonymes()
 function extSurnoms(listeClients)
 {
 	return listeClients.map(function(c) {return c.surnom; });
+}
+
+/**
+ * finds a client by his nickname from a list of clients
+ * @param {array} listeClients - list of clients
+ * @param {string} surnom - nickname
+ */
+function getClient(listeClients, surnom)
+{
+	return listeClients.find(function(c) { return c.surnom == surnom; });
 }
 
 function extInfos(listeClients)

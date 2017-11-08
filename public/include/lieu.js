@@ -23,11 +23,6 @@ class Lieu
 		this.protection = protection;
 	}
 	
-	containsUser(surnom)
-	{
-		return this.users.map(function(u) {return u.surnom; }).includes(surnom);
-	}
-	
 	/**
 	 * Get a user's index in the place he is, based on it's nickname.
 	 * @param {string} surnom - The user's nickname.
@@ -49,28 +44,35 @@ class Lieu
 		return this.users[index];
 	}
 	
-	addUser(surnom, ecoute, couleur, current)
+	addUser(user)
 	{
-		if (this.containsUser(surnom)){
-			this.getUser(surnom).reactivateIn(this.num, couleur, current);
+		var index = this.indexOfUser(user.surnom);
+		if ( index > -1) {
+			this.users[index].reactivateIn(this.num, user.couleur, user.current);
 		} else {
-			var newUser = new User (surnom, ecoute, couleur, current).writeIn(this.num);
-			this.moveUserIn(newUser);
+			this.moveUserIn(user);
 		}
 	}
 
 	/**
-	 * 
+	 * Removes a User from a place
 	 * @param {string} surnom 
 	 * @returns {User}
 	 */
 	removeUser(surnom)
 	{
-		return this.users.splice(this.indexOfUser(surnom),1)[0];
+		var user = this.users.splice(this.indexOfUser(surnom),1)[0];
+		user.eraseIn(this.num);
+		return user;
 	}
 
+	/**
+	 * Moves a User to a place
+	 * @param {User} user 
+	 */
 	moveUserIn(user)
 	{
+		user.moveTo(this.num);
 		return this.users.push(user) - 1;
 	}
 

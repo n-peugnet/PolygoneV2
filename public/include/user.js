@@ -10,6 +10,7 @@ class User {
 	 */
 	constructor(surnom, ecoute, couleur, current, encrypt = 'vernam')
 	{
+		this.presence = 0;
 		this.messages = [];
 		this.surnom = surnom;
 		this.couleur = couleur;
@@ -56,6 +57,13 @@ class User {
 	{
 		var index = this.messages.map(function(m) { return m.id; }).indexOf(id); //trouve l'index du message dont l'id est égal à id
 		this.messages.splice(index, 1)[0].erase(this.surnom, id);
+	}
+
+	moveTo(lieu)
+	{
+		this.presence = lieu;
+		this.ecoute = lieu;
+		this.writeIn(lieu)
 	}
 
 	/**
@@ -112,9 +120,7 @@ class User {
 		this.ecrit = false;
 		this.couleur = 'rgba(49, 49, 49, 0.46)';
 		if (lieu == App.cu.ecoute || lieu == 0){
-			this.updateCol();
-			if (!this.current && this.actif && App.cu.loggedIn && App.cu.presence == lieu)
-				this.writeMenu();
+			this.updateCol(lieu);
 		} else {
 			$('#user_'+ this.surnom).addClass('inactif');
 		}
@@ -126,19 +132,21 @@ class User {
 		this.couleur = couleur;
 		this.current = current;
 		if (lieu == App.cu.ecoute || lieu == 0){
-			this.updateCol();
-			if (!this.current && this.actif && App.cu.loggedIn && App.cu.presence == lieu)
-				this.writeMenu();
+			this.updateCol(lieu);
 		} else {
 			$('#user_' + this.surnom).removeClass('inactif');
 		}
 	}
 	
-	updateCol()
+	updateCol(lieu)
 	{
 		var html = this.genColonne();
 		$('#user_' + this.surnom).replaceWith(html);
 		this.writeMessages();
+		if (!this.current && this.actif && App.cu.loggedIn && App.cu.presence == lieu)
+		{
+			this.writeMenu();
+		}
 		return this;
 	}
 	

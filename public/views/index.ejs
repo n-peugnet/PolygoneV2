@@ -55,7 +55,7 @@
 					App.addLieu();
 				}
 				data.infosClients.forEach( function(client){
-					App.addUserIn(client.surnom, client.presence, client.ecoute, client.couleur);
+					App.addUserIn(client.presence, new User(client.surnom, client.ecoute, client.couleur));
 				});
 				App.initAnonymes(data.nbAnonymes);
 				fadeForegroundIn();
@@ -114,13 +114,21 @@
 			// someone else asks for your symetric key
 			socket.on('askSymKey', function(data){
 				var demandeur = App.getUser(data.surnom);
-				var rsapub = new RSAKey();
-				rsapub.setPublic(data.n, data.e);
+				var ok = confirm(data.surnom + " vous demande votre clé de chiffrement, voulez-vous lui envoyer ?");
+				if (ok) {
+					var rsapub = new RSAKey();
+					rsapub.setPublic(data.n, data.e);
+					var cSymKey = rsapub.encrypt(App.cu.crypto.key);
+					socket.emit('sendSymKey', {surnom: data.surnom, cSymKey});
+				}
 			});
 			// someone else sends you his/her symetric key
 			socket.on('sendSymKey', function(data){
-				App.cu.privKey.decrypt(data.cSymKey);
-				App.getUser(data.surnom);
+				var symKey = App.cu.privKey.decrypt(data.cSymKey);
+				var user = App.getUser(data.surnom);
+				user.crypto.key = symKey;
+				user.updateCol(user.presence);
+
 			});
 			socket.on('addLieu', function(){
 				App.addLieu();

@@ -297,11 +297,11 @@ function crier()
 
 function askSymKey(surnom)
 {
-	var rsa = App.rsaGen();
+	var rsa = App.cu.privKey;
 	var data = {
 		surnom,
-		n : rsa.n,
-		e : rsa.e
+		n : rsa.n.toString(16),
+		e : rsa.e.toString(16)
 	}
 	socket.emit('askSymKey', data);
 }
