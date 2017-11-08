@@ -291,7 +291,7 @@ var App = {
 	{
 		var self = this;
 		var user = this.lieux[lieu].getUser(surnom);
-		user.disableIn(lieu);
+		user.disable();
 		if (lieu != 0) this.moveUser(surnom, lieu, 0);
 		this.addAnonyme();
 		setTimeout(function(){
@@ -299,7 +299,7 @@ var App = {
 			user = self.lieux[0].getUser(surnom);
 			console.log(user);
 			if(!user.actif){
-				user.eraseIn(0);
+				user.erase();
 				self.lieux[0].removeUser(surnom);
 			}
 		}, 17000);

@@ -48,7 +48,7 @@ class Lieu
 	{
 		var index = this.indexOfUser(user.surnom);
 		if ( index > -1) {
-			this.users[index].reactivateIn(this.num, user.couleur, user.current);
+			this.users[index].reactivate(user.couleur, user.current);
 		} else {
 			this.moveUserIn(user);
 		}
@@ -62,7 +62,7 @@ class Lieu
 	removeUser(surnom)
 	{
 		var user = this.users.splice(this.indexOfUser(surnom),1)[0];
-		user.eraseIn(this.num);
+		user.erase();
 		return user;
 	}
 
@@ -99,7 +99,7 @@ class Lieu
 	{
 		var self = this;
 		this.users.forEach(function(u) {
-			u.writeIn(self.num);
+			u.write();
 		});
 	}
 	

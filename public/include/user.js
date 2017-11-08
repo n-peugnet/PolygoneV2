@@ -63,7 +63,7 @@ class User {
 	{
 		this.presence = lieu;
 		this.ecoute = lieu;
-		this.writeIn(lieu)
+		this.write(lieu)
 	}
 
 	/**
@@ -91,68 +91,68 @@ class User {
 	}
 	
 	//inscrit un utilisateur dans la page
-	writeIn(lieu)
+	write()
 	{
-		if (lieu == App.cu.ecoute || lieu == 0){
+		if (this.presence == App.cu.ecoute || this.presence == 0){
 			var html = this.genColonne();
 			if (this.current) {
-				$('#discutLieu'+ lieu).prepend(html);
-				$('#discutLieu'+ lieu).contents().filter(function() { return this.nodeType === 3; }).remove(); //permet de supprimer les espaces HTML
+				$('#discutLieu'+ this.presence).prepend(html);
+				$('#discutLieu'+ this.presence).contents().filter(function() { return this.nodeType === 3; }).remove(); //permet de supprimer les espaces HTML
 				$('#message').focus();
 				App.mention.bind($('#message'));
 			} else {
-				$('#discutLieu'+ lieu).append(html);
+				$('#discutLieu'+ this.presence).append(html);
 			}
-			if (!this.current && this.actif && App.cu.loggedIn && App.cu.presence == lieu)
+			if (!this.current && this.actif && App.cu.loggedIn && App.cu.presence == this.presence)
 				this.writeMenu();
 			this.writeMessages();
 		}
-		var ligne = $('#lieu' + lieu + ' li.empty:first');
+		var ligne = $('#lieu' + this.presence + ' li.empty:first');
 		ligne.removeClass('empty').attr('id', 'presenceUser_'+ this.surnom);
 		ligne.children('span.puce').css('backgroundColor', this.couleur);
 		ligne.children('span.surnom').text(this.surnom);
 		return this;
 	} 
 	
-	disableIn(lieu)
+	disable()
 	{
 		this.actif = false;
 		this.ecrit = false;
 		this.couleur = 'rgba(49, 49, 49, 0.46)';
-		if (lieu == App.cu.ecoute || lieu == 0){
-			this.updateCol(lieu);
+		if (this.presence == App.cu.ecoute || this.presence == 0){
+			this.updateCol();
 		} else {
 			$('#user_'+ this.surnom).addClass('inactif');
 		}
 	}
 	
-	reactivateIn(lieu, couleur, current)
+	reactivate(couleur, current)
 	{
 		this.actif = true;
 		this.couleur = couleur;
 		this.current = current;
-		if (lieu == App.cu.ecoute || lieu == 0){
-			this.updateCol(lieu);
+		if (this.presence == App.cu.ecoute || this.presence == 0){
+			this.updateCol();
 		} else {
 			$('#user_' + this.surnom).removeClass('inactif');
 		}
 	}
 	
-	updateCol(lieu)
+	updateCol()
 	{
 		var html = this.genColonne();
 		$('#user_' + this.surnom).replaceWith(html);
 		this.writeMessages();
-		if (!this.current && this.actif && App.cu.loggedIn && App.cu.presence == lieu)
+		if (!this.current && this.actif && App.cu.loggedIn && App.cu.presence == this.presence)
 		{
 			this.writeMenu();
 		}
 		return this;
 	}
 	
-	eraseIn(lieu)
+	erase()
 	{
-		if (lieu == App.cu.ecoute || lieu == 0){
+		if (this.presence == App.cu.ecoute || this.presence == 0){
 			$('#user_' + this.surnom).fadeOut( function() { $(this).remove(); });
 		}
 		var ligne = $('#presenceUser_' + this.surnom);
