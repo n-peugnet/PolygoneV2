@@ -2,7 +2,6 @@ var window = {};
 importScripts("../include/jsbn.js", "../include/jsbn2.js", "../include/prng4.js", "../include/rng.js", "../include/rsa.js", "../include/rsa2.js");
 
 self.onmessage = function(m) {
-	console.log(m.data[0]); //Affiche param1
 
 	//Traitement lourd nécessitant l'appel à thread
 	var before = new Date();

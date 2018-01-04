@@ -103,6 +103,22 @@ function RSAEncrypt(text) {
 //  if(h) return hex2b64(h); else return null;
 //}
 
+/**
+ * Returns the classic public ssh key string in hexadecimal format.
+ * @returns {string} - hex
+ */
+function RSAGetPublicSshHex() {
+  return lengthEncode(text2hex("ssh-rsa")) + lengthEncode(this.e.toString(16)) + lengthEncode(this.n.toString(16));
+}
+
+/**
+ * Returns the md5 fingerprint of the public key.
+ * @returns {string} - hex
+ */
+function RSAFingerprint() {
+  return md5(this.getPublicSshHex());
+}
+
 // protected
 RSAKey.prototype.doPublic = RSADoPublic;
 
@@ -110,3 +126,6 @@ RSAKey.prototype.doPublic = RSADoPublic;
 RSAKey.prototype.setPublic = RSASetPublic;
 RSAKey.prototype.encrypt = RSAEncrypt;
 //RSAKey.prototype.encrypt_b64 = RSAEncryptB64;
+RSAKey.prototype.getPublicSshHex = RSAGetPublicSshHex;
+RSAKey.prototype.fingerprint = RSAFingerprint;
+

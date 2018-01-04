@@ -377,3 +377,28 @@ function removeSubstr(str, from, len)
 {
 	return str.substring(0, from) + str.substr(from + len);
 }
+
+/**
+ * converts a string into a hex string
+ * @param {string} s 
+ * @returns {string} - a hex string
+ */
+function text2hex(s) {
+	return s.split('').map(function (char) {
+		return char.charCodeAt(0).toString(16);
+	}).join('');
+}
+
+/**
+ * adds before a hex string its length's 4 Bytes hex string
+ * @param {string} hex 
+ * @returns {string} - hex string
+ */
+function lengthEncode(hex) {
+	if ( hex.length % 2 !== 0 ) {
+		hex = "0" + hex;
+	}
+	var len = hex.length/2;
+	var hexlen = len.toString(16).padStart(8, "0");
+	return hexlen + hex;
+}
