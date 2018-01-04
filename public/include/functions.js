@@ -389,6 +389,15 @@ function text2hex(s) {
 	}).join('');
 }
 
+function checkHex(n) {
+	return /^[0-9A-Fa-f]{1,64}$/.test(n);
+}
+
+//Hexadecimal Operations
+function Hex2Bin(n) {
+	return !checkHex(n) ? 0 : parseInt(n, 16).toString(2);
+}
+
 /**
  * adds before a hex string its length's 4 Bytes hex string
  * @param {string} hex 
@@ -401,4 +410,8 @@ function lengthEncode(hex) {
 	var len = hex.length/2;
 	var hexlen = len.toString(16).padStart(8, "0");
 	return hexlen + hex;
+}
+
+function reverse(s) {
+	return s.split("").reverse().join("");
 }

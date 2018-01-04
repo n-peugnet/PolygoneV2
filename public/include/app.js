@@ -212,7 +212,9 @@ var App = {
 			var e = m.data.e;
 			var d = m.data.d;
 			self.cu.privKey.setPrivate(n, e, d);
-			console.log(self.cu.privKey.fingerprint());
+			var fp = self.cu.privKey.fingerprint();
+			console.log(fp);
+			console.log(new Randomart().render(fp));
 		}
 	},
 	
