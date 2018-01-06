@@ -369,7 +369,7 @@ button:hover:enabled {
 }
 
 section {
-	margin-left: 395px;
+	margin-left: 400px;
 	transform: translateX(none);
 	transition-property: transform;
 	transition-duration: 200ms;
