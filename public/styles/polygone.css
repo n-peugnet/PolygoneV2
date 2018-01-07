@@ -47,6 +47,18 @@ ul {
 	padding: 0;
 }
 
+pre {
+	margin: 0;
+	font-family: consolas, monospace;
+	line-height: 15px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+summary>h3 {
+	display: inline;
+}
+
 .background {
 	opacity: 0;
 	background-color: white;
@@ -101,7 +113,7 @@ div.inactif .bulleBackground {
 .entete {
 	padding: 2px;
 	padding-left: 6px;
-	border-radius: 3px 3px 0 0;
+	border-radius: 4px 4px 0 0;
 	
 }
 
@@ -192,22 +204,23 @@ input[type="checkbox"] {
 	vertical-align: top;
 	background-color: rgba(242, 242, 242, 0.7);
 	margin-bottom: 5px;
+	border-radius: 4px;
 }
 
 .lieu>ul {
 	margin-bottom: 10px;
 }
 
-#ajouterCoin {
+#ajouterLieu {
 	width: 40px;
 	height: 40px;
 	font-size: 35px;
 	text-align: center;
 	cursor: pointer;
-	background-color: rgba(242, 242, 242, 0.7);
+	padding: 0;
 }
 
-#ajouterCoin:hover {
+#ajouterLieu:hover {
 	background-color: rgba(204,204,204,0.7);
 	
 }

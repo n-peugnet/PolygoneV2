@@ -114,6 +114,10 @@ function RSADecrypt(ctext) {
   return pkcs1unpad2(m, (this.n.bitLength()+7)>>3);
 }
 
+function RSAempty() {
+  return (this.n == null || this.e == 0 || this.d == null);
+}
+
 // Return the PKCS#1 RSA decryption of "ctext".
 // "ctext" is a Base64-encoded string and the output is a plain string.
 //function RSAB64Decrypt(ctext) {
@@ -129,4 +133,5 @@ RSAKey.prototype.setPrivate = RSASetPrivate;
 RSAKey.prototype.setPrivateEx = RSASetPrivateEx;
 RSAKey.prototype.generate = RSAGenerate;
 RSAKey.prototype.decrypt = RSADecrypt;
+RSAKey.prototype.empty = RSAempty;
 //RSAKey.prototype.b64_decrypt = RSAB64Decrypt;

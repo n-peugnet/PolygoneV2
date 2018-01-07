@@ -1,6 +1,8 @@
-<div class='message' id="souvenir_<%= id %>">
-	<div class='bulle'>
-		<p><strong><%= persCite %> : </strong><%= citation %></p>
+<li>
+	<div class='message' id="souvenir_<%= id %>">
+		<div class='bulle'>
+			<p><strong><%= persCite %> : </strong><%= citation %></p>
+		</div>
+		<button type="button" form="formMessage" title="Citer" class="action" onclick="App.sendCitation(<%= id %>)">‹›</button>
 	</div>
-	<button type="button" form="formMessage" title="Citer" class="action" onclick="App.sendCitation(<%= id %>)">‹›</button>
-</div>
+</li>

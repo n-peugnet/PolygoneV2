@@ -111,7 +111,7 @@ class Lieu
 		});
 	}
 
-	write(cu)
+	write(cu, tmpl = "lieu.ejs")
 	{
 		var data = {
 			nomLieu  : Lieu.nomLieu,
@@ -122,10 +122,6 @@ class Lieu
 			ecoute   : cu.ecoute,
 			loggedIn : cu.loggedIn
 		};
-		var tmpl = 'lieu.ejs';
-		if (this.num == 0) {
-			tmpl = 'lieu0.ejs'
-		}
 		var html = new EJS({url: dirViews + tmpl}).render(data);
 		$('#lieux').append(html);
 	}

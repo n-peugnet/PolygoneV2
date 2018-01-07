@@ -73,7 +73,7 @@ var App = {
 		var newLieu = new Lieu(this.lieux.length);
 		this.lieux.push(newLieu);
 		newLieu.write(this.cu);
-		if (this.lieux.length == this.params.nbLieuxMax) eraseMenuCoins();
+		if (this.lieux.length == this.params.nbLieuxMax) eraseMenuLieux();
 	},
 	
 	delLastLieu()
@@ -85,7 +85,7 @@ var App = {
 	delLieu(lieu)
 	{
 		this.lieux.splice(lieu, 1);
-		eraseCoin(lieu);
+		eraseLieu(lieu);
 	},
 
 	addCitation(surnom, id)
@@ -212,9 +212,7 @@ var App = {
 			var e = m.data.e;
 			var d = m.data.d;
 			self.cu.privKey.setPrivate(n, e, d);
-			var fp = self.cu.privKey.fingerprint();
-			console.log(fp);
-			console.log(new Randomart().render(fp));
+			self.writeAsymKey();
 		}
 	},
 	
@@ -373,6 +371,25 @@ var App = {
 		};
 		var html = new EJS({url: dirViews + 'menu.ejs'}).render(data);
 		$('#menu').replaceWith(html);
+		this.writeAsymKey();
+		this.writeMemoire();
+	},
+
+	writeMemoire()
+	{
+		this.cu.memoire.forEach(function(citation) {
+			citation.write();
+		});
+	},
+
+	writeAsymKey()
+	{
+		if (!this.cu.privKey.empty()) {
+			var fp = this.cu.privKey.fingerprint();
+			var ra = new Randomart().render(fp);
+			$('#fingerprint').empty().append(fp);
+			$('#randomart').empty().append(ra);
+		}
 	},
 
 	writeAnonymes()
@@ -398,7 +415,10 @@ var App = {
 	{
 		$('#lieux').empty();
 		var cu = this.cu;
-		this.lieux.forEach(function(lieu) {
+		var liste = this.lieuxPrives();
+		if (this.params.premierLieuPublic)
+			this.lieux[0].write(cu, "lieu0.ejs");
+		liste.forEach(function(lieu) {
 			lieu.write(cu);
 		});
 	},

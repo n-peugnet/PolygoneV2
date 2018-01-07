@@ -204,15 +204,15 @@ function writeLogIn(etat)
 
 function writeMenuLieux()
 {
-	$('#zoneLieux').append('<div class="coin" id="ajouterCoin" onclick="addLieu()">+</div>');
+	$('#zoneLieux').append('<div class="lieu" id="ajouterLieu" onclick="addLieu()">+</div>');
 }
 
-function eraseMenuCoins()
+function eraseMenuLieux()
 {
-	$('#ajouterCoin').remove();
+	$('#ajouterLieu').remove();
 }
 
-function eraseCoin(num)
+function eraseLieu(num)
 {
 	$('#lieu'+num).remove();
 }
@@ -259,7 +259,7 @@ function updateView(action)
 		case 'loggedOut':
 			updateView('listenTo');
 			writeLogIn(0);
-			eraseMenuCoins();
+			eraseMenuLieux();
 			break;
 		case 'listenTo':
 			App.writeAccueil();

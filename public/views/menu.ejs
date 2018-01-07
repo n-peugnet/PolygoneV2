@@ -3,12 +3,29 @@
 	<h2><%= surnom %></h2>
 	<button onclick="deconnexion()">Déconnexion</button>
 	<p>Présence : <%= presence == 0 ? nomPremierLieu : nomLieu + ' ' + presence %></p>
+	<details>
+		<summary><h3>Clé Asymétrique</h3></summary>
+		<ul>
+			<li>Fingerprint : 
+				<pre id="fingerprint"></pre>
+			</li>
+			<li>Représentation :
+				<pre id="randomart"></pre>
+			</li>
+		</ul>
+	</details>
 	<h3>Encryption</h3>
-	<label for="activerEncrypt">Activer</label>
-	<input type="checkbox" name="activerEncrypt" id="activerEncrypt" <%= typeEncrypt == 'vernam' ? 'checked' : '' %> /><br>
-	<label for="cleEncrypt">Clé de chiffrement</label><br>
-	<input type="text" name="cleEncrypt" id="cleEncrypt" maxlength="500" value="<%= cleEncrypt %>" />
+	<ul>
+		<li>
+			<label for="activerEncrypt">Activer</label>
+			<input type="checkbox" name="activerEncrypt" id="activerEncrypt" <%= typeEncrypt == 'vernam' ? 'checked' : '' %> />
+		</li>
+		<li>
+			<label for="cleEncrypt">Clé de chiffrement</label><br>
+			<input type="text" name="cleEncrypt" id="cleEncrypt" maxlength="500" value="<%= cleEncrypt %>" />
+		</li>
+	</ul>
 	<h3>Mémoire</h3>
-	<div id="memoire">
-	</div>
+	<ul id="memoire">
+	</ul>
 </div>
