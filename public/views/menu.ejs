@@ -14,18 +14,22 @@
 			</li>
 		</ul>
 	</details>
-	<h3>Encryption</h3>
-	<ul>
-		<li>
-			<label for="activerEncrypt">Activer</label>
-			<input type="checkbox" name="activerEncrypt" id="activerEncrypt" <%= typeEncrypt == 'vernam' ? 'checked' : '' %> />
-		</li>
-		<li>
-			<label for="cleEncrypt">Clé de chiffrement</label><br>
-			<input type="text" name="cleEncrypt" id="cleEncrypt" maxlength="500" value="<%= cleEncrypt %>" />
-		</li>
-	</ul>
-	<h3>Mémoire</h3>
-	<ul id="memoire">
-	</ul>
+	<details open>
+		<summary><h3>Encryption</h3></summary>
+		<ul>
+			<li>
+				<label for="activerEncrypt">Activer</label>
+				<input type="checkbox" name="activerEncrypt" id="activerEncrypt" <%= typeEncrypt == 'vernam' ? 'checked' : '' %> />
+			</li>
+			<li>
+				<label for="cleEncrypt">Clé de chiffrement</label><br>
+				<input type="text" name="cleEncrypt" id="cleEncrypt" maxlength="500" value="<%= cleEncrypt %>" />
+			</li>
+		</ul>
+	</details>
+	<details open>
+		<summary><h3>Mémoire</h3></summary>
+		<ul id="memoire">
+		</ul>
+	</details>
 </div>
