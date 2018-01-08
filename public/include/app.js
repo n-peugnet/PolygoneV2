@@ -370,7 +370,7 @@ var App = {
 			cleEncrypt     : this.cu.crypto.key
 		};
 		var html = new EJS({url: dirViews + 'menu.ejs'}).render(data);
-		$('#menu').replaceWith(html);
+		$('#nav').empty().append(html);
 		this.writeAsymKey();
 		this.writeMemoire();
 	},

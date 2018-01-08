@@ -65,6 +65,10 @@ nav ul {
 	padding: 0;
 }
 
+#menu {
+	padding: 0 5px;
+}
+
 nav summary {
 	background-color: rgba(247, 247, 247, 0.7);
 	padding: 0 5px;
