@@ -22,7 +22,7 @@
 			<%- include("accueil.ejs", {ecoute: 0, nomLieux, premierLieuPublic})%>
 			</section>
 		</div>
-		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script type="text/javascript" src="/include/jquery.caret.js"></script>
 		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 		<script type="text/javascript" src="/include/processing.min.js"></script>
@@ -44,7 +44,7 @@
 		<script type="text/javascript" src="/include/class.lieu.js"></script>
 		<script type="text/javascript" src="/include/app.js"></script>
 		<script type="text/javascript">
-			var url = '<%= ip %>:<%= port %>';
+			var url = '<%= ip %>';//:<%= port %>';
 			var socket = io.connect(url);
 			var dirViews = '/views/';
 			<% if (prenom != "" && surnom != "") { %> App.storeId('<%= prenom %>', '<%= surnom %>'); <% } %>
